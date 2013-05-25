@@ -1,0 +1,9 @@
+WSGIScriptAlias /home/kris/Work/python/Django/mysite/mysite/wsgi.py
+WSGIPythonPath localhost
+
+<Directory /home/kris/Work/python/Django/mysite/mysite>
+<Files wsgi.py>
+Order deny,allow
+Allow from all
+</Files>
+</Directory>

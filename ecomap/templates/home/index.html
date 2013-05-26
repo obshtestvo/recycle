@@ -2,10 +2,10 @@
 {% load staticfiles %}
 {% block headTag %}
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
-    <script src="{% static 'map.js' %}"></script>
-  	<link rel="stylesheet" type="text/css" href="{% static 'map.css' %}">
+    <script src="{% static 'js/map.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/map.css' %}">
 {% endblock %}
 {% block content %}
-	The show must go on
+    The show must go on
     <div id="map-canvas"></div>
 {% endblock %}

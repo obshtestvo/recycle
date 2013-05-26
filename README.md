@@ -28,3 +28,12 @@ pip install django # even if you have django, install it in the virtual env
 ```
 
 **...да се допише...**
+
+## Опресняване на направени промени
+
+Докато сайта е още в разработка може да се изпълни:
+
+```
+sudo service nginx restart
+sudo service uwsgi restart
+```

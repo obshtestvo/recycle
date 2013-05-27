@@ -27,6 +27,25 @@ workon recycle
 pip install django # even if you have django, install it in the virtual env
 ```
 
+Enable "recycle" in `nginx` server:
+```sh
+# in development:
+sudo ln -s /home/ubuntu/web/recycle/recycle.dev.nginx /etc/nginx/sites-enabled/
+# in production
+sudo ln -s /home/ubuntu/web/recycle/recycle.nginx /etc/nginx/sites-enabled/
+```
+
+And then to activate:
+```sh
+sudo service nginx restart
+```
+
+Enable & activate "recycle" in the `uwsgi` server:
+```sh
+sudo ln -s /home/ubuntu/web/recycle/recycle.uwsgi /etc/uwsgi/apps-enabled/recycle.ini
+sudo service uwsgi restart
+```
+
 **...да се допише...**
 
 ## Опресняване на направени промени
@@ -34,6 +53,5 @@ pip install django # even if you have django, install it in the virtual env
 Докато сайта е още в разработка може да се изпълни:
 
 ```
-sudo service nginx restart
-sudo service uwsgi restart
+sudo service uwsgi restart && sudo service nginx restart
 ```

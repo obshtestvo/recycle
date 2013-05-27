@@ -1,16 +1,13 @@
 from django.conf.urls import patterns, include, url
-from django.conf.urls.defaults import *
 
-from django.conf import settings
+from ecomap.views import home
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
 # admin.autodiscover()
 
 urlpatterns = patterns('',
-
-     url(r'^$', 'ecomap.views.home', name='home'),
-    url(r'^static/(.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}), # TODO FIX when live
+    url(r'^$', home.HomeView.as_view(), name='home'),
 
     # url(r'^mysite/', include('mysite.foo.urls')),
 

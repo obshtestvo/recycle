@@ -1,6 +1,8 @@
 # Django settings for mysite project.
 
-DEBUG = 1
+from secret_settings import *
+
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -20,6 +22,8 @@ DATABASES = {
         'PORT': '',                      # Set to empty string for default.
     }
 }
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+SESSION_ENGINE = "django.contrib.sessions.backends.file"
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
@@ -85,9 +89,6 @@ STATICFILES_FINDERS = (
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = '%bfij+9c-xb&$kdtc_q-rhj=ii!%mc_()c5%!c$p-w65q^jhz9'
-
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -97,12 +98,19 @@ TEMPLATE_LOADERS = (
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
+    'core.middleware.rest.HttpMergeParameters',
+    'core.middleware.rest.HttpMethodOverride',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+
+    # Before using CSRF make sure it's ONLY enabled when user is logging in or already logged in via cookies
+    # Make sure it's not enabled for RESTful requests authenticated via Basic, Digest or OAuth
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'core.middleware.rest.ResponseFormatDetection',
+    'core.middleware.error_handler.ErrorHandler',
 )
 
 ROOT_URLCONF = 'app.urls'
@@ -127,6 +135,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+	'core',
 	'ecomap',
 )
 

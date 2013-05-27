@@ -9,8 +9,8 @@ master = true
 socket  = /tmp/recycle.sock
 # chmod-socket    = 664
 chdir = /home/ubuntu/web/recycle
-module = recycle.wsgi
+module = app.wsgi
 # the virtualenv
-home = /home/ubuntu/.virtualenvs/recycle
+#home = /home/ubuntu/.virtualenvs/recycle
 # clear environment on exit
 vacuum = true

@@ -6,7 +6,7 @@ upstream recycle_django {
 server {
     listen 80;
 
-    server_name ec2-54-228-132-182.eu-west-1.compute.amazonaws.com;
+    server_name 192.168.56.101;
     access_log /home/ubuntu/web/recycle/access.log;
 
     location ~ ^/(?:lib/|img/|js/|css/|upload/|robots.txt|humans.txt|favicon.ico) {

@@ -1,9 +1,13 @@
+// Enable the visual refresh
+google.maps.visualRefresh = true;
+
 var map;
 function initialize() {
   var mapOptions = {
-    zoom: 8,
-    center: new google.maps.LatLng(-34.397, 150.644),
-    mapTypeId: google.maps.MapTypeId.ROADMAP
+    zoom: 12,
+    center: new google.maps.LatLng(42.693413,23.322601),
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    streetViewControl: false
   };
   map = new google.maps.Map(document.getElementById('map-canvas'),
       mapOptions);

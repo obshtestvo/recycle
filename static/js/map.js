@@ -14,6 +14,13 @@ function initialize() {
 
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
     var styles = [
+//        {
+//            "stylers": [
+//                { "saturation": 31 },
+//                { "gamma": 0.64 },
+//                { "hue": "#99ff00" }
+//            ]
+//        },
         {
             "featureType": "poi.business",
             "stylers": [
@@ -104,12 +111,26 @@ function initialize() {
 google.maps.event.addDomListener(window, 'load', initialize);
 
 $(function () {
+    var $triggerAddNew = $('.floater a.add-new');
+
+    // Once the "Add new spot" mode has been activated
+    $triggerAddNew.click(function () {
+        map.setOptions({draggableCursor: 'pointer'});
+    })
+
     var $filter = $('.floater select');
     var $filterForm = $filter.closest('form');
-    $filter.select2()
+    $filter.select2({
+    })
 
-    $filter.change(function(e){
-        $.get($filterForm.data('action'), {'tags':e.val}, function(data) {
+    var recyclables = $filter.data('recyclables');
+    $filter.change(function (e) {
+        var tags = []
+        $.each( e.val, function(i, tag){
+            tag = recyclables[tag]
+            if ($.inArray(tag, tags)==-1) tags.push(tag)
+        });
+        $.get($filterForm.data('action'), {'tags': tags}, function (data) {
             console.log(data)
         }, 'json')
     })

@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
 {% load staticfiles %}
+{% load restful %}
 {% block headTag %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/lib/normalize.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/lib/select2.css' %}">
@@ -8,13 +9,12 @@
 {% block content %}
     <div id="map-canvas"></div>
     <div class="floater main">
-        <div id="search">
-            {{ spots }}
-            {{ recyclables }}
+        <div id="search" data-spots="{{ spots|jsonify }}">
             <form action="{% url 'home' %}" data-action="{% url 'spots' %}">
-                <select name="filter" id="filter" multiple>
-                    <option value="paper">хартия</option>
-                    <option value="glass">стъкло</option>
+                <select name="filter" id="filter" multiple data-recyclables="{{ recyclables|jsonify }}">
+                    {% for recyclable, material in recyclables.items %}
+                    <option value="{{ recyclable }}">{{ recyclable }}</option>
+                    {% endfor %}
                 </select>
             </form>
         </div>

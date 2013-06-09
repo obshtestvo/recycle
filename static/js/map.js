@@ -19,8 +19,19 @@ function initialize() {
         content: contentString
     });
 
+    var newMarker = null;
+
+
     function addMarker(location) {
-        var marker = new google.maps.Marker({
+        if (newMarker != null) {
+            // or with callback and options for easing and duration in milliseconds. Needs jQuery Easing Plugin.
+            newMarker.animateTo(location, {
+                easing: "easeOutCubic",
+                duration: 300
+            });
+            return;
+        }
+        newMarker = new google.maps.Marker({
             position: location,
             animation: google.maps.Animation.b,
             draggable: true,
@@ -35,9 +46,9 @@ function initialize() {
             },
             map: map
         });
-        setTimeout(function() {
-            infowindow.open(map, marker);
-        },200)
+        setTimeout(function () {
+            infowindow.open(map, newMarker);
+        }, 200)
     }
 
     google.maps.event.addListener(map, 'click', function (event) {

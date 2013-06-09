@@ -2,7 +2,7 @@ from models import *
 
 
 class RecycleSpotService():
-    def getByTypes(self, types):
+    def get_by_types(self, types):
         if len(types)==0:
             return RecycleSpot.objects.all()
 
@@ -11,3 +11,8 @@ class RecycleSpotService():
             raise Exception("Invalid recycle spot type")
 
         return RecycleSpot.objects.filter(type__in=types)
+
+
+class RecyclableItemService():
+    def get_all(self):
+        return RecyclableItem.objects.all()

@@ -8,8 +8,9 @@ from ..services import *
 class RecycleSpotsView(View):
     def get(self, request):
         service = RecycleSpotService()
+        request.params.get('types')
         return TemplateResponse(request, 'spots/get', {
-            'spots': service.getByTypes(request.params.getlist('types'))
+            'spots': service.get_by_types(request.params.getlist('test'))
         })
 
     def put(self, request):

@@ -10,7 +10,8 @@
     <div class="floater main">
         <div id="search">
             {{ spots }}
-            <form action="">
+            {{ recyclables }}
+            <form action="{% url 'home' %}" data-action="{% url 'spots' %}">
                 <select name="filter" id="filter" multiple>
                     <option value="paper">хартия</option>
                     <option value="glass">стъкло</option>

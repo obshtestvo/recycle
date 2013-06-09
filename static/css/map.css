@@ -28,3 +28,7 @@ body, html {
     margin:30px 200px;
     width:400px;
 }
+#add-new #step1 #streetview {
+    width:332px;
+    height:200px;
+}

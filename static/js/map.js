@@ -29,15 +29,42 @@ function initialize() {
     ];
 
     map.setOptions({styles: styles});
-    var contentString = '<div id="content">' +
+    var contentString = '<div id="add-new">' +
         'Тука ще е първа стъпка от Wizard-а за добавяне' +
+        '<div id="step1">' +
+        '<div id="streetview">' +
+        '</div>' +
+        '</div>' +
         '</div>';
 
     var infowindow = new google.maps.InfoWindow({
         content: contentString
     });
 
+    var pano = null;
     var newMarker = null;
+
+    google.maps.event.addListener(infowindow, 'domready', function () {
+//        if (pano != null) {
+//            pano.unbind("position");
+//            pano.setVisible(false);
+//        }
+        pano = new google.maps.StreetViewPanorama(document.getElementById("streetview"), {
+            navigationControl: true,
+            navigationControlOptions: {style: google.maps.NavigationControlStyle.ANDROID},
+            enableCloseButton: false,
+            addressControl: false,
+            linksControl: false
+        });
+        pano.bindTo("position", newMarker);
+        pano.setVisible(true);
+    });
+
+    google.maps.event.addListener(infowindow, 'closeclick', function () {
+        pano.unbind("position");
+        pano.setVisible(false);
+        pano = null;
+    });
 
 
     function addMarker(location) {

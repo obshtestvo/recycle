@@ -2,18 +2,15 @@ from django.template.response import TemplateResponse
 from django.views.generic.base import View
 
 from core.exception.verbose import VerboseRedirectException
-from core.shortcuts import errors
+from ..services import *
 
 
-class HomeView(View):
+class RecycleSpotsView(View):
     def get(self, request):
-        return TemplateResponse(request, 'home/index', {
-                'errors': errors(request),
-                'meta':   request.META,
-                'params': request.params.getlist('test'),
-                'get':    request.GET,
-                'post':   request.POST,
-            });
+        service = RecycleSpotService()
+        return TemplateResponse(request, 'spots/get', {
+            'spots': service.getByTypes(request.params.getlist('types'))
+        })
 
     def put(self, request):
         # ...nothing happens here yet, test redirection with errors...

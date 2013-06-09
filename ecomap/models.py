@@ -5,7 +5,7 @@ class RecycleSpotMaterial(models.Model):
     name = models.CharField(max_length=255, primary_key=True)
 
 
-class RecyclableItem():
+class RecyclableItem(models.Model):
     name = models.CharField(max_length=255, primary_key=True)
     material = models.ForeignKey(RecycleSpotMaterial)
 
@@ -26,6 +26,15 @@ class RecycleSpot(models.Model):
     added_at = models.DateTimeField()
     description = models.TextField()
     contact = models.TextField()
-    pointer = models.CharField(max_lenght=255)
-    streetview_params = models.CharField(max_lenght=255)
+    pointer = models.CharField(max_length=255)
+    streetview_params = models.CharField(max_length=255)
     materials = models.ManyToManyField(RecycleSpotMaterial)
+
+    @staticmethod
+    def check_type(self, *args):
+        return len(set(args)-{
+            self.TYPE_DEPOT,
+            self.TYPE_STATION,
+            self.TYPE_STORE,
+            self.TYPE_YARD,
+        }) == 0

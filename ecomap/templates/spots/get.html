@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% load staticfiles %}
+{% block headTag %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/lib/normalize.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/lib/select2.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/map.css' %}">
+{% endblock %}
+{% block content %}
+    <div id="map-canvas"></div>
+    <div class="floater main">
+        <div id="search">
+            {{ spots }}
+            <form action="">
+                <select name="filter" id="filter" multiple>
+                    <option value="paper">хартия</option>
+                    <option value="glass">стъкло</option>
+                </select>
+            </form>
+        </div>
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    <script src="{% static 'js/lib/select2.min.js' %}"></script>
+    <script src="{% static 'js/map.js' %}"></script>
+{% endblock %}

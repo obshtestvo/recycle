@@ -6,3 +6,25 @@ body, html {
     height: 100%;
     width: 100%;
 }
+
+
+/* Floater START */
+.floater {
+    position: absolute;
+}
+.floater.main {
+    top:30px;
+    width:800px;
+    height:150px;
+    left:50%;
+    margin-left:-400px;
+    background: #fff;
+}
+.floater.main select {
+    width:400px;
+    height:30px;
+}
+.floater.main .select2-container {
+    margin:30px 200px;
+    width:400px;
+}

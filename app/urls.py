@@ -1,13 +1,13 @@
 from django.conf.urls import patterns, include, url
 
-from ecomap.views import home
+from ecomap.views import spots
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
 # admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^$', home.HomeView.as_view(), name='home'),
+    url(r'^$', spots.RecycleSpotsView.as_view(), name='home'),
 
     # url(r'^mysite/', include('mysite.foo.urls')),
 

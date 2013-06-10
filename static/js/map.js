@@ -8,34 +8,37 @@ function initialize() {
         minZoom: 7,
         center: new google.maps.LatLng(42.693413, 23.322601),
         mapTypeId: google.maps.MapTypeId.ROADMAP,
-        streetViewControl: false
+        streetViewControl: false,
+        styles: [
+            //        {
+            //            "stylers": [
+            //                { "saturation": 31 },
+            //                { "gamma": 0.64 },
+            //                { "hue": "#99ff00" }
+            //            ]
+            //        },
+            {
+                "featureType": "poi.business",
+                "stylers": [
+                    { "visibility": "off" }
+                ]
+            },
+            {
+                "featureType": "poi.sports_complex",
+                "stylers": [
+                    { "visibility": "off" }
+                ]
+            },
+            {
+                featureType: "poi",
+                elementType: "labels",
+                stylers: [
+                    { visibility: "off" }
+                ]
+            }
+        ]
     };
-
-
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-    var styles = [
-//        {
-//            "stylers": [
-//                { "saturation": 31 },
-//                { "gamma": 0.64 },
-//                { "hue": "#99ff00" }
-//            ]
-//        },
-        {
-            "featureType": "poi",
-            "stylers": [
-                { "visibility": "off" }
-            ]
-        },
-        {
-            "featureType": "poi.sports_complex",
-            "stylers": [
-                { "visibility": "off" }
-            ]
-        }
-    ];
-
-    map.setOptions({styles: styles});
     var contentString = '<div id="add-new">' +
         'Тука ще е първа стъпка от Wizard-а за добавяне' +
         '<div id="step1">' +
@@ -104,12 +107,11 @@ function initialize() {
     }
 
     google.maps.event.addListener(map, 'click', function (event) {
-        //addMarker(event.latLng);
+        addMarker(event.latLng);
     });
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
-
 
 $(function () {
     var $triggerAddNew = $('.floater a.add-new');
@@ -124,16 +126,31 @@ $(function () {
     $filter.select2({
     })
 
+    var spotInfoWindow = new google.maps.InfoWindow();
     var recyclables = $filter.data('recyclables');
     $filter.change(function (e) {
         var tags = []
-        $.each( e.val, function(i, tag){
+        $.each(e.val, function (i, tag) {
             tag = recyclables[tag]
-            if ($.inArray(tag, tags)==-1) tags.push(tag)
+            if ($.inArray(tag, tags) == -1) tags.push(tag)
         });
         $.get($filterForm.data('action'), {'tags': tags}, function (data) {
             console.log(data)
+            var marker;
+            $.each(data, function(i, loc) {
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(loc.lat, loc.lng),
+                    animation: google.maps.Animation.b,
+                    draggable: true,
+                    map: map
+                });
+//                google.maps.event.addListener(marker, 'click', (function (marker, i) {
+//                    return function () {
+//                        spotInfoWindow.setContent(locations[i][0]);
+//                        spotInfoWindow.open(map, marker);
+//                    }
+//                })(marker, i));
+            })
         }, 'json')
     })
-
 })

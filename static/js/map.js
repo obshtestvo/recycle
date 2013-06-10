@@ -22,7 +22,7 @@ function initialize() {
 //            ]
 //        },
         {
-            "featureType": "poi.business",
+            "featureType": "poi",
             "stylers": [
                 { "visibility": "off" }
             ]
@@ -104,11 +104,12 @@ function initialize() {
     }
 
     google.maps.event.addListener(map, 'click', function (event) {
-        addMarker(event.latLng);
+        //addMarker(event.latLng);
     });
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
+
 
 $(function () {
     var $triggerAddNew = $('.floater a.add-new');
@@ -134,4 +135,5 @@ $(function () {
             console.log(data)
         }, 'json')
     })
+
 })

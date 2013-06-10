@@ -2,7 +2,7 @@ from django.template.response import TemplateResponse
 from django.views.generic.base import View
 
 from core.exception.verbose import VerboseRedirectException
-from ..services import *
+from ecomap.services import *
 
 
 class HomeView(View):

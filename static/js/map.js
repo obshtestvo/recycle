@@ -1,34 +1,13 @@
-// Enable the visual refresh
-google.maps.visualRefresh = true;
-
-var map;
-function initialize() {
-    var mapOptions = {
-        zoom: 12,
+var Map = function()
+{
+	var _self = this;
+	_self.map = new google.maps.Map(document.getElementById('map-canvas'),  { 
+		zoom: 12,
         minZoom: 7,
         center: new google.maps.LatLng(42.693413, 23.322601),
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         streetViewControl: false,
         styles: [
-            //        {
-            //            "stylers": [
-            //                { "saturation": 31 },
-            //                { "gamma": 0.64 },
-            //                { "hue": "#99ff00" }
-            //            ]
-            //        },
-            {
-                "featureType": "poi.business",
-                "stylers": [
-                    { "visibility": "off" }
-                ]
-            },
-            {
-                "featureType": "poi.sports_complex",
-                "stylers": [
-                    { "visibility": "off" }
-                ]
-            },
             {
                 featureType: "poi",
                 elementType: "labels",
@@ -36,57 +15,52 @@ function initialize() {
                     { visibility: "off" }
                 ]
             }
-        ]
-    };
-    map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-    var contentString = '<div id="add-new">' +
-        'Тука ще е първа стъпка от Wizard-а за добавяне' +
-        '<div id="step1">' +
-        '<div id="streetview">' +
-        '</div>' +
-        '</div>' +
-        '</div>';
+        ]});
+	
+	var html = '<div id="add-new">' +
+					'Тука ще е първа стъпка от Wizard-а за добавяне' +
+					'<div id="step1">' +
+						'<div id="streetview">' +
+						'</div>' +
+					'</div>' +
+				'</div>';
 
-    var infowindow = new google.maps.InfoWindow({
-        content: contentString
-    });
+	_self.infowindow = new google.maps.InfoWindow({
+		content: html
+	});
+	
+	_self.streetview = null;
 
-    var pano = null;
-    var newMarker = null;
-
-    google.maps.event.addListener(infowindow, 'domready', function () {
-//        if (pano != null) {
-//            pano.unbind("position");
-//            pano.setVisible(false);
-//        }
-        pano = new google.maps.StreetViewPanorama(document.getElementById("streetview"), {
+	google.maps.event.addListener(infowindow, 'domready', function () {
+        _self.streetview = new google.maps.StreetViewPanorama(document.getElementById("streetview"), {
             navigationControl: true,
             navigationControlOptions: {style: google.maps.NavigationControlStyle.ANDROID},
             enableCloseButton: false,
             addressControl: false,
             linksControl: false
         });
-        pano.bindTo("position", newMarker);
-        pano.setVisible(true);
+        _self.streetview.bindTo("position", _self.marker);
+        _self.streetview.setVisible(true);
     });
 
     google.maps.event.addListener(infowindow, 'closeclick', function () {
-        pano.unbind("position");
-        pano.setVisible(false);
-        pano = null;
+        _self.streetview.unbind("position");
+        _self.streetview.setVisible(false);
+        _self.streetview = null;
     });
-
-
-    function addMarker(location) {
-        if (newMarker != null) {
-            // or with callback and options for easing and duration in milliseconds. Needs jQuery Easing Plugin.
-            newMarker.animateTo(location, {
+	
+	_self.marker = null;
+	_self.add_marker = function(location)
+	{
+        if (_self.marker != null) 
+		{
+            _self.marker.animateTo(location, {
                 easing: "easeOutCubic",
                 duration: 300
             });
             return;
         }
-        newMarker = new google.maps.Marker({
+        _self.marker = new google.maps.Marker({
             position: location,
             animation: google.maps.Animation.b,
             draggable: true,
@@ -99,19 +73,33 @@ function initialize() {
                 // The anchor for this image is the base of the flagpole at 0,32.
                 anchor: new google.maps.Point(23, 63)
             },
-            map: map
+            map: _self.map
         });
-        setTimeout(function () {
-            infowindow.open(map, newMarker);
-        }, 200)
-    }
 
-    google.maps.event.addListener(map, 'click', function (event) {
-        addMarker(event.latLng);
-    });
+        setTimeout(function () 
+		{
+ 			infowindow.open(_self.map, _self.marker);
+        }, 200);
+	}
+
+	google.maps.event.addListener(_self.map, 'click', function (event) 
+	{
+	    _self.add_marker(event.latLng);
+		//this is how we access the streetview params
+		if(_self.streetview != null)
+		{
+			console.log(_self.streetview.pov);
+		}
+		if(_self.marker != null)
+		{
+			console.log(_self.marker.getPosition().toUrlValue())
+		}
+		
+	});
+
 }
 
-google.maps.event.addDomListener(window, 'load', initialize);
+google.maps.event.addDomListener(window, 'load', Map);
 
 $(function () {
     var $triggerAddNew = $('.floater a.add-new');

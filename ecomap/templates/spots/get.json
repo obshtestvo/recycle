@@ -1,17 +1,21 @@
-[
-    {
-        "name": "Batteries",
-        "lat": 42.693413,
-        "lng": 23.322601
-    },
-    {
-        "name": "Paper",
-        "lat": 42.698347,
-        "lng": 23.345368
-    },
-    {
-        "name": "Paper",
-        "lat": 42.679894,
-        "lng": 23.323267
-    }
-]
+{
+	"batteries": [
+		{
+			"name": "Spot 1",
+			"lat": 42.693413,
+			"lng": 23.322601
+		},
+		{
+			"name": "Technomarket",
+			"lat": 42.698347,
+			"lng": 23.345368
+		}
+	],
+	"paper":[
+		{
+			"name": "Ecopack",
+			"lat": 42.679894,
+			"lng": 23.323267
+		}
+	]
+}

@@ -113,32 +113,63 @@ $(function () {
     var $filterForm = $filter.closest('form');
     $filter.select2({
     })
-
+	
     var spotInfoWindow = new google.maps.InfoWindow();
     var recyclables = $filter.data('recyclables');
+	var filtered_markers = [];
+	var populateMarkers = function(data, filters)
+	{	
+ 		while(filtered_markers.length){
+        	filtered_markers.pop().setMap(null);
+        }
+
+		if(typeof filters == "undefined")
+		{
+			filters = [];
+			for(i in data)
+			{
+				filters.push(i);
+			}
+		}
+		var filtered_data = [];
+		for(i in filters)
+		{
+			for (d in data[filters[i]])
+			{
+				filtered_data.push(data[filters[i]][d]);
+			}
+		}
+
+        $.each(filtered_data, function(i, loc) {
+            m = new google.maps.Marker({
+                position: new google.maps.LatLng(loc.lat, loc.lng),
+                animation: google.maps.Animation.b,
+                draggable: false,
+                map: map
+            });
+			filtered_markers.push(m);
+			
+		});
+	}
+	
+	
+    $.get($filterForm.data('action'), {}, function (data) {
+		all_markers = data;
+		populateMarkers(data);
+    }, 'json');
+
     $filter.change(function (e) {
         var tags = []
         $.each(e.val, function (i, tag) {
             tag = recyclables[tag]
             if ($.inArray(tag, tags) == -1) tags.push(tag)
         });
-        $.get($filterForm.data('action'), {'tags': tags}, function (data) {
-            console.log(data)
-            var marker;
-            $.each(data, function(i, loc) {
-                marker = new google.maps.Marker({
-                    position: new google.maps.LatLng(loc.lat, loc.lng),
-                    animation: google.maps.Animation.b,
-                    draggable: true,
-                    map: map
-                });
+		populateMarkers(all_markers, tags);
 //                google.maps.event.addListener(marker, 'click', (function (marker, i) {
 //                    return function () {
 //                        spotInfoWindow.setContent(locations[i][0]);
 //                        spotInfoWindow.open(map, marker);
 //                    }
 //                })(marker, i));
-            })
-        }, 'json')
     })
-})
+});

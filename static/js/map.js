@@ -1,6 +1,7 @@
 var Map = function()
 {
 	var _self = this;
+	_self.$elements = {}
 	_self.map = new google.maps.Map(document.getElementById('map-canvas'),  { 
 		zoom: 12,
         minZoom: 7,
@@ -30,7 +31,6 @@ var Map = function()
 	});
 	
 	_self.streetview = null;
-
 	google.maps.event.addListener(infowindow, 'domready', function () {
         _self.streetview = new google.maps.StreetViewPanorama(document.getElementById("streetview"), {
             navigationControl: true,
@@ -39,8 +39,11 @@ var Map = function()
             addressControl: false,
             linksControl: false
         });
+
+		_self.$elements.streetview = $('#streetview');
         _self.streetview.bindTo("position", _self.marker);
         _self.streetview.setVisible(true);
+
     });
 
     google.maps.event.addListener(infowindow, 'closeclick', function () {
@@ -81,17 +84,31 @@ var Map = function()
  			infowindow.open(_self.map, _self.marker);
         }, 200);
 	}
-
+	_self.streetview_service = new google.maps.StreetViewService();
+	_self.checkStreetview = function(latLng)
+	{
+		_self.streetview_service.getPanoramaByLocation(latLng, 50, function(result, status)
+		{
+		    if (status == google.maps.StreetViewStatus.OK)
+			{
+				_self.$elements.streetview.show();
+				_self.streetview.setVisible(true);
+		    }
+			else
+			{
+				_self.$elements.streetview.hide();
+	        	_self.streetview.setVisible(false);
+			}
+      	});
+	}
 	google.maps.event.addListener(_self.map, 'click', function (event) 
 	{
 	    _self.add_marker(event.latLng);
-		//this is how we access the streetview params
-		if(_self.streetview != null)
-		{
-			console.log(_self.streetview.pov);
-		}
+		//this is how we access the streetview params _self.streetview.pov
+		
 		if(_self.marker != null)
 		{
+			_self.checkStreetview(_self.marker.getPosition());
 			console.log(_self.marker.getPosition().toUrlValue())
 		}
 		

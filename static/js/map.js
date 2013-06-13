@@ -42,7 +42,7 @@ var Map = function()
 
 		_self.$elements.streetview = $('#streetview');
         _self.streetview.bindTo("position", _self.marker);
-        _self.streetview.setVisible(true);
+		_self.checkStreetview(_self.marker.getPosition());
 
     });
 
@@ -50,6 +50,8 @@ var Map = function()
         _self.streetview.unbind("position");
         _self.streetview.setVisible(false);
         _self.streetview = null;
+		_self.marker.setMap(null);
+        _self.marker = null;
     });
 	
 	_self.marker = null;
@@ -81,13 +83,61 @@ var Map = function()
 
         setTimeout(function () 
 		{
+
  			infowindow.open(_self.map, _self.marker);
+
         }, 200);
+	}
+	_self.filtered_markers = [];
+	_self.markerCluster = null;
+	_self.populateMarkers = function(data, filters)
+	{	
+
+ 		while(_self.filtered_markers.length)
+		{
+        	filtered_markers.pop().setMap(null);
+        }
+
+		if(_self.markerCluster)
+		{
+			_self.markerCluster.clearMarkers();
+		}
+
+		if(typeof filters == "undefined")
+		{
+			filters = [];
+			for(i in data)
+			{
+				filters.push(i);
+			}
+		}
+		var filtered_data = [];
+		for(i in filters)
+		{
+			for (d in data[filters[i]])
+			{
+				filtered_data.push(data[filters[i]][d]);
+			}
+		}
+
+        $.each(filtered_data, function(i, loc) {
+            m = new google.maps.Marker({
+                position: new google.maps.LatLng(loc.lat, loc.lng),
+                animation: google.maps.Animation.b,
+                draggable: false,
+                map: map
+            });
+			_self.filtered_markers.push(m);
+			
+		});
+
+        _self.markerCluster = new MarkerClusterer(_self.map, _self.filtered_markers);
+
 	}
 	_self.streetview_service = new google.maps.StreetViewService();
 	_self.checkStreetview = function(latLng)
 	{
-		_self.streetview_service.getPanoramaByLocation(latLng, 50, function(result, status)
+		_self.streetview_service.getPanoramaByLocation(latLng, 100, function(result, status)
 		{
 		    if (status == google.maps.StreetViewStatus.OK)
 			{
@@ -133,43 +183,8 @@ $(function () {
 	
     var spotInfoWindow = new google.maps.InfoWindow();
     var recyclables = $filter.data('recyclables');
-	var filtered_markers = [];
-	var populateMarkers = function(data, filters)
-	{	
- 		while(filtered_markers.length){
-        	filtered_markers.pop().setMap(null);
-        }
-
-		if(typeof filters == "undefined")
-		{
-			filters = [];
-			for(i in data)
-			{
-				filters.push(i);
-			}
-		}
-		var filtered_data = [];
-		for(i in filters)
-		{
-			for (d in data[filters[i]])
-			{
-				filtered_data.push(data[filters[i]][d]);
-			}
-		}
-
-        $.each(filtered_data, function(i, loc) {
-            m = new google.maps.Marker({
-                position: new google.maps.LatLng(loc.lat, loc.lng),
-                animation: google.maps.Animation.b,
-                draggable: false,
-                map: map
-            });
-			filtered_markers.push(m);
-			
-		});
-	}
 	
-	
+	var all_markers;
     $.get($filterForm.data('action'), {}, function (data) {
 		all_markers = data;
 		populateMarkers(data);

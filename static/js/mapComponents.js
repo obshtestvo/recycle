@@ -29,7 +29,8 @@ var PopupAddNew = function(options) {
     _self.$elements = {}
     _self.events = {
         infoWindowReady: gMap.event.addListener(_self.infowindow, 'domready', function() {
-            _self.$elements.streetview = $('#streetview')
+            _self.$elements.streetview = $('#add-new .streetview')
+            _self.$elements.streetviewHolding = $('#add-new .missing-streetview')
             _self.streetview = _self._createStreetView(_self.$elements.streetview.get(0));
             _self.streetview.bindTo("position", _self.marker);
             _self.checkStreetView(_self.marker.getPosition());
@@ -135,10 +136,12 @@ PopupAddNew.prototype = {
 		    if (status == gMap.StreetViewStatus.OK) {
 				_self.$elements.streetview.show();
 				_self.streetview.setVisible(true);
-		    } else {
+                _self.$elements.streetviewHolding.hide();
+            } else {
 				_self.$elements.streetview.hide();
 	        	_self.streetview.setVisible(false);
-			}
+                _self.$elements.streetviewHolding.show()
+            }
       	});
 	},
     /**

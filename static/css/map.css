@@ -28,9 +28,17 @@ body, html {
     margin:30px 200px;
     width:400px;
 }
-#add-new #step1 #streetview {
+#add-new #step1 .streetview {
     width:332px;
     height:200px;
+}
+#add-new #step1 .missing-streetview {
+    width:332px;
+    height:200px;
+    display: none;
+    background: gray;
+    line-height: 200px;
+    text-align: center;
 }
 .hide {
     display: none;

@@ -1,7 +1,7 @@
-
+// Enable the visual refresh
+google.maps.visualRefresh = true;
 // Shortcut/alias
 var gMap = google.maps;
-
 // App context
 var app = {
     map: null
@@ -82,6 +82,7 @@ Map.prototype = {
      */
     _createMap: function(el, options) {
         var options = $.extend({
+            disableDefaultUI: true,
             zoom: 12,
             minZoom: 7,
             streetViewControl: false,
@@ -136,9 +137,9 @@ Map.prototype = {
      * @private
      */
     _createStreetView: function(el, options) {
+        console.log(gMap.NavigationControlStyle)
         var options = $.extend({
-            navigationControl: true,
-            navigationControlOptions: {style: gMap.NavigationControlStyle.ANDROID},
+            navigationControl: false,
             enableCloseButton: false,
             addressControl: false,
             linksControl: false

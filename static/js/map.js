@@ -7,57 +7,36 @@ var app = {
     map: null
 }
 
-var Map = function($el, centerLoc)
+var geoServices = {
+    panorama: new gMap.StreetViewService(),
+    coder: new gMap.Geocoder(),
+    detection: function( ) {
+
+    }
+}
+
+var Map = function($el, centerLoc, geoServices,  callback)
 {
     // Init vars
 	var _self = this;
-    _self.geocoder = new gMap.Geocoder();
-	_self.streetview_service = new gMap.StreetViewService();
 	_self.filtered_markers = [];
-	_self.$elements = {}
+	_self.geo = geoServices;
 
     // Init map
     var centerLoc = centerLoc || $el.data('center');
 	_self.map = _self._createMap($el.get(0), {
         center: new gMap.LatLng(centerLoc.lat, centerLoc.lng)
     })
-    // Init infowindow
-    var infoTemplate = $('.infowindow-add-template');
-    var infoContent = infoTemplate.html();
-    infoTemplate.remove();
-	_self.infowindow = _self._createInfoWindow({
-		content: infoContent
-    }, function() {
-        _self.$elements.streetview = $('#streetview');
-        _self.streetview = _self._createStreetView(_self.$elements.streetview.get(0), {})
-        _self.streetview.bindTo("position", _self.marker);
-		_self.checkStreetView(_self.marker.getPosition());
-    })
-
-    gMap.event.addListener(this.infowindow, 'closeclick', function() {
-        _self.hideAddNew()
-    });
-
-	gMap.event.addListener(_self.map, 'click', function (event)
-	{
-        if (_self.marker == null) return;
-		//this is how we access the streetview params _self.streetview.pov
-        _self._animateMarker(_self.marker, event.latLng, function() {
-                _self.checkStreetView(_self.marker.getPosition());
-//                console.log(_self.marker.getPosition().toUrlValue(), _self.marker.getPosition())
-        });
-	});
     _self._createAutoComplete($('#addressSearch').get(0))
+    callback = callback || $.noop;
+    callback();
 }
 
 Map.prototype = {
-    streetview_service: null,
-    geocoder: null,
-    streetview: null,
-    $elements: null,
     map: null,
-    marker: null,
+    addNewPopup: null,
     markerCluster: null,
+    geo: null,
     /**
      * Creates a map
      *
@@ -101,94 +80,6 @@ Map.prototype = {
         map.setMapTypeId("Recycle Style");
         return map;
     },
-    /**
-     * Creates an infowindow
-     *
-     * @param options Infowindow options
-     * @param callback (optional)
-     * @returns {gMap.InfoWindow}
-     * @private
-     */
-    _createInfoWindow: function(options, callback) {
-        var options = $.extend({}, options)
-        var infoWindow = new gMap.InfoWindow(options);
-        if ($.isFunction(callback)) {
-	        gMap.event.addListener(infoWindow, 'domready', callback);
-        }
-        return infoWindow;
-    },
-    /**
-     * Creates a streetview obj
-     *
-     * @param el DOM el
-     * @param options
-     * @returns {gMap.StreetViewPanorama}
-     * @private
-     */
-    _createStreetView: function(el, options) {
-        var options = $.extend({
-            navigationControl: false,
-            enableCloseButton: false,
-            addressControl: false,
-            linksControl: false
-        }, options)
-        return new gMap.StreetViewPanorama(el, options);
-    },
-    /**
-     * Shows the infowindow, marker and wizard used for Add New Point
-     */
-    showAddNew: function(location) {
-        var _self = this;
-        _self.addMarker(location);
-        gMap.event.addListener(_self.marker, "dragend", function (event) {
-            _self.checkStreetView(_self.marker.getPosition());
-        });
-    },
-    /**
-     * Hides the infowindow, marker and wizard used for Add New Point
-     */
-    hideAddNew: function() {
-        var _self = this;
-        if (($.type(_self.infowindow) != 'undefined') && (_self.infowindow.getMap() instanceof google.maps.Map))
-            _self.infowindow.close()
-        _self.streetview.unbind("position");
-        _self.streetview.setVisible(false);
-        _self.streetview = null;
-        _self.marker.setMap(null);
-        _self.marker = null;
-    },
-    /**
-     * Add a marker
-     * @param location LatLng location
-     * @param options (optional)
-     */
-    addMarker: function(location, options)
-	{
-        var _self = this;
-        var options = $.extend({
-            position: location,
-            animation: gMap.Animation.b,
-            draggable: true,
-            icon: {
-                url: '/img/pointer.png',
-                size: new gMap.Size(64, 64),
-                // The origin for this image is 0,0.
-                origin: new gMap.Point(0, 0),
-                // The anchor for this image is the base of the flagpole at 0,32.
-                anchor: new gMap.Point(23, 63)
-            },
-            map: _self.map
-        }, options)
-        _self.marker = new gMap.Marker(options);
-        _self.infowindow.open(_self.map, _self.marker);
-	},
-    _animateMarker: function(marker, location, callback) {
-        marker.animateTo(location, {
-            easing: "easeOutCubic",
-            duration: 300,
-            complete: callback
-        });
-    },
     populateMarkers: function(data, filters)
 	{
         var _self = this;
@@ -230,23 +121,6 @@ Map.prototype = {
         _self.markerCluster = new MarkerClusterer(_self.map, _self.filtered_markers);
 
 	},
-    checkStreetView: function(location)
-	{
-        var _self = this;
-		_self.streetview_service.getPanoramaByLocation(location, 50, function(result, status)
-		{
-		    if (status == gMap.StreetViewStatus.OK)
-			{
-				_self.$elements.streetview.show();
-				_self.streetview.setVisible(true);
-		    }
-			else
-			{
-				_self.$elements.streetview.hide();
-	        	_self.streetview.setVisible(false);
-			}
-      	});
-	},
     /**
      * Get address based on coordinates
      *
@@ -254,7 +128,7 @@ Map.prototype = {
      * @param callback In the form callback(err, data)
      */
     fetchAddress: function(latLng, callback) {
-        geocoder.geocode({
+        this.geo.coder.geocode({
             latLng: event.latLng
         }, function (results, status) {
             if (status == gMap.GeocoderStatus.OK) {
@@ -264,7 +138,6 @@ Map.prototype = {
             }
         });
     },
-
     _createAutoComplete: function(el, options) {
         var _self = this;
         var autocomplete = new google.maps.places.Autocomplete(el);
@@ -303,7 +176,7 @@ var DOM = $.Deferred()
 $(function() {DOM.resolve()})
 // Wait for HTML5 Geo-loc
 var GeoDetection = $.Deferred();
-if (navigator.geolocation) {
+if (false) {//navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(loc){
         GeoDetection.resolve({
             lat: loc.coords.latitude,
@@ -318,27 +191,31 @@ if (navigator.geolocation) {
 
 // When both DOM and Geo-loc are ready
 $.when(GeoDetection, DOM).then(function(coords) {
-    app.map = new Map($('#map-canvas'), coords);
+    // Init infowindow
+    var infoTemplate = $('.infowindow-add-template');
+    var infoContent = infoTemplate.html();
+    infoTemplate.remove();
+    app.map = new Map($('#map-canvas'), coords, geoServices);
 
     var $triggerAddNew = $('.floater a.add-new');
+    var infoWindowCloseListener = null;
     // Once the "Add new spot" mode has been activated
     $triggerAddNew.click(function (e) {
         e.preventDefault();
         if ($triggerAddNew.hasClass('active')) {
-            app.map.hideAddNew()
+            gMap.event.removeListener(infoWindowCloseListener);
+            app.map.addNewPopup.destroy()
+            app.map.addNewPopup = null;
+            infoWindowCloseListener = null;
             $triggerAddNew.removeClass('active');
             return;
         }
         $triggerAddNew.addClass('active');
-        app.map.map.setOptions({draggableCursor: 'pointer'});
-        var mapBounds = app.map.map.getBounds();
-        var latPortion = (mapBounds.getNorthEast().lat()- mapBounds.getSouthWest().lat())/10;
-        app.map.showAddNew(new gMap.LatLng(mapBounds.getSouthWest().lat() + latPortion, app.map.map.getCenter().lng()));
+        app.map.addNewPopup = new PopupAddNew({ map: app.map.map, content: infoContent, geo: geoServices});
+        infoWindowCloseListener = gMap.event.addListener(app.map.addNewPopup.infowindow, 'closeclick', function () {
+            $triggerAddNew.removeClass('active')
+        });
     })
-    gMap.event.addListener(app.map.infowindow, 'closeclick', function () {
-        $triggerAddNew.removeClass('active')
-        app.map.map.setOptions({draggableCursor: 'url(https://maps.gstatic.com/mapfiles/openhand_8_8.cur),default'});
-    });
 
     var $filter = $('.floater select');
     var $filterForm = $filter.closest('form');

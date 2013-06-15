@@ -34,12 +34,8 @@ var Map = function($el, centerLoc)
 		_self.checkStreetView(_self.marker.getPosition());
     })
 
-    gMap.event.addListener(this.infowindow, 'closeclick', function () {
-        _self.streetview.unbind("position");
-        _self.streetview.setVisible(false);
-        _self.streetview = null;
-		_self.marker.setMap(null);
-        _self.marker = null;
+    gMap.event.addListener(this.infowindow, 'closeclick', function() {
+        _self.hideAddNew()
     });
 
 	gMap.event.addListener(_self.map, 'click', function (event)
@@ -138,12 +134,28 @@ Map.prototype = {
         }, options)
         return new gMap.StreetViewPanorama(el, options);
     },
+    /**
+     * Shows the infowindow, marker and wizard used for Add New Point
+     */
     showAddNew: function(location) {
         var _self = this;
         _self.addMarker(location);
         gMap.event.addListener(_self.marker, "dragend", function (event) {
             _self.checkStreetView(_self.marker.getPosition());
         });
+    },
+    /**
+     * Hides the infowindow, marker and wizard used for Add New Point
+     */
+    hideAddNew: function() {
+        var _self = this;
+        if (($.type(_self.infowindow) != 'undefined') && (_self.infowindow.getMap() instanceof google.maps.Map))
+            _self.infowindow.close()
+        _self.streetview.unbind("position");
+        _self.streetview.setVisible(false);
+        _self.streetview = null;
+        _self.marker.setMap(null);
+        _self.marker = null;
     },
     /**
      * Add a marker
@@ -312,17 +324,25 @@ $.when(GeoDetection, DOM).then(function(coords) {
     // Once the "Add new spot" mode has been activated
     $triggerAddNew.click(function (e) {
         e.preventDefault();
+        if ($triggerAddNew.hasClass('active')) {
+            app.map.hideAddNew()
+            $triggerAddNew.removeClass('active');
+            return;
+        }
         $triggerAddNew.addClass('active');
         app.map.map.setOptions({draggableCursor: 'pointer'});
         var mapBounds = app.map.map.getBounds();
         var latPortion = (mapBounds.getNorthEast().lat()- mapBounds.getSouthWest().lat())/10;
         app.map.showAddNew(new gMap.LatLng(mapBounds.getSouthWest().lat() + latPortion, app.map.map.getCenter().lng()));
     })
+    gMap.event.addListener(app.map.infowindow, 'closeclick', function () {
+        $triggerAddNew.removeClass('active')
+        app.map.map.setOptions({draggableCursor: 'url(https://maps.gstatic.com/mapfiles/openhand_8_8.cur),default'});
+    });
 
     var $filter = $('.floater select');
     var $filterForm = $filter.closest('form');
-    $filter.select2({
-    })
+    $filter.select2({})
 
     var spotInfoWindow = new gMap.InfoWindow();
     var recyclables = $filter.data('recyclables');

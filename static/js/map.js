@@ -52,13 +52,9 @@ var Map = function($el)
             return;
         }
 		//this is how we access the streetview params _self.streetview.pov
-        _self.marker.animateTo(event.latLng, {
-            easing: "easeOutCubic",
-            duration: 300,
-            complete: function() {
+        _self._animateMarker(_self.marker, event.latLng, function() {
                 _self.checkStreetView(_self.marker.getPosition());
                 console.log(_self.marker.getPosition().toUrlValue(), _self.marker.getPosition())
-            }
         });
 	});
     _self._createAutoComplete($('#addressSearch').get(0))
@@ -83,6 +79,10 @@ Map.prototype = {
     _createMap: function(el, options) {
         var options = $.extend({
             disableDefaultUI: true,
+            zoomControl: true,
+            zoomControlOptions: {
+                style: google.maps.ZoomControlStyle.SMALL
+            },
             zoom: 12,
             minZoom: 7,
             streetViewControl: false,
@@ -123,7 +123,6 @@ Map.prototype = {
         var options = $.extend({}, options)
         var infoWindow = new gMap.InfoWindow(options);
         if ($.isFunction(callback)) {
-            console.log(callback)
 	        gMap.event.addListener(infoWindow, 'domready', callback);
         }
         return infoWindow;
@@ -137,7 +136,6 @@ Map.prototype = {
      * @private
      */
     _createStreetView: function(el, options) {
-        console.log(gMap.NavigationControlStyle)
         var options = $.extend({
             navigationControl: false,
             enableCloseButton: false,
@@ -171,6 +169,13 @@ Map.prototype = {
         _self.marker = new gMap.Marker(options);
         _self.infowindow.open(_self.map, _self.marker);
 	},
+    _animateMarker: function(marker, location, callback) {
+        marker.animateTo(location, {
+            easing: "easeOutCubic",
+            duration: 300,
+            complete: callback
+        });
+    },
     populateMarkers: function(data, filters)
 	{
         var _self = this;
@@ -212,11 +217,12 @@ Map.prototype = {
         _self.markerCluster = new MarkerClusterer(_self.map, _self.filtered_markers);
 
 	},
-    checkStreetView: function(latLng)
+    checkStreetView: function(location)
 	{
         var _self = this;
-		_self.streetview_service.getPanoramaByLocation(latLng, 100, function(result, status)
+		_self.streetview_service.getPanoramaByLocation(location, 50, function(result, status)
 		{
+            console.log(result, status)
 		    if (status == gMap.StreetViewStatus.OK)
 			{
 				_self.$elements.streetview.show();

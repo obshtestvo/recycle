@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/map.css' %}">
 {% endblock %}
 {% block content %}
-    <div id="map-canvas"></div>
+    <div id="map-canvas" data-center="{ &quot;lat&quot;: 42.693413, &quot;lng&quot;: 23.322601}"></div>
     <div class="floater main">
         <div id="search" data-spots="{{ spots|jsonify }}">
             <form action="{% url 'home' %}" data-action="{% url 'spots' %}">
@@ -17,6 +17,15 @@
                     {% endfor %}
                 </select>
             </form>
+        </div>
+    </div>
+    <div class="infowindow-add-template hide">
+        <div id="add-new">
+            Тука ще е първа стъпка от Wizard-а за добавяне
+            <div id="step1">
+                <div id="streetview">
+                </div>
+            </div>
         </div>
     </div>
 

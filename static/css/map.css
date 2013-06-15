@@ -32,3 +32,6 @@ body, html {
     width:332px;
     height:200px;
 }
+.hide {
+    display: none;
+}

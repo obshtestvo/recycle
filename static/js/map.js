@@ -7,7 +7,7 @@ var app = {
     map: null
 }
 
-var Map = function($el)
+var Map = function($el, centerLoc)
 {
     // Init vars
 	var _self = this;
@@ -17,9 +17,9 @@ var Map = function($el)
 	_self.$elements = {}
 
     // Init map
-    var mapCenter = $el.data('center');
+    var centerLoc = centerLoc || $el.data('center');
 	_self.map = _self._createMap($el.get(0), {
-        center: new gMap.LatLng(mapCenter.lat, mapCenter.lng)
+        center: new gMap.LatLng(centerLoc.lat, centerLoc.lng)
     })
     // Init infowindow
     var infoTemplate = $('.infowindow-add-template');
@@ -44,17 +44,11 @@ var Map = function($el)
 
 	gMap.event.addListener(_self.map, 'click', function (event)
 	{
-        if (_self.marker == null) {
-            _self.addMarker(event.latLng);
-            gMap.event.addListener(_self.marker, "dragend", function (event) {
-                _self.checkStreetView(_self.marker.getPosition());
-            });
-            return;
-        }
+        if (_self.marker == null) return;
 		//this is how we access the streetview params _self.streetview.pov
         _self._animateMarker(_self.marker, event.latLng, function() {
                 _self.checkStreetView(_self.marker.getPosition());
-                console.log(_self.marker.getPosition().toUrlValue(), _self.marker.getPosition())
+//                console.log(_self.marker.getPosition().toUrlValue(), _self.marker.getPosition())
         });
 	});
     _self._createAutoComplete($('#addressSearch').get(0))
@@ -83,7 +77,7 @@ Map.prototype = {
             zoomControlOptions: {
                 style: google.maps.ZoomControlStyle.SMALL
             },
-            zoom: 12,
+            zoom: 13,
             minZoom: 7,
             streetViewControl: false,
             backgroundColor: '#B2F7A6',
@@ -143,6 +137,13 @@ Map.prototype = {
             linksControl: false
         }, options)
         return new gMap.StreetViewPanorama(el, options);
+    },
+    showAddNew: function(location) {
+        var _self = this;
+        _self.addMarker(location);
+        gMap.event.addListener(_self.marker, "dragend", function (event) {
+            _self.checkStreetView(_self.marker.getPosition());
+        });
     },
     /**
      * Add a marker
@@ -222,7 +223,6 @@ Map.prototype = {
         var _self = this;
 		_self.streetview_service.getPanoramaByLocation(location, 50, function(result, status)
 		{
-            console.log(result, status)
 		    if (status == gMap.StreetViewStatus.OK)
 			{
 				_self.$elements.streetview.show();
@@ -286,14 +286,37 @@ Map.prototype = {
         })
     }
 }
+// Wait for DOM
+var DOM = $.Deferred()
+$(function() {DOM.resolve()})
+// Wait for HTML5 Geo-loc
+var GeoDetection = $.Deferred();
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(loc){
+        GeoDetection.resolve({
+            lat: loc.coords.latitude,
+            lng: loc.coords.longitude
+        })
+    }, function() {
+        GeoDetection.resolve();
+    });
+} else {
+    GeoDetection.resolve();
+}
 
-$(function () {
-    app.map = new Map($('#map-canvas'));
+// When both DOM and Geo-loc are ready
+$.when(GeoDetection, DOM).then(function(coords) {
+    app.map = new Map($('#map-canvas'), coords);
+
     var $triggerAddNew = $('.floater a.add-new');
-
     // Once the "Add new spot" mode has been activated
-    $triggerAddNew.click(function () {
-        map.setOptions({draggableCursor: 'pointer'});
+    $triggerAddNew.click(function (e) {
+        e.preventDefault();
+        $triggerAddNew.addClass('active');
+        app.map.map.setOptions({draggableCursor: 'pointer'});
+        var mapBounds = app.map.map.getBounds();
+        var latPortion = (mapBounds.getNorthEast().lat()- mapBounds.getSouthWest().lat())/10;
+        app.map.showAddNew(new gMap.LatLng(mapBounds.getSouthWest().lat() + latPortion, app.map.map.getCenter().lng()));
     })
 
     var $filter = $('.floater select');
@@ -305,23 +328,25 @@ $(function () {
     var recyclables = $filter.data('recyclables');
 
 	var all_markers;
-    $.get($filterForm.data('action'), {}, function (data) {
+    $.get($filterForm.data('action'), {
+        coords: coords
+    }, function (data) {
 		all_markers = data;
 		app.map.populateMarkers(data);
     }, 'json');
 
-    $filter.change(function (e) {
-        var tags = []
-        $.each(e.val, function (i, tag) {
-            tag = recyclables[tag]
-            if ($.inArray(tag, tags) == -1) tags.push(tag)
-        });
-		populateMarkers(all_markers, tags);
+//    $filter.change(function (e) {
+//        var tags = []
+//        $.each(e.val, function (i, tag) {
+//            tag = recyclables[tag]
+//            if ($.inArray(tag, tags) == -1) tags.push(tag)
+//        });
+//		populateMarkers(all_markers, tags);
 //                gMap.event.addListener(marker, 'click', (function (marker, i) {
 //                    return function () {
 //                        spotInfoWindow.setContent(locations[i][0]);
 //                        spotInfoWindow.open(map, marker);
 //                    }
 //                })(marker, i));
-    })
+//    })
 });

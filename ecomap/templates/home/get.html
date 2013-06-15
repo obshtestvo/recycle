@@ -10,6 +10,7 @@
     <div id="map-canvas" data-center="{ &quot;lat&quot;: 42.693413, &quot;lng&quot;: 23.322601}"></div>
     <div class="floater main">
         <div id="search" data-spots="{{ spots|jsonify }}">
+            <a class="add-new" href="" style="">+</a>
             <form action="{% url 'home' %}" data-action="{% url 'spots' %}">
                 <select name="filter" id="filter" multiple data-recyclables="{{ recyclables|jsonify }}">
                     {% for recyclable, material in recyclables.items %}

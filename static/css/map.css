@@ -39,3 +39,18 @@ body, html {
     width:398px;
     margin:10px 200px;
 }
+a.add-new {
+    border: 1px solid gray;
+    text-decoration: none;
+    display : block;
+    position: absolute;
+    top:10px;
+    left:10px;
+    line-height: 30px;
+    text-align: center;
+    width: 30px;
+    height: 30px
+}
+a.add-new.active {
+    background: yellow;
+}

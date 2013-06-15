@@ -29,7 +29,6 @@ var Map = function($el)
 		content: infoContent
     }, function() {
         _self.$elements.streetview = $('#streetview');
-        console.log(_self.$elements.streetview )
         _self.streetview = _self._createStreetView(_self.$elements.streetview.get(0), {})
         _self.streetview.bindTo("position", _self.marker);
 		_self.checkStreetView(_self.marker.getPosition());
@@ -86,6 +85,7 @@ Map.prototype = {
             zoom: 12,
             minZoom: 7,
             streetViewControl: false,
+            backgroundColor: '#B2F7A6',
             mapTypeId: google.maps.MapTypeId.ROADMAP
         }, options);
         var map = new google.maps.Map(el,options);
@@ -264,7 +264,7 @@ Map.prototype = {
                 _self.map.fitBounds(place.geometry.viewport);
             } else {
                 _self.map.setCenter(place.geometry.location);
-                _self.map.setZoom(12);  // Why 17? Because it looks good.
+                _self.map.setZoom(17);  // Why 17? Because it looks good.
             }
             // Ahhh... building up address from address components instead of formatted_address?
             var address = '';

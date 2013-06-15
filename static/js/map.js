@@ -61,9 +61,8 @@ var Map = function($el)
                 console.log(_self.marker.getPosition().toUrlValue(), _self.marker.getPosition())
             }
         });
-
 	});
-
+    _self._createAutoComplete($('#addressSearch').get(0))
 }
 
 Map.prototype = {
@@ -86,17 +85,30 @@ Map.prototype = {
         var options = $.extend({
             zoom: 12,
             minZoom: 7,
-            mapTypeId: gMap.MapTypeId.ROADMAP,
             streetViewControl: false,
-            styles: [{
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        }, options);
+        var map = new google.maps.Map(el,options);
+        var styles = [
+            {
                 featureType: "poi",
                 elementType: "labels",
                 stylers: [
                     { visibility: "off" }
                 ]
-            }]
-        }, options)
-        return new gMap.Map(el, options);
+            },
+            {
+                featureType: "road",
+                elementType: "all",
+                stylers: [
+                    { visibility: "on" }
+                ]
+            }
+        ];
+        var mapType = new google.maps.StyledMapType(styles, {name: "Recycle Style"});
+        map.mapTypes.set("Recycle Style", mapType);
+        map.setMapTypeId("Recycle Style");
+        return map;
     },
     /**
      * Creates an infowindow
@@ -232,6 +244,39 @@ Map.prototype = {
                 callback(status, results);
             }
         });
+    },
+
+    _createAutoComplete: function(el, options) {
+        var _self = this;
+        var autocomplete = new google.maps.places.Autocomplete(el);
+        autocomplete.bindTo('bounds', _self.map);
+        google.maps.event.addListener(autocomplete, 'place_changed', function() {
+            el.className = '';
+            var place = autocomplete.getPlace();
+            // Inform the user if the place was not found.
+            if (!place.geometry) {
+                el.className = 'notfound';
+                console.log('notfound')
+                return;
+            }
+            // If the place has a geometry, then present it on a map.
+            if (place.geometry.viewport) {
+                _self.map.fitBounds(place.geometry.viewport);
+            } else {
+                _self.map.setCenter(place.geometry.location);
+                _self.map.setZoom(12);  // Why 17? Because it looks good.
+            }
+            // Ahhh... building up address from address components instead of formatted_address?
+            var address = '';
+            if (place.address_components) {
+                console.log([
+                    (place.address_components[0] && place.address_components[0].short_name || ''),
+                    (place.address_components[1] && place.address_components[1].short_name || ''),
+                    (place.address_components[2] && place.address_components[2].short_name || '')
+                ].join(' '));
+            }
+            //@todo ajax query for new points
+        })
     }
 }
 

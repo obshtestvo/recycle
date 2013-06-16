@@ -62,3 +62,8 @@ a.add-new {
 a.add-new.active {
     background: yellow;
 }
+
+/** Styling google autocomplete **/
+.pac-container:after {
+    display: none   ;
+}

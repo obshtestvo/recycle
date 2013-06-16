@@ -7,13 +7,6 @@ var app = {
     map: null
 }
 
-var geoServices = {
-    panorama: new gMap.StreetViewService(),
-    coder: new gMap.Geocoder(),
-    detection: function( ) {
-
-    }
-}
 
 var Map = function($el, centerLoc, geoServices,  callback)
 {
@@ -24,25 +17,12 @@ var Map = function($el, centerLoc, geoServices,  callback)
 
     // Init map
     var centerLoc = centerLoc || $el.data('center');
-    var addressIgnore = $el.data('addressIgnore');
     centerLoc = new gMap.LatLng(centerLoc.lat, centerLoc.lng);
-    this.fetchAddress(centerLoc, function(err, address) {
-        if (!err) {
-            var city = []
-            $.each(address.city.split(','), function(i, cityPart) {
-                if ($.inArray($.trim(cityPart), addressIgnore)==-1)
-                    city.push(cityPart)
-            })
-            $('#addressSearch').val(city.join(', '))
-        }
-        _self._createAutoComplete($('#addressSearch').get(0))
-    })
-
 	_self.map = _self._createMap($el.get(0), {
         center: centerLoc
     })
     callback = callback || $.noop;
-    callback();
+    callback(_self.map);
 }
 
 Map.prototype = {
@@ -133,84 +113,18 @@ Map.prototype = {
 
         _self.markerCluster = new MarkerClusterer(_self.map, _self.filtered_markers);
 
-	},
-    /**
-     * Get address based on coordinates
-     *
-     * @param latLng
-     * @param callback In the form callback(err, data )
-     */
-    fetchAddress: function(latLng, callback) {
-        this.geo.coder.geocode({
-                "latLng": latLng
-        }, function (results, status) {
-            if (status == gMap.GeocoderStatus.OK) {
-                var address = {
-                    full: results[0]['formatted_address'],
-                    city: null
-                }
-                $.each(results, function(i, token) {
-                    if ($.inArray('locality', token.types)>-1) {
-                        address.city = token.formatted_address
-                        return false;
-                    }
-                })
-                callback(null, address);
-            } else {
-                callback(status, results);
-            }
-        });
-    },
-    _createAutoComplete: function(el, options) {
-        var _self = this;
-        var autocomplete = new google.maps.places.Autocomplete(el);
-        autocomplete.bindTo('bounds', _self.map);
-        google.maps.event.addListener(autocomplete, 'place_changed', function() {
-            el.className = '';
-            var place = autocomplete.getPlace();
-            // Inform the user if the place was not found.
-            if (!place.geometry) {
-                el.className = 'notfound';
-                console.log('notfound')
-                return;
-            }
-            // If the place has a geometry, then present it on a map.
-            if (place.geometry.viewport) {
-                _self.map.fitBounds(place.geometry.viewport);
-            } else {
-                _self.map.setCenter(place.geometry.location);
-                _self.map.setZoom(17);  // Why 17? Because it looks good.
-            }
-            // Ahhh... building up address from address components instead of formatted_address?
-            var address = '';
-            if (place.address_components) {
-                console.log([
-                    (place.address_components[0] && place.address_components[0].short_name || ''),
-                    (place.address_components[1] && place.address_components[1].short_name || ''),
-                    (place.address_components[2] && place.address_components[2].short_name || '')
-                ].join(' '));
-            }
-            //@todo ajax query for new points
-        })
-    }
+	}
 }
+
+/**
+ * Boot...
+ */
 // Wait for DOM
 var DOM = $.Deferred()
 $(function() {DOM.resolve()})
 // Wait for HTML5 Geo-loc
 var GeoDetection = $.Deferred();
-if (false) {//navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(loc){
-        GeoDetection.resolve({
-            lat: loc.coords.latitude,
-            lng: loc.coords.longitude
-        })
-    }, function() {
-        GeoDetection.resolve();
-    });
-} else {
-    GeoDetection.resolve();
-}
+geoServices.human.detectUser(GeoDetection.resolve)
 
 // When both DOM and Geo-loc are ready
 $.when(GeoDetection, DOM).then(function(coords) {
@@ -218,7 +132,24 @@ $.when(GeoDetection, DOM).then(function(coords) {
     var infoTemplate = $('.infowindow-add-template');
     var infoContent = infoTemplate.html();
     infoTemplate.remove();
-    app.map = new Map($('#map-canvas'), coords, geoServices);
+    var $map = $('#map-canvas');
+    var $addressSearch = $('#addressSearch');
+    app.map = new Map($map, coords, geoServices, function(map) {
+        var addressIgnore = $map.data('addressIgnore');
+        geoServices.human.convertToAddress(map.getCenter(), function(err, address) {
+            if (!err) {
+                var city = []
+                if (address.city) {
+                    $.each(address.city.split(','), function(i, cityPart) {
+                    if ($.inArray($.trim(cityPart), addressIgnore)==-1)
+                        city.push(cityPart)
+                    })
+                }
+                $addressSearch.val(city.join(', '))
+            }
+            new AddressSearch($addressSearch, map)
+        })
+    });
 
     var $triggerAddNew = $('.floater a.add-new');
     var infoWindowCloseListener = null;

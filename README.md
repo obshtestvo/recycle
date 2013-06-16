@@ -59,6 +59,8 @@ pip install django # even if you have django, install it in the virtual env
 pip install mysql-python # mysql...
 ```
 
+Edit the domain name for your website in `recycle.nginx`.
+
 Enable "recycle" in `nginx` server:
 ```sh
 # in development:
@@ -77,6 +79,8 @@ Enable & activate "recycle" in the `uwsgi` server:
 sudo ln -s /home/ubuntu/web/recycle/recycle.uwsgi /etc/uwsgi/apps-enabled/recycle.ini
 sudo service uwsgi restart
 ```
+
+Edit `/ecomap/templates/home/get.html` to specify the ignorable address parts. Usually this project will be integrated in a specific region, so you can safely remove this region from the addresses being displayed.
 
 **...да се допише...**
 

@@ -24,10 +24,23 @@ var Map = function($el, centerLoc, geoServices,  callback)
 
     // Init map
     var centerLoc = centerLoc || $el.data('center');
-	_self.map = _self._createMap($el.get(0), {
-        center: new gMap.LatLng(centerLoc.lat, centerLoc.lng)
+    var addressIgnore = $el.data('addressIgnore');
+    centerLoc = new gMap.LatLng(centerLoc.lat, centerLoc.lng);
+    this.fetchAddress(centerLoc, function(err, address) {
+        if (!err) {
+            var city = []
+            $.each(address.city.split(','), function(i, cityPart) {
+                if ($.inArray($.trim(cityPart), addressIgnore)==-1)
+                    city.push(cityPart)
+            })
+            $('#addressSearch').val(city.join(', '))
+        }
+        _self._createAutoComplete($('#addressSearch').get(0))
     })
-    _self._createAutoComplete($('#addressSearch').get(0))
+
+	_self.map = _self._createMap($el.get(0), {
+        center: centerLoc
+    })
     callback = callback || $.noop;
     callback();
 }
@@ -125,14 +138,24 @@ Map.prototype = {
      * Get address based on coordinates
      *
      * @param latLng
-     * @param callback In the form callback(err, data)
+     * @param callback In the form callback(err, data )
      */
     fetchAddress: function(latLng, callback) {
         this.geo.coder.geocode({
-            latLng: event.latLng
+                "latLng": latLng
         }, function (results, status) {
             if (status == gMap.GeocoderStatus.OK) {
-                callback(null, results[0]['formatted_address']);
+                var address = {
+                    full: results[0]['formatted_address'],
+                    city: null
+                }
+                $.each(results, function(i, token) {
+                    if ($.inArray('locality', token.types)>-1) {
+                        address.city = token.formatted_address
+                        return false;
+                    }
+                })
+                callback(null, address);
             } else {
                 callback(status, results);
             }

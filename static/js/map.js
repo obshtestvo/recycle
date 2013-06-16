@@ -142,6 +142,8 @@ $.when(GeoDetection, DOM).then(function(coords) {
 
     // Map
     var $map = $('#map-canvas');
+    var zoomChangedEvent = null;
+    var dragEndEvent     = null;
     var $addressSearch = $('input.address');
     var $addressDisplay = $('div.address');
     var addressDisplayAutocompleteEvent = null;
@@ -205,6 +207,12 @@ $.when(GeoDetection, DOM).then(function(coords) {
     $infoWindow.html(infoViewContent);
 
     app.map.infoWindow = new InfoWindow($infoWindow, app.map.map);
+    zoomChangedEvent = gMap.event.addListener(app.map.map, 'zoom_changed', function() {
+            app.map.infoWindow.events.close();
+    });
+    dragEndEvent = gMap.event.addListener(app.map.map, 'dragend', function() {
+            app.map.infoWindow.events.close();
+    });
 
     var spotInfoWindow = new gMap.InfoWindow();
     var recyclables = $filter.data('recyclables');

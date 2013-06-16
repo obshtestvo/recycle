@@ -241,7 +241,7 @@ var InfoWindow;
 		var _self = this;
 		_self.$el = $el;
         _self.events = {}
-
+        _self.visible = false;
 		_self.events.open = function(id)
 		{
 	 	    $.get('/spots/' + id, {}, function (data) {
@@ -250,13 +250,17 @@ var InfoWindow;
                 map.setZoom(25);
                 map.setCenter(new gMap.LatLng(data[0].lat, data[0].lng));
                 map.setCenter(new gMap.LatLng(map.getBounds().getNorthEast().lat(), data[0].lng));
-   
+               _self.visible = true;
 			}, 'json');
 
 		}
 		_self.events.close = function(id)
 		{
-			_self.$el.fadeOut();
+            if(_self.visible)
+            {
+                _self.visible = false;
+			    _self.$el.fadeOut();
+            }
 		}
 		
 	}

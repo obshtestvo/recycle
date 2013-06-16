@@ -154,6 +154,7 @@ $.when(GeoDetection, DOM).then(function(coords) {
 
     // Map
     var $map = $('#map-canvas');
+    var $changeAddress = $('div.change-address');
     var $addressSearch = $('input.address');
     var $addressDisplay = $('div.address');
     var addressDisplayAutocompleteEvent = null;
@@ -162,6 +163,11 @@ $.when(GeoDetection, DOM).then(function(coords) {
     var $addNewInfo = $('div.add-new');
     var $addressNewSearch = $addNewInfo.find('input.new-address');
     app.map = new Map($map, coords, geoServices, function(map) {initialisingMap.resolve(map)});
+    var turnOffAddressChange = function() {
+        $changeAddress.addClass('hide')
+        $addressDisplay.find('em').text(geoServices.human.cleanAddress($addressSearch.val(), addressIgnore))
+        $search.removeClass('hide')
+    }
     initialisingMap.then(function(map) {
         geoServices.human.convertToAddress(map.getCenter(), function(err, address) {
             if (!err) {
@@ -169,14 +175,13 @@ $.when(GeoDetection, DOM).then(function(coords) {
                 $addressDisplay.find('em').text(geoServices.human.cleanAddress(city, addressIgnore))
             }
             app.addressSearch = new AddressSearch($addressSearch, map)
-            addressDisplayAutocompleteEvent = gMap.event.addListener(app.addressSearch.autocomplete, 'place_changed', function() {
-                $addressSearch.addClass('hide')
-                $addressDisplay.find('em').text(geoServices.human.cleanAddress($addressSearch.val(), addressIgnore))
-                $addressDisplay.removeClass('hide')
-                $filter.select2("container").removeClass('hide')
-            })
+            addressDisplayAutocompleteEvent = gMap.event.addListener(app.addressSearch.autocomplete, 'place_changed', turnOffAddressChange)
         })
     });
+    $changeAddress.find('a.close').click(function(e) {
+        e.preventDefault();
+        turnOffAddressChange()
+    })
     initialisingMap.then(function(map) {
         app.addressNewSearch = new AddressSearch($addressNewSearch, map)
         addressAddNewAutocompleteEvent = gMap.event.addListener(app.addressNewSearch.autocomplete, 'place_changed', function() {
@@ -186,9 +191,8 @@ $.when(GeoDetection, DOM).then(function(coords) {
     var $addressChangeTrigger = $addressDisplay.find('a.change');
     $addressChangeTrigger.click(function(e) {
         e.preventDefault();
-        $filter.select2("container").addClass('hide')
-        $addressDisplay.addClass('hide')
-        $addressSearch.removeClass('hide')
+        $search.addClass('hide')
+        $changeAddress.removeClass('hide')
         $addressSearch.focus()
     })
 

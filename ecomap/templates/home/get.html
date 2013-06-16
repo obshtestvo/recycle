@@ -20,9 +20,12 @@
                     <option value="{{ recyclable }}">{{ recyclable }}</option>
                     {% endfor %}
                 </select>
-                <input class="address hide" type="text" name="address" id="addressSearch" placeholder="Град или адрес"/>
                 <div class="address"><em></em> <a href="#" class="change">Смени</a></div>
             </form>
+        </div>
+        <div class="change-address hide">
+            <a class="close" href="" style="">x</a>
+            <input class="address" type="text" name="address" id="addressSearch" placeholder="Град или адрес"/>
         </div>
         <div class="add-new hide">
             <a class="close" href="" style="">x</a>

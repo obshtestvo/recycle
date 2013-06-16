@@ -126,6 +126,7 @@ var AddressSearch;
      * Popup dialogue used for submitting a new recycling spot
      *
      * @param options
+     * @param callback
      * @constructor
      */
     PopupAddNew = function(options, callback) {

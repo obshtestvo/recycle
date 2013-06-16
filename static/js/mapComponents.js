@@ -12,6 +12,53 @@ var InfoWindow;
     geoServices = {
         panorama: new gMap.StreetViewService(),
         coder: new gMap.Geocoder(),
+        map: {
+            /**
+             * Get dimensions in coordinates difference
+             * @returns {{height: number, width: number}}
+             */
+            getDimensions: function(map) {
+                var mapBounds = map.getBounds();
+                var latDiff = mapBounds.getNorthEast().lat() - mapBounds.getSouthWest().lat();
+                var lngDiff = mapBounds.getNorthEast().lng() - mapBounds.getSouthWest().lng();
+                return {
+                    height: latDiff,
+                    width: lngDiff
+                }
+            },
+            /**
+             * Get a location on the map relative to the bounds by proportion of the map size (in percentages)
+             * @returns {{height: number, width: number}}
+             */
+            getProportionallyRelativeLocation: function(map, offset) {
+                var defaultOffset = {
+                    top: 50,
+                    left:50
+                }
+                offset = offset || defaultOffset;
+                var mapDim = geoServices.map.getDimensions(map)
+                var mapBounds = map.getBounds();
+                var latBase = null;
+                var latPercentage = null;
+                var lngBase = null;
+                var lngPercentage = null;
+                if (offset.bottom) {
+                    latBase = mapBounds.getSouthWest().lat();
+                    latPercentage = offset.bottom;
+                } else {
+                    latBase = mapBounds.getNorthEast().lat();
+                    latPercentage = offset.top;
+                }
+                if (offset.left) {
+                    lngBase = mapBounds.getSouthWest().lng();
+                    lngPercentage = offset.left;
+                } else {
+                    lngBase = mapBounds.getNorthEast().lng();
+                    lngPercentage = offset.right;
+                }
+                return new gMap.LatLng(latBase + mapDim.height*(latPercentage/100), lngBase + mapDim.width*(lngPercentage/100));
+            }
+        },
         human: {
             /**
              * Fetch coordinates of the user via WC3 geolocation service
@@ -65,7 +112,6 @@ var InfoWindow;
              * @param tokens
              */
             cleanAddress: function(address, tokens) {
-                console.log(address)
                 var cleanAddress = [];
                 $.each(address.split(','), function(i, cityPart) {
                 if ($.inArray($.trim(cityPart), tokens)==-1)
@@ -82,8 +128,9 @@ var InfoWindow;
      * @param options
      * @constructor
      */
-    PopupAddNew = function(options) {
+    PopupAddNew = function(options, callback) {
         var o = $.extend({
+            addressInputSelector: ".floater div.add-new .new-address",
             map: undefined,
             location: undefined,
             content: "Heyyy!",
@@ -93,40 +140,62 @@ var InfoWindow;
         var _self = this;
         _self.map = o.map;
         _self.geo = o.geo;
+        var locationLookUp = $.Deferred();
         if (!o.location) {
-            var mapBounds = _self.map.getBounds();
-            var latPortion = (mapBounds.getNorthEast().lat() - mapBounds.getSouthWest().lat())/10;
-            o.location = new gMap.LatLng(mapBounds.getSouthWest().lat() + latPortion, _self.map.getCenter().lng());
+            o.location = _self.geo.map.getProportionallyRelativeLocation(_self.map, {bottom: 10, left:50})
+            _self.geo.panorama.getPanoramaByLocation(o.location, 500, function(result, status) {
+                if (status == gMap.StreetViewStatus.OK) {
+                    o.location = result.location.latLng
+                }
+
+                locationLookUp.resolve()
+            });
+        } else {
+            locationLookUp.resolve()
         }
-        _self.marker = _self._createMarker(o.location);
-        _self.infowindow = _self._createInfoWindow({"content": o.content})
-        _self.marker.setVisible(true);
-        _self.infowindow.open(_self.map, _self.marker);
-        _self.map.setOptions({draggableCursor: 'pointer'});
-        _self.$elements = {}
-        _self.events = {
-            infoWindowReady: gMap.event.addListener(_self.infowindow, 'domready', function() {
-                _self.$elements.streetview = $('#add-new .streetview')
-                _self.$elements.streetviewHolding = $('#add-new .missing-streetview')
-                _self.streetview = _self._createStreetView(_self.$elements.streetview.get(0));
-                _self.streetview.bindTo("position", _self.marker);
-                _self.checkStreetView(_self.marker.getPosition());
-            }),
-            infoClose: gMap.event.addListener(_self.infowindow, 'closeclick', function() {
-                _self.map.setOptions({draggableCursor: 'url(https://maps.gstatic.com/mapfiles/openhand_8_8.cur),default'});
-                _self.destroy();
-            }),
-            markerDrag: gMap.event.addListener(_self.marker, "dragend", function () {
-                _self.checkStreetView(_self.marker.getPosition());
-            }),
-            mapClick: gMap.event.addListener(_self.map, 'click', function (event) {
-                //this is how we access the streetview params _self.streetview.pov
-                _self._animateMarker(event.latLng, function () {
+        locationLookUp.then(function() {
+            _self.marker = _self._createMarker(o.location);
+            _self.infowindow = _self._createInfoWindow({"content": o.content})
+            _self.marker.setVisible(true);
+            _self.infowindow.open(_self.map, _self.marker);
+            _self.map.setOptions({draggableCursor: 'pointer'});
+            _self.$elements = {}
+            _self.events = {
+                infoWindowReady: gMap.event.addListener(_self.infowindow, 'domready', function() {
+                    var $content = $('#add-new');
+                    _self.$elements.streetview = $content.find('.streetview')
+                    _self.$elements.streetviewCancelTrigger = $content.find('#step1 a.close');
+                    _self.$elements.streetviewCancelled = $content.find('.cancelled-streetview');
+                    $content.find('a.address-focus').click(function(e) {
+                        e.preventDefault();
+                        $(o.addressInputSelector).focus();
+                    });
+                    _self.$elements.streetviewCancelTrigger.click(function(e) {
+                        e.preventDefault();
+                        _self._cancelStreetView()
+                    })
+                    _self.$elements.streetviewHolding = $('#add-new .missing-streetview')
+                    _self.streetview = _self._createStreetView(_self.$elements.streetview.get(0));
+                    _self.streetview.bindTo("position", _self.marker);
                     _self.checkStreetView(_self.marker.getPosition());
-    //                console.log(_self.marker.getPosition().toUrlValue(), _self.marker.getPosition())
-                });
-            })
-        }
+                }),
+                infoClose: gMap.event.addListener(_self.infowindow, 'closeclick', function() {
+                    _self.map.setOptions({draggableCursor: 'url(https://maps.gstatic.com/mapfiles/openhand_8_8.cur),default'});
+                    _self.destroy();
+                }),
+                markerDrag: gMap.event.addListener(_self.marker, "dragend", function () {
+                    _self.checkStreetView(_self.marker.getPosition());
+                }),
+                mapClick: gMap.event.addListener(_self.map, 'click', function (event) {
+                    //this is how we access the streetview params _self.streetview.pov
+                    _self._animateMarker(event.latLng, function () {
+                        _self.checkStreetView(_self.marker.getPosition());
+        //                console.log(_self.marker.getPosition().toUrlValue(), _self.marker.getPosition())
+                    });
+                })
+            }
+            callback();
+        })
     }
     PopupAddNew.prototype = {
         map: null,
@@ -173,6 +242,18 @@ var InfoWindow;
             return infoWindow;
         },
         /**
+         * Cancels streetview picker
+         * @private
+         */
+        _cancelStreetView: function() {
+            var _self = this;
+            if (_self.$elements.streetviewCancelled.is(':visible')) return;
+            _self.$elements.streetviewHolding.hide();
+            _self.$elements.streetview.hide();
+            _self.streetview.setVisible(false);
+            _self.$elements.streetviewCancelled.show();
+        },
+        /**
          * Creates a streetview obj
          *
          * @param el DOM el
@@ -209,6 +290,7 @@ var InfoWindow;
         checkStreetView: function(location){
             var _self = this;
             _self.geo.panorama.getPanoramaByLocation(location, 50, function(result, status) {
+                _self.$elements.streetviewCancelled.hide()
                 if (status == gMap.StreetViewStatus.OK) {
                     _self.$elements.streetview.show();
                     _self.streetview.setVisible(true);
@@ -275,7 +357,11 @@ var InfoWindow;
         _self.events = {};
         _self.map = map;
         _self.$el = $el;
-        _self.autocomplete = new gMap.places.Autocomplete($el.get(0));
+        var options = {
+            types: ['geocode'],
+            componentRestrictions: {country: 'BG'}
+        };
+        _self.autocomplete = new gMap.places.Autocomplete($el.get(0), options);
         _self.autocomplete.bindTo('bounds', map);
         _self.events.autocompleteChange = gMap.event.addListener(_self.autocomplete, 'place_changed', function() {
             $el.removeClass('notfound');

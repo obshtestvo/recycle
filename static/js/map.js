@@ -128,17 +128,20 @@ geoServices.human.detectUser(GeoDetection.resolve)
 // When both DOM and Geo-loc are ready
 $.when(GeoDetection, DOM).then(function(coords) {
     // Materials tags
-    var $filter = $('.floater select');
+    var $search = $('#search');
+    var $filter = $search.find('select');
     var $filterForm = $filter.closest('form');
     $filter.select2({})
-    console.log($filter.data('select2'))
 
     // Map
     var $map = $('#map-canvas');
     var $addressSearch = $('input.address');
     var $addressDisplay = $('div.address');
     var addressDisplayAutocompleteEvent = null;
+    var addressAddNewAutocompleteEvent = null;
     var addressIgnore = $map.data('addressIgnore');
+    var $addNewInfo = $('div.add-new');
+    var $addressNewSearch = $addNewInfo.find('input.new-address');
     app.map = new Map($map, coords, geoServices, function(map) {
         geoServices.human.convertToAddress(map.getCenter(), function(err, address) {
             if (!err) {
@@ -153,6 +156,11 @@ $.when(GeoDetection, DOM).then(function(coords) {
                 $addressDisplay.removeClass('hide')
                 $filter.select2("container").removeClass('hide')
             })
+        })
+        app.addressNewSearch = new AddressSearch($addressNewSearch, map)
+        addressAddNewAutocompleteEvent = gMap.event.addListener(app.addressNewSearch.autocomplete, 'place_changed', function() {
+            var place = app.addressNewSearch.autocomplete.getPlace();
+            app.map.addNewPopup.marker.setPosition(place.geometry.location)
         })
     });
     var $addressChangeTrigger = $addressDisplay.find('a.change');
@@ -181,12 +189,20 @@ $.when(GeoDetection, DOM).then(function(coords) {
             app.map.addNewPopup = null;
             infoWindowCloseListener = null;
             $triggerAddNew.removeClass('active');
+            $addressNewSearch.blur()
+            $addNewInfo.addClass('hide')
+            $search.removeClass('hide')
             return;
         }
         $triggerAddNew.addClass('active');
+        $addNewInfo.removeClass('hide')
+        $search.addClass('hide')
         app.map.addNewPopup = new PopupAddNew({ map: app.map.map, content: infoContent, geo: geoServices});
         infoWindowCloseListener = gMap.event.addListener(app.map.addNewPopup.infowindow, 'closeclick', function () {
             $triggerAddNew.removeClass('active')
+            $addressNewSearch.blur()
+            $addNewInfo.addClass('hide')
+            $search.removeClass('hide')
         });
     })
 

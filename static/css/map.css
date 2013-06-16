@@ -49,7 +49,8 @@ div.address {
     margin:0 200px 0 200px;
 }
 div.address a.change {
-    float:right;
+    font-size: 0.7em;
+    vertical-align: middle;
 }
 div.address em {
     font-style: normal;
@@ -73,4 +74,12 @@ a.add-new.active {
 /** Styling google autocomplete **/
 .pac-container:after {
     display: none   ;
+}
+
+/* Add new info and address search */
+div.add-new {
+    padding: 10px 200px 0 200px;
+}
+div.add-new input {
+    width:400px;
 }

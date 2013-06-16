@@ -161,6 +161,7 @@ $.when(GeoDetection, DOM).then(function(coords) {
         $filter.select2("container").addClass('hide')
         $addressDisplay.addClass('hide')
         $addressSearch.removeClass('hide')
+        $addressSearch.focus()
     })
 
     // "Add new" infowindow template

@@ -247,7 +247,11 @@ var AddressSearch;
         _self.events = {};
         _self.map = map;
         _self.$el = $el;
-        _self.autocomplete = new gMap.places.Autocomplete($el.get(0));
+        var options = {
+            types: ['geocode'],
+            componentRestrictions: {country: 'BG'}
+        };
+        _self.autocomplete = new gMap.places.Autocomplete($el.get(0), options);
         _self.autocomplete.bindTo('bounds', map);
         _self.events.autocompleteChange = gMap.event.addListener(_self.autocomplete, 'place_changed', function() {
             $el.removeClass('notfound');

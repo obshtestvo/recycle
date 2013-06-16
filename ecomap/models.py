@@ -11,6 +11,9 @@ class RecyclableItem(models.Model):
 
 
 class RecycleSpot(models.Model):
+    class Meta:
+        db_table = 'spot'
+
     TYPE_DEPOT = 'depot'
     TYPE_STATION = 'station'
     TYPE_YARD = 'yard'

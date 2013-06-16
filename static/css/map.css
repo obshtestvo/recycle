@@ -74,3 +74,14 @@ a.add-new.active {
 .pac-container:after {
     display: none   ;
 }
+
+#infowindow {
+	background:white;
+	display:none;
+	width:400px;
+	height: 400px;
+	top: 280px;
+    left:50%;
+    margin-left: -200px;
+
+}

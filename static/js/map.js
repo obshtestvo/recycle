@@ -30,6 +30,7 @@ Map.prototype = {
     addNewPopup: null,
     markerCluster: null,
     geo: null,
+	infoWindow: null,
     /**
      * Creates a map
      *
@@ -101,18 +102,24 @@ Map.prototype = {
 		}
 
         $.each(filtered_data, function(i, loc) {
+            console.warn(filtered_data[i].id);
             var m = new gMap.Marker({
                 position: new gMap.LatLng(loc.lat, loc.lng),
                 animation: gMap.Animation.b,
                 draggable: false,
-                map: _self.map
+                map: _self.map,
+				id: filtered_data[i].id
             });
 			_self.filtered_markers.push(m);
-
+			google.maps.event.addListener(m, 'click', function() { _self.markerClick(filtered_data[i].id); });
 		});
+
 
         _self.markerCluster = new MarkerClusterer(_self.map, _self.filtered_markers);
 
+	},
+	markerClick: function(marker_id){
+		this.infoWindow.events.open(marker_id);
 	}
 }
 
@@ -189,6 +196,15 @@ $.when(GeoDetection, DOM).then(function(coords) {
             $triggerAddNew.removeClass('active')
         });
     })
+
+    var infoViewTemplate = $('.infowindow-view-template');
+    var infoViewContent = infoViewTemplate.html();
+    infoViewTemplate.remove();
+
+    var $infoWindow = $('#infowindow');
+    $infoWindow.html(infoViewContent);
+
+    app.map.infoWindow = new InfoWindow($infoWindow, app.map.map);
 
     var spotInfoWindow = new gMap.InfoWindow();
     var recyclables = $filter.data('recyclables');

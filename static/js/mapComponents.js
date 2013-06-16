@@ -4,7 +4,7 @@
 var geoServices;
 var PopupAddNew;
 var AddressSearch;
-
+var InfoWindow;
 (function(gMap) {
     /**
      * Location, Camera, Panorama, User detection... all the services
@@ -236,6 +236,30 @@ var AddressSearch;
         }
     }
 
+	InfoWindow = function($el, map)
+	{
+		var _self = this;
+		_self.$el = $el;
+        _self.events = {}
+
+		_self.events.open = function(id)
+		{
+	 	    $.get('/spots/' + id, {}, function (data) {
+                _self.$el.fadeIn();
+                //_self.$el.find('.title').html(data[0].name);
+                map.setZoom(25);
+                map.setCenter(new gMap.LatLng(data[0].lat, data[0].lng));
+                map.setCenter(new gMap.LatLng(map.getBounds().getNorthEast().lat(), data[0].lng));
+   
+			}, 'json');
+
+		}
+		_self.events.close = function(id)
+		{
+			_self.$el.fadeOut();
+		}
+		
+	}
     /**
      * Places autocomplete
      * @param $el

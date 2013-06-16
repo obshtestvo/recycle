@@ -125,6 +125,8 @@ $(function() {DOM.resolve()})
 // Wait for HTML5 Geo-loc
 var GeoDetection = $.Deferred();
 geoServices.human.detectUser(GeoDetection.resolve)
+// Wait for Map
+var initialisingMap = $.Deferred();
 // When both DOM and Geo-loc are ready
 $.when(GeoDetection, DOM).then(function(coords) {
     // Materials tags
@@ -142,7 +144,8 @@ $.when(GeoDetection, DOM).then(function(coords) {
     var addressIgnore = $map.data('addressIgnore');
     var $addNewInfo = $('div.add-new');
     var $addressNewSearch = $addNewInfo.find('input.new-address');
-    app.map = new Map($map, coords, geoServices, function(map) {
+    app.map = new Map($map, coords, geoServices, function(map) {initialisingMap.resolve(map)});
+    initialisingMap.then(function(map) {
         geoServices.human.convertToAddress(map.getCenter(), function(err, address) {
             if (!err) {
                 var city = address.city == null ? '': address.city;
@@ -156,12 +159,13 @@ $.when(GeoDetection, DOM).then(function(coords) {
                 $filter.select2("container").removeClass('hide')
             })
         })
+    });
+    initialisingMap.then(function(map) {
         app.addressNewSearch = new AddressSearch($addressNewSearch, map)
         addressAddNewAutocompleteEvent = gMap.event.addListener(app.addressNewSearch.autocomplete, 'place_changed', function() {
-            var place = app.addressNewSearch.autocomplete.getPlace();
-            app.map.addNewPopup.marker.setPosition(place.geometry.location)
+            app.map.addNewPopup.marker.setPosition(geoServices.map.getProportionallyRelativeLocation(app.map.map, {bottom: 10, left:50}))
         })
-    });
+    })
     var $addressChangeTrigger = $addressDisplay.find('a.change');
     $addressChangeTrigger.click(function(e) {
         e.preventDefault();

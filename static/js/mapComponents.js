@@ -12,6 +12,53 @@ var AddressSearch;
     geoServices = {
         panorama: new gMap.StreetViewService(),
         coder: new gMap.Geocoder(),
+        map: {
+            /**
+             * Get dimensions in coordinates difference
+             * @returns {{height: number, width: number}}
+             */
+            getDimensions: function(map) {
+                var mapBounds = map.getBounds();
+                var latDiff = mapBounds.getNorthEast().lat() - mapBounds.getSouthWest().lat();
+                var lngDiff = mapBounds.getNorthEast().lng() - mapBounds.getSouthWest().lng();
+                return {
+                    height: latDiff,
+                    width: lngDiff
+                }
+            },
+            /**
+             * Get a location on the map relative to the bounds by proportion of the map size (in percentages)
+             * @returns {{height: number, width: number}}
+             */
+            getProportionallyRelativeLocation: function(map, offset) {
+                var defaultOffset = {
+                    top: 50,
+                    left:50
+                }
+                offset = offset || defaultOffset;
+                var mapDim = geoServices.map.getDimensions(map)
+                var mapBounds = map.getBounds();
+                var latBase = null;
+                var latPercentage = null;
+                var lngBase = null;
+                var lngPercentage = null;
+                if (offset.bottom) {
+                    latBase = mapBounds.getSouthWest().lat();
+                    latPercentage = offset.bottom;
+                } else {
+                    latBase = mapBounds.getNorthEast().lat();
+                    latPercentage = offset.top;
+                }
+                if (offset.left) {
+                    lngBase = mapBounds.getSouthWest().lng();
+                    lngPercentage = offset.left;
+                } else {
+                    lngBase = mapBounds.getNorthEast().lng();
+                    lngPercentage = offset.right;
+                }
+                return new gMap.LatLng(latBase + mapDim.height*(latPercentage/100), lngBase + mapDim.width*(lngPercentage/100));
+            }
+        },
         human: {
             /**
              * Fetch coordinates of the user via WC3 geolocation service
@@ -83,6 +130,7 @@ var AddressSearch;
      */
     PopupAddNew = function(options, callback) {
         var o = $.extend({
+            addressInputSelector: ".floater div.add-new .new-address",
             map: undefined,
             location: undefined,
             content: "Heyyy!",
@@ -94,10 +142,7 @@ var AddressSearch;
         _self.geo = o.geo;
         var locationLookUp = $.Deferred();
         if (!o.location) {
-
-            var mapBounds = _self.map.getBounds();
-            var latPortion = (mapBounds.getNorthEast().lat() - mapBounds.getSouthWest().lat())/10;
-            o.location = new gMap.LatLng(mapBounds.getSouthWest().lat() + latPortion, _self.map.getCenter().lng());
+            o.location = _self.geo.map.getProportionallyRelativeLocation(_self.map, {bottom: 10, left:50})
             _self.geo.panorama.getPanoramaByLocation(o.location, 500, function(result, status) {
                 if (status == gMap.StreetViewStatus.OK) {
                     o.location = result.location.latLng
@@ -117,7 +162,18 @@ var AddressSearch;
             _self.$elements = {}
             _self.events = {
                 infoWindowReady: gMap.event.addListener(_self.infowindow, 'domready', function() {
-                    _self.$elements.streetview = $('#add-new .streetview')
+                    var $content = $('#add-new');
+                    _self.$elements.streetview = $content.find('.streetview')
+                    _self.$elements.streetviewCancelTrigger = $content.find('#step1 a.close');
+                    _self.$elements.streetviewCancelled = $content.find('.cancelled-streetview');
+                    $content.find('a.address-focus').click(function(e) {
+                        e.preventDefault();
+                        $(o.addressInputSelector).focus();
+                    });
+                    _self.$elements.streetviewCancelTrigger.click(function(e) {
+                        e.preventDefault();
+                        _self._cancelStreetView()
+                    })
                     _self.$elements.streetviewHolding = $('#add-new .missing-streetview')
                     _self.streetview = _self._createStreetView(_self.$elements.streetview.get(0));
                     _self.streetview.bindTo("position", _self.marker);
@@ -186,6 +242,18 @@ var AddressSearch;
             return infoWindow;
         },
         /**
+         * Cancels streetview picker
+         * @private
+         */
+        _cancelStreetView: function() {
+            var _self = this;
+            if (_self.$elements.streetviewCancelled.is(':visible')) return;
+            _self.$elements.streetviewHolding.hide();
+            _self.$elements.streetview.hide();
+            _self.streetview.setVisible(false);
+            _self.$elements.streetviewCancelled.show();
+        },
+        /**
          * Creates a streetview obj
          *
          * @param el DOM el
@@ -222,6 +290,7 @@ var AddressSearch;
         checkStreetView: function(location){
             var _self = this;
             _self.geo.panorama.getPanoramaByLocation(location, 50, function(result, status) {
+                _self.$elements.streetviewCancelled.hide()
                 if (status == gMap.StreetViewStatus.OK) {
                     _self.$elements.streetview.show();
                     _self.streetview.setVisible(true);

@@ -146,7 +146,6 @@ $.when(GeoDetection, DOM).then(function(coords) {
         geoServices.human.convertToAddress(map.getCenter(), function(err, address) {
             if (!err) {
                 var city = address.city == null ? '': address.city;
-                $addressSearch.val(city)
                 $addressDisplay.find('em').text(geoServices.human.cleanAddress(city, addressIgnore))
             }
             app.addressSearch = new AddressSearch($addressSearch, map)

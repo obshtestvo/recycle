@@ -199,12 +199,13 @@ $.when(GeoDetection, DOM).then(function(coords) {
         $triggerAddNew.addClass('active');
         $addNewInfo.removeClass('hide')
         $search.addClass('hide')
-        app.map.addNewPopup = new PopupAddNew({ map: app.map.map, content: infoContent, geo: geoServices});
-        infoWindowCloseListener = gMap.event.addListener(app.map.addNewPopup.infowindow, 'closeclick', function () {
-            $triggerAddNew.removeClass('active')
-            $addressNewSearch.blur()
-            $addNewInfo.addClass('hide')
-            $search.removeClass('hide')
+        app.map.addNewPopup = new PopupAddNew({ map: app.map.map, content: infoContent, geo: geoServices}, function() {
+            infoWindowCloseListener = gMap.event.addListener(app.map.addNewPopup.infowindow, 'closeclick', function () {
+                $triggerAddNew.removeClass('active')
+                $addressNewSearch.blur()
+                $addNewInfo.addClass('hide')
+                $search.removeClass('hide')
+            });
         });
     })
     $addNewInfo.find('a.close').click(function(e) {

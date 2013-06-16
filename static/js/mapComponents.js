@@ -65,7 +65,6 @@ var AddressSearch;
              * @param tokens
              */
             cleanAddress: function(address, tokens) {
-                console.log(address)
                 var cleanAddress = [];
                 $.each(address.split(','), function(i, cityPart) {
                 if ($.inArray($.trim(cityPart), tokens)==-1)
@@ -82,7 +81,7 @@ var AddressSearch;
      * @param options
      * @constructor
      */
-    PopupAddNew = function(options) {
+    PopupAddNew = function(options, callback) {
         var o = $.extend({
             map: undefined,
             location: undefined,
@@ -93,40 +92,54 @@ var AddressSearch;
         var _self = this;
         _self.map = o.map;
         _self.geo = o.geo;
+        var locationLookUp = $.Deferred();
         if (!o.location) {
+
             var mapBounds = _self.map.getBounds();
             var latPortion = (mapBounds.getNorthEast().lat() - mapBounds.getSouthWest().lat())/10;
             o.location = new gMap.LatLng(mapBounds.getSouthWest().lat() + latPortion, _self.map.getCenter().lng());
+            _self.geo.panorama.getPanoramaByLocation(o.location, 500, function(result, status) {
+                if (status == gMap.StreetViewStatus.OK) {
+                    o.location = result.location.latLng
+                }
+
+                locationLookUp.resolve()
+            });
+        } else {
+            locationLookUp.resolve()
         }
-        _self.marker = _self._createMarker(o.location);
-        _self.infowindow = _self._createInfoWindow({"content": o.content})
-        _self.marker.setVisible(true);
-        _self.infowindow.open(_self.map, _self.marker);
-        _self.map.setOptions({draggableCursor: 'pointer'});
-        _self.$elements = {}
-        _self.events = {
-            infoWindowReady: gMap.event.addListener(_self.infowindow, 'domready', function() {
-                _self.$elements.streetview = $('#add-new .streetview')
-                _self.$elements.streetviewHolding = $('#add-new .missing-streetview')
-                _self.streetview = _self._createStreetView(_self.$elements.streetview.get(0));
-                _self.streetview.bindTo("position", _self.marker);
-                _self.checkStreetView(_self.marker.getPosition());
-            }),
-            infoClose: gMap.event.addListener(_self.infowindow, 'closeclick', function() {
-                _self.map.setOptions({draggableCursor: 'url(https://maps.gstatic.com/mapfiles/openhand_8_8.cur),default'});
-                _self.destroy();
-            }),
-            markerDrag: gMap.event.addListener(_self.marker, "dragend", function () {
-                _self.checkStreetView(_self.marker.getPosition());
-            }),
-            mapClick: gMap.event.addListener(_self.map, 'click', function (event) {
-                //this is how we access the streetview params _self.streetview.pov
-                _self._animateMarker(event.latLng, function () {
+        locationLookUp.then(function() {
+            _self.marker = _self._createMarker(o.location);
+            _self.infowindow = _self._createInfoWindow({"content": o.content})
+            _self.marker.setVisible(true);
+            _self.infowindow.open(_self.map, _self.marker);
+            _self.map.setOptions({draggableCursor: 'pointer'});
+            _self.$elements = {}
+            _self.events = {
+                infoWindowReady: gMap.event.addListener(_self.infowindow, 'domready', function() {
+                    _self.$elements.streetview = $('#add-new .streetview')
+                    _self.$elements.streetviewHolding = $('#add-new .missing-streetview')
+                    _self.streetview = _self._createStreetView(_self.$elements.streetview.get(0));
+                    _self.streetview.bindTo("position", _self.marker);
                     _self.checkStreetView(_self.marker.getPosition());
-    //                console.log(_self.marker.getPosition().toUrlValue(), _self.marker.getPosition())
-                });
-            })
-        }
+                }),
+                infoClose: gMap.event.addListener(_self.infowindow, 'closeclick', function() {
+                    _self.map.setOptions({draggableCursor: 'url(https://maps.gstatic.com/mapfiles/openhand_8_8.cur),default'});
+                    _self.destroy();
+                }),
+                markerDrag: gMap.event.addListener(_self.marker, "dragend", function () {
+                    _self.checkStreetView(_self.marker.getPosition());
+                }),
+                mapClick: gMap.event.addListener(_self.map, 'click', function (event) {
+                    //this is how we access the streetview params _self.streetview.pov
+                    _self._animateMarker(event.latLng, function () {
+                        _self.checkStreetView(_self.marker.getPosition());
+        //                console.log(_self.marker.getPosition().toUrlValue(), _self.marker.getPosition())
+                    });
+                })
+            }
+            callback();
+        })
     }
     PopupAddNew.prototype = {
         map: null,

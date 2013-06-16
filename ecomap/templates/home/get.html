@@ -7,7 +7,10 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/map.css' %}">
 {% endblock %}
 {% block content %}
-    <div id="map-canvas" data-center="{ &quot;lat&quot;: 42.693413, &quot;lng&quot;: 23.322601}" data-address-ignore="[ &quot;България&quot;,  &quot;Bulgaria&quot;]"></div>
+    <div id="map-canvas"
+         data-center="{ &quot;lat&quot;: 42.693413, &quot;lng&quot;: 23.322601}"
+         data-address-ignore="[ &quot;България&quot;,  &quot;Bulgaria&quot;]"
+    ></div>
     <div class="floater main">
         <div id="search" data-spots="{{ spots|jsonify }}">
             <a class="add-new" href="" style="">+</a>
@@ -17,8 +20,8 @@
                     <option value="{{ recyclable }}">{{ recyclable }}</option>
                     {% endfor %}
                 </select>
-                <div class="address"></div>
-                <input class="address" type="text" name="address" id="addressSearch"/>
+                <input class="address hide" type="text" name="address" id="addressSearch"/>
+                <div class="address"><em></em> <a href="#" class="change">Смени</a></div>
             </form>
         </div>
     </div>

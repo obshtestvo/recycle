@@ -125,32 +125,50 @@ $(function() {DOM.resolve()})
 // Wait for HTML5 Geo-loc
 var GeoDetection = $.Deferred();
 geoServices.human.detectUser(GeoDetection.resolve)
-
 // When both DOM and Geo-loc are ready
 $.when(GeoDetection, DOM).then(function(coords) {
-    // Init infowindow
+    // Materials tags
+    var $filter = $('.floater select');
+    var $filterForm = $filter.closest('form');
+    $filter.select2({})
+    console.log($filter.data('select2'))
+
+    // Map
+    var $map = $('#map-canvas');
+    var $addressSearch = $('input.address');
+    var $addressDisplay = $('div.address');
+    var addressDisplayAutocompleteEvent = null;
+    var addressIgnore = $map.data('addressIgnore');
+    app.map = new Map($map, coords, geoServices, function(map) {
+        geoServices.human.convertToAddress(map.getCenter(), function(err, address) {
+            if (!err) {
+                var city = address.city == null ? '': address.city;
+                $addressSearch.val(city)
+                $addressDisplay.find('em').text(geoServices.human.cleanAddress(city, addressIgnore))
+            }
+            app.addressSearch = new AddressSearch($addressSearch, map)
+            addressDisplayAutocompleteEvent = gMap.event.addListener(app.addressSearch.autocomplete, 'place_changed', function() {
+                $addressSearch.addClass('hide')
+                $addressDisplay.find('em').text(geoServices.human.cleanAddress($addressSearch.val(), addressIgnore))
+                $addressDisplay.removeClass('hide')
+                $filter.select2("container").removeClass('hide')
+            })
+        })
+    });
+    var $addressChangeTrigger = $addressDisplay.find('a.change');
+    $addressChangeTrigger.click(function(e) {
+        e.preventDefault();
+        $filter.select2("container").addClass('hide')
+        $addressDisplay.addClass('hide')
+        $addressSearch.removeClass('hide')
+    })
+
+    // "Add new" infowindow template
     var infoTemplate = $('.infowindow-add-template');
     var infoContent = infoTemplate.html();
     infoTemplate.remove();
-    var $map = $('#map-canvas');
-    var $addressSearch = $('#addressSearch');
-    app.map = new Map($map, coords, geoServices, function(map) {
-        var addressIgnore = $map.data('addressIgnore');
-        geoServices.human.convertToAddress(map.getCenter(), function(err, address) {
-            if (!err) {
-                var city = []
-                if (address.city) {
-                    $.each(address.city.split(','), function(i, cityPart) {
-                    if ($.inArray($.trim(cityPart), addressIgnore)==-1)
-                        city.push(cityPart)
-                    })
-                }
-                $addressSearch.val(city.join(', '))
-            }
-            new AddressSearch($addressSearch, map)
-        })
-    });
 
+    // Triggers for "Add new" popup
     var $triggerAddNew = $('.floater a.add-new');
     var infoWindowCloseListener = null;
     // Once the "Add new spot" mode has been activated
@@ -170,10 +188,6 @@ $.when(GeoDetection, DOM).then(function(coords) {
             $triggerAddNew.removeClass('active')
         });
     })
-
-    var $filter = $('.floater select');
-    var $filterForm = $filter.closest('form');
-    $filter.select2({})
 
     var spotInfoWindow = new gMap.InfoWindow();
     var recyclables = $filter.data('recyclables');

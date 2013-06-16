@@ -57,6 +57,21 @@ var AddressSearch;
                         callback(status, results);
                     }
                 });
+            },
+            /**
+             * Clean address from tokens
+             *
+             * @param address
+             * @param tokens
+             */
+            cleanAddress: function(address, tokens) {
+                console.log(address)
+                var cleanAddress = [];
+                $.each(address.split(','), function(i, cityPart) {
+                if ($.inArray($.trim(cityPart), tokens)==-1)
+                    cleanAddress.push(cityPart)
+                })
+                return cleanAddress.join(', ')
             }
         }
     }
@@ -67,7 +82,7 @@ var AddressSearch;
      * @param options
      * @constructor
      */
-     PopupAddNew = function(options) {
+    PopupAddNew = function(options) {
         var o = $.extend({
             map: undefined,
             location: undefined,
@@ -221,7 +236,12 @@ var AddressSearch;
         }
     }
 
-
+    /**
+     * Places autocomplete
+     * @param $el
+     * @param map
+     * @constructor
+     */
     AddressSearch = function($el, map) {
         var _self = this;
         _self.events = {};
@@ -256,7 +276,6 @@ var AddressSearch;
             //@todo ajax query for new points
         })
     }
-
     AddressSearch.prototype = {
         $el: null,
         map: null,

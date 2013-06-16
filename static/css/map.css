@@ -24,7 +24,8 @@ body, html {
     width:400px;
     height:30px;
 }
-.floater.main .select2-container {
+.floater.main .select2-container,
+input.address {
     margin:30px 200px 0 200px;
     width:400px;
 }
@@ -43,9 +44,15 @@ body, html {
 .hide {
     display: none;
 }
-#addressSearch {
+div.address {
     width:398px;
     margin:0 200px 0 200px;
+}
+div.address a.change {
+    float:right;
+}
+div.address em {
+    font-style: normal;
 }
 a.add-new {
     border: 1px solid gray;

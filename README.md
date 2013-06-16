@@ -80,7 +80,10 @@ sudo ln -s /home/ubuntu/web/recycle/recycle.uwsgi /etc/uwsgi/apps-enabled/recycl
 sudo service uwsgi restart
 ```
 
-Edit `/ecomap/templates/home/get.html` to specify the ignorable address parts. Usually this project will be integrated in a specific region, so you can safely remove this region from the addresses being displayed.
+*These should be moved to the config file*:
+
+- Edit `/ecomap/templates/home/get.html` to specify the ignorable address parts. Usually this project will be integrated in a specific region, so you can safely remove this region from the addresses being displayed.
+- Edit `/ecomap/templates/home/get.html` to specify the defaul map center.
 
 **...да се допише...**
 

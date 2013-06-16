@@ -179,18 +179,21 @@ $.when(GeoDetection, DOM).then(function(coords) {
     // Triggers for "Add new" popup
     var $triggerAddNew = $('.floater a.add-new');
     var infoWindowCloseListener = null;
+    var cancelAddNew = function() {
+        gMap.event.removeListener(infoWindowCloseListener)
+        infoWindowCloseListener = null;
+        app.map.addNewPopup.destroy()
+        app.map.addNewPopup = null;
+        $triggerAddNew.removeClass('active');
+        $addressNewSearch.blur()
+        $addNewInfo.addClass('hide')
+        $search.removeClass('hide')
+    }
     // Once the "Add new spot" mode has been activated
     $triggerAddNew.click(function (e) {
         e.preventDefault();
         if ($triggerAddNew.hasClass('active')) {
-            gMap.event.removeListener(infoWindowCloseListener);
-            app.map.addNewPopup.destroy()
-            app.map.addNewPopup = null;
-            infoWindowCloseListener = null;
-            $triggerAddNew.removeClass('active');
-            $addressNewSearch.blur()
-            $addNewInfo.addClass('hide')
-            $search.removeClass('hide')
+            cancelAddNew();
             return;
         }
         $triggerAddNew.addClass('active');
@@ -203,6 +206,10 @@ $.when(GeoDetection, DOM).then(function(coords) {
             $addNewInfo.addClass('hide')
             $search.removeClass('hide')
         });
+    })
+    $addNewInfo.find('a.close').click(function(e) {
+        e.preventDefault();
+        cancelAddNew();
     })
 
     var spotInfoWindow = new gMap.InfoWindow();

@@ -55,6 +55,7 @@ div.address a.change {
 div.address em {
     font-style: normal;
 }
+div.add-new a.close,
 a.add-new {
     border: 1px solid gray;
     text-decoration: none;

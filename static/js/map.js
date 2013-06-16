@@ -73,6 +73,23 @@ Map.prototype = {
         map.setMapTypeId("Recycle Style");
         return map;
     },
+    /**
+     * Check for visible markers on the map
+     * @returns {boolean}
+     */
+    hasVisibleMarkers: function() {
+        var _self = this;
+        var markers = _self.markers;
+        var bounds = _self.google.getBounds();
+        var contain = false;
+        $.each(markers, function(i, m) {
+            if (m.getVisible() && bounds.contains(m.getPosition())) {
+                contain = true;
+                return false;
+            }
+        })
+        return contain;
+    },
     populateMarkers: function(data, filters)
 	{
         var _self = this;

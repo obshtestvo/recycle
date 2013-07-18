@@ -10,6 +10,7 @@ def json_prepare(data = [], keys = True):
             entry = {
                 "id"  : i.id,
             	"name": i.name,
+            	"description": i.description,
 		        "lat": i.lat,
 		        "lng": i.lng
             }

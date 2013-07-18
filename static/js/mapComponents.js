@@ -159,6 +159,7 @@ var InfoWindow;
             _self.marker.setVisible(true);
             _self.infowindow.open(_self.map, _self.marker);
             _self.map.setOptions({draggableCursor: 'pointer'});
+
             _self.$elements = {}
             _self.events = {
                 infoWindowReady: gMap.event.addListener(_self.infowindow, 'domready', function() {
@@ -326,12 +327,19 @@ var InfoWindow;
         _self.visible = false;
 		_self.events.open = function(id)
 		{
+            //NEEDS TO REFACTOR THIS. WIP
 	 	    $.get('/spots/' + id, {}, function (data) {
+                var latlng = new gMap.LatLng(data[0].lat, data[0].lng);
                 _self.$el.fadeIn();
-                //_self.$el.find('.title').html(data[0].name);
+                _self.$el.find('.title').text(data[0].name);
+                _self.$el.find('.more-info p').text(data[0].description);
                 map.setZoom(25);
-                map.setCenter(new gMap.LatLng(data[0].lat, data[0].lng));
+                map.setCenter(latlng);
                 map.setCenter(new gMap.LatLng(map.getBounds().getNorthEast().lat(), data[0].lng));
+                geoServices.human.convertToAddress(latlng, function(error, results){
+                _self.$el.find('.address').text(results.full);
+                } );
+               _self.$el.find('.streeview-thumb img').attr('src', 'http://maps.googleapis.com/maps/api/streetview?size=400x200&location=' + data[0].lat + ',' + data[0].lng + '&fov=90&heading=235&pitch=10&sensor=false');
                _self.visible = true;
 			}, 'json');
 

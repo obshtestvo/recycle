@@ -30,7 +30,7 @@ Map.prototype = {
     addNewPopup: null,
     markerCluster: null,
     geo: null,
-	infoWindow: null,
+	infoWindowViewer: null,
     /**
      * Creates a map
      *
@@ -128,15 +128,34 @@ Map.prototype = {
 				id: filtered_data[i].id
             });
 			_self.filtered_markers.push(m);
-			google.maps.event.addListener(m, 'click', function() { _self.markerClick(filtered_data[i].id); });
+			google.maps.event.addListener(m, 'click', function() { _self.markerClick(m); });
 		});
 
 
         _self.markerCluster = new MarkerClusterer(_self.map, _self.filtered_markers);
 
 	},
-	markerClick: function(marker_id){
-		this.infoWindow.events.open(marker_id);
+	markerClick: function(m){
+        $infoviewer = this.infoWindowViewer;
+        $infoviewer.$elements = {
+            title               : $infoviewer.$el.find('.title'),
+            address             : $infoviewer.$el.find('.address'),
+            streetview_thumb    : $infoviewer.$el.find('.streetview-thumb img'),
+            more_info           : $infoviewer.$el.find('.more-info p')            
+         }
+ 	    $.get('/spots/' + m.id, {}, function (data) {
+
+            var latlng = new gMap.LatLng(m.getPosition().lat(), m.getPosition().lng());
+            $infoviewer.$elements.more_info.text(data.description);
+            console.log($infoviewer.$elements.streetview_thumb);
+            geoServices.human.convertToAddress(latlng, function(error, results){
+            $infoviewer.$elements.title.text(results.full);
+            } );
+           $infoviewer.$elements.streetview_thumb.attr('src', geoServices.streetview.thumbImage(data.lat, data.lng, 90, 235, 10));
+		}, 'json');
+        
+        //this.infoWindowViewer.populateHTML($infoviewer.$el.html());
+		this.infoWindowViewer.events.open(m);
 	}
 }
 
@@ -250,12 +269,12 @@ $.when(GeoDetection, DOM).then(function(coords) {
     var $infoWindow = $('#infowindow');
     $infoWindow.html(infoViewContent);
 
-    app.map.infoWindow = new InfoWindow($infoWindow, app.map.map);
+    app.map.infoWindowViewer = new InfoWindow($infoWindow, app.map.map);
     zoomChangedEvent = gMap.event.addListener(app.map.map, 'zoom_changed', function() {
-            app.map.infoWindow.events.close();
+            app.map.infoWindowViewer.events.close();
     });
-    dragEndEvent = gMap.event.addListener(app.map.map, 'dragend', function() {
-            app.map.infoWindow.events.close();
+    dragEndEvent = gMap.event.addListener(app.map.map, 'drag', function() {
+            app.map.infoWindowViewer.events.close();
     });
 
     var spotInfoWindow = new gMap.InfoWindow();

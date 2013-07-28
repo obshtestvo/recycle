@@ -1,12 +1,17 @@
+{% if func_name == "get_by_types" %}
 {
 	"batteries": [
 		{
 			"name": "Spot 1",
+            "id"  : 1,
+        	"description": "Spot 1 description",
 			"lat": 42.693413,
 			"lng": 23.322601
 		},
 		{
 			"name": "Technomarket",
+            "id"  : 2,
+        	"description": "Technomarket description",
 			"lat": 42.698347,
 			"lng": 23.345368
 		}
@@ -14,8 +19,22 @@
 	"paper":[
 		{
 			"name": "Ecopack",
+            "id"  : 3,
+        	"description": "Ecopack",
 			"lat": 42.679894,
 			"lng": 23.323267
 		}
 	]
 }
+{% else %}
+{
+	"name": "Ecopack",
+    "id"  : 3,
+	"description": "Ecopack",
+	"lat": 42.679894,
+	"lng": 23.323267
+}
+{% endif %}
+
+
+

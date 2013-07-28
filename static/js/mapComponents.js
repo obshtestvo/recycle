@@ -4,7 +4,7 @@
 var geoServices;
 var PopupAddNew;
 var AddressSearch;
-var InfoWindow;
+var InfoWindowViewer;
 (function(gMap) {
     /**
      * Location, Camera, Panorama, User detection... all the services
@@ -57,6 +57,24 @@ var InfoWindow;
                     lngPercentage = offset.right;
                 }
                 return new gMap.LatLng(latBase + mapDim.height*(latPercentage/100), lngBase + mapDim.width*(lngPercentage/100));
+            },
+            getMarkerPixelOffset: function(map, marker){
+                var scale = Math.pow(2, map.getZoom());
+                var mapBounds = map.getBounds();
+
+                var nw = new google.maps.LatLng(
+                    mapBounds.getNorthEast().lat(),
+                    mapBounds.getSouthWest().lng()
+                );
+
+                var mapCordsNW = map.getProjection().fromLatLngToPoint(nw);
+                var markerCords = map.getProjection().fromLatLngToPoint(marker.getPosition());
+                var offset = new google.maps.Point(
+                    Math.floor((markerCords.x - mapCordsNW.x) * scale),
+                    Math.floor((markerCords.y - mapCordsNW.y) * scale)
+                );
+
+                return offset;
             }
         },
         human: {
@@ -118,6 +136,12 @@ var InfoWindow;
                     cleanAddress.push(cityPart)
                 })
                 return cleanAddress.join(', ')
+            }
+        },
+        streetview:
+        {
+            thumbImage: function(lat, lng, fov, heading, pitch){ 
+                return 'http://maps.googleapis.com/maps/api/streetview?size=400x200&location=' + lat + ',' + lng + '&fov=' + fov + '&heading=' + heading + '&pitch=' + pitch + '&sensor=false';
             }
         }
     }
@@ -325,23 +349,11 @@ var InfoWindow;
 		_self.$el = $el;
         _self.events = {}
         _self.visible = false;
-		_self.events.open = function(id)
-		{
-            //NEEDS TO REFACTOR THIS. WIP
-	 	    $.get('/spots/' + id, {}, function (data) {
-                var latlng = new gMap.LatLng(data[0].lat, data[0].lng);
-                _self.$el.fadeIn();
-                _self.$el.find('.title').text(data[0].name);
-                _self.$el.find('.more-info p').text(data[0].description);
-                map.setZoom(25);
-                map.setCenter(latlng);
-                map.setCenter(new gMap.LatLng(map.getBounds().getNorthEast().lat(), data[0].lng));
-                geoServices.human.convertToAddress(latlng, function(error, results){
-                _self.$el.find('.address').text(results.full);
-                } );
-               _self.$el.find('.streeview-thumb img').attr('src', 'http://maps.googleapis.com/maps/api/streetview?size=400x200&location=' + data[0].lat + ',' + data[0].lng + '&fov=90&heading=235&pitch=10&sensor=false');
-               _self.visible = true;
-			}, 'json');
+		_self.events.open = function(m)
+		{        
+           _self.position(map, m);    
+           _self.visible = true;   
+           _self.$el.fadeIn();        
 
 		}
 		_self.events.close = function(id)
@@ -354,6 +366,27 @@ var InfoWindow;
 		}
 		
 	}
+    InfoWindow.prototype = {
+        position: function(map, marker){
+                var _self = this;
+                var latlng = new gMap.LatLng(marker.getPosition().lat(), marker.getPosition().lng());
+
+                // to center the dialog uncomment
+                //map.setZoom(25);
+                //map.setCenter(latlng);
+                //map.setCenter(new gMap.LatLng(map.getBounds().getNorthEast().lat(), data.lng));
+
+                // To position the dialog over the marker uncomment bellow
+                offset = geoServices.map.getMarkerPixelOffset(map, marker);
+                _self.$el.css('top', offset.y - 100);
+                _self.$el.css('left', offset.x);
+                // END
+        },
+        populateHTML: function(html){
+            var _self = this;
+            _self.$el.html(html);
+        }
+    }
     /**
      * Places autocomplete
      * @param $el

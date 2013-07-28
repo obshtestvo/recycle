@@ -2,11 +2,16 @@ from django.db import models
 
 
 class RecycleSpotMaterial(models.Model):
+    class Meta:
+            db_table = 'spot_material'
+
     name = models.CharField(max_length=255, primary_key=True)
 
 
 class RecyclableItem(models.Model):
-    name = models.CharField(max_length=255, primary_key=True)
+    class Meta:
+        db_table = 'material_mapping'
+    alias = models.CharField(max_length=255, primary_key=True)
     material = models.ForeignKey(RecycleSpotMaterial)
 
 
@@ -33,11 +38,11 @@ class RecycleSpot(models.Model):
     streetview_params = models.CharField(max_length=255)
     materials = models.ManyToManyField(RecycleSpotMaterial)
 
-    @staticmethod
-    def check_type(self, *args):
+    @classmethod
+    def check_type(cls, self, *args):
         return len(set(args)-{
-            self.TYPE_DEPOT,
-            self.TYPE_STATION,
-            self.TYPE_STORE,
-            self.TYPE_YARD,
+            cls.TYPE_DEPOT,
+            cls.TYPE_STATION,
+            cls.TYPE_STORE,
+            cls.TYPE_YARD,
         }) == 0

@@ -342,28 +342,38 @@ var InfoWindowViewer;
             _self.marker.setMap(null);
         }
     }
-
-	InfoWindow = function($el, map)
+    /**
+     * InfoWindow Module 
+     * @param selector 
+     * @param map
+     */
+	InfoWindow = function(selector, map)
 	{
 		var _self = this;
-		_self.$el = $el;
-        _self.events = {}
+		_self.$el = $(selector);
+        _self.map = map;
         _self.visible = false;
-		_self.events.open = function(m)
-		{        
-           _self.position(map, m);    
-           _self.visible = true;   
-           _self.$el.fadeIn();        
-
-		}
-		_self.events.close = function(id)
-		{
-            if(_self.visible)
-            {
-                _self.visible = false;
-			    _self.$el.fadeOut();
-            }
-		}
+       
+        _self.events = {
+            open: function(m){        
+                _self.position(map, m);    
+                _self.visible = true;   
+                _self.$el.fadeIn(); 
+            },
+            zoomChangedEvent: gMap.event.addListener(_self.map, 'zoom_changed', function() {
+                _self.events.close();
+             }),
+            dragEndEvent: gMap.event.addListener(_self.map, 'drag', function() {
+                _self.events.close();
+            }),
+            close: function(id){
+                if(_self.visible)
+                {
+                    _self.visible = false;
+		            _self.$el.fadeOut();
+                }
+		    }
+        }
 		
 	}
     InfoWindow.prototype = {
@@ -385,6 +395,13 @@ var InfoWindowViewer;
         populateHTML: function(html){
             var _self = this;
             _self.$el.html(html);
+        },
+        destroy: function() {
+            var _self = this;
+            gMap.event.removeListener(_self.events.dragEndEvent);
+            gMap.event.removeListener(_self.events.zoomChangedEvent);
+
+            _self.events.close();
         }
     }
     /**

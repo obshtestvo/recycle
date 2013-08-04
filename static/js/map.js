@@ -147,7 +147,6 @@ Map.prototype = {
 
             var latlng = new gMap.LatLng(m.getPosition().lat(), m.getPosition().lng());
             $infoviewer.$elements.more_info.text(data.description);
-            console.log($infoviewer.$elements.streetview_thumb);
             geoServices.human.convertToAddress(latlng, function(error, results){
             $infoviewer.$elements.title.text(results.full);
             } );
@@ -267,15 +266,8 @@ $.when(GeoDetection, DOM).then(function(coords) {
     infoViewTemplate.remove();
 
     var $infoWindow = $('#infowindow');
-    $infoWindow.html(infoViewContent);
-
-    app.map.infoWindowViewer = new InfoWindow($infoWindow, app.map.map);
-    zoomChangedEvent = gMap.event.addListener(app.map.map, 'zoom_changed', function() {
-            app.map.infoWindowViewer.events.close();
-    });
-    dragEndEvent = gMap.event.addListener(app.map.map, 'drag', function() {
-            app.map.infoWindowViewer.events.close();
-    });
+    app.map.infoWindowViewer = new InfoWindow("#infowindow", app.map.map);
+    app.map.infoWindowViewer.populateHTML(infoViewContent);
 
     var spotInfoWindow = new gMap.InfoWindow();
     var recyclables = $filter.data('recyclables');

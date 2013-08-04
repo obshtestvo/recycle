@@ -138,13 +138,13 @@ Map.prototype = {
 	markerClick: function(m){
         $infoviewer = this.infoWindowViewer;
         $infoviewer.$elements = {
-            title               : $infoviewer.$el.find('.title'),
-            address             : $infoviewer.$el.find('.address'),
-            streetview_thumb    : $infoviewer.$el.find('.streetview-thumb img'),
-            more_info           : $infoviewer.$el.find('.more-info p')            
+            title               : $infoviewer.$el.find('[rel=title]'),
+            address             : $infoviewer.$el.find('[rel=address]'),
+            streetview_thumb    : $infoviewer.$el.find('[rel=streetview-img]'),
+            more_info           : $infoviewer.$el.find('[rel=description]')            
          }
  	    $.get('/spots/' + m.id, {}, function (data) {
-
+            
             var latlng = new gMap.LatLng(m.getPosition().lat(), m.getPosition().lng());
             $infoviewer.$elements.more_info.text(data.description);
             geoServices.human.convertToAddress(latlng, function(error, results){

@@ -238,8 +238,26 @@ var AddressSearch;
          * @private
          */
         _createInfoWindow: function(options) {
-            var options = $.extend({}, options)
-            var infoWindow = new gMap.InfoWindow(options);
+            var options = $.extend({
+			pixelOffset: new google.maps.Size(-165, 0)
+			,zIndex: null
+//			,alignBottom: true
+			,boxStyle: {
+			  background: "red url('/img/532px-TriangleArrow-Up.png') no-repeat center top"
+			  ,width: "330px"
+			 }
+			,closeBoxMargin: "10px 2px 2px 2px"
+			,closeBoxURL: "http://www.google.com/intl/en_us/mapfiles/close.gif"
+			,infoBoxClearance: new google.maps.Size(1, 1)
+			,pane: "floatPane"
+			,enableEventPropagation: false
+		}
+
+        , options)
+            console.log('asdasd')
+            var infoWindow = new InfoBoxAnimated(options);
+//            var options = $.extend({}, options)
+//            var infoWindow = new gMap.InfoWindow(options);
             return infoWindow;
         },
         /**

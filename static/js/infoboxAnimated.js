@@ -25,6 +25,7 @@ InfoBoxAnimated.prototype.switchContent = function($container, $hide, $show, spe
             if (meta.prop!='width') return;
             self.pixelOffset_ = new google.maps.Size(-width/2, 0);
             $infoWindowContentContainer.css('width', width)
+            self.boxStyle_.width =  width;
             self.draw();
         },
         final: function () {

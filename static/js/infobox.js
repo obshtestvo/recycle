@@ -476,12 +476,6 @@ InfoBox.prototype.draw = function () {
 
   this.createInfoBoxDiv_();
 
-  if (this.newWidth) {
-      this.div_.style.width = this.newWidth+'px';
-    this.div_.style.height = this.newWidth+'px';
-    this.div_.style.overflow = "auto";
-    this.fixedWidthSet_ = true;
-  }
   var pixPosition = this.getProjection().fromLatLngToDivPixel(this.position_);
 
   this.div_.style.left = (pixPosition.x + this.pixelOffset_.width) + "px";

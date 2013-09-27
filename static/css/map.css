@@ -32,6 +32,10 @@ input.address {
     margin:30px 200px 0 200px;
     width:400px;
 }
+#add-new {
+    background: #fff;
+    margin-top: 10px;
+}
 #add-new #step1 .streetview {
     width:332px;
     height:200px;
@@ -48,13 +52,20 @@ input.address {
 #add-new #step1 a.close  {
 
 }
-#add-new #step1 a.accept  {
+#add-new #step2 {
+    padding: 20px;
+}
+#add-new #step1 a.accept,
+#add-new #step2 a.accept  {
     display: block;
     background: #64cd57;
     color:#fff;
     height:40px;
     text-align: center;
     line-height: 40px;
+}
+#add-new #step2 label {
+    display: block;
 }
 div.address {
     width:398px;
@@ -96,4 +107,10 @@ div.add-new {
 }
 div.add-new input {
     width:400px;
+}
+
+
+/* Google maps infobox styling*/
+.infoBox > img {
+    display: none;
 }

@@ -35,7 +35,7 @@
     </div>
     <div class="infowindow-add-template hide">
         <div id="add-new">
-            <div id="step1">
+            <div id="step1" class="step">
                 <a class="btn close" href="#">Не се вижда мястото [ x ]</a>
                 <div class="streetview">
                 </div>
@@ -45,6 +45,20 @@
                 <div class="cancelled-streetview">
                     Е, айде сега, голяма работа, не се виждало. <a href="#" class="address-focus">Адрес има, нали?</a>
                 </div>
+                <a class="btn accept" href="#">Готов съм</a>
+            </div>
+            <div id="step2" class="step hide">
+                <div class="img"></div>
+                <label for="">Тип на обекта</label>
+                <input type="checkbox" name="object_type" id="object_type"/>
+                <label for="">Изкупува</label>
+                <select name="object_services" id="object_services">
+                    <option value="paper">paper</option>
+                    <option value="metal">metal</option>
+                    <option value="cars">cars</option>
+                </select>
+                <label for="">Допълнително описание</label>
+                <textarea name="object_description" id="" cols="30" rows="10"></textarea>
                 <a class="btn accept" href="#">Готов съм</a>
             </div>
         </div>

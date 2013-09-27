@@ -166,6 +166,7 @@ var AddressSearch;
                     var $content = $('#add-new');
                     _self.$elements.streetview = $content.find('.streetview')
                     _self.$elements.streetviewCancelTrigger = $content.find('#step1 a.close');
+                    _self.$elements.step1DoneTrigger = $content.find('#step1 a.accept');
                     _self.$elements.streetviewCancelled = $content.find('.cancelled-streetview');
                     $content.find('a.address-focus').click(function(e) {
                         e.preventDefault();
@@ -174,6 +175,10 @@ var AddressSearch;
                     _self.$elements.streetviewCancelTrigger.click(function(e) {
                         e.preventDefault();
                         _self._cancelStreetView()
+                    })
+                    _self.$elements.step1DoneTrigger.click(function(e){
+                        e.preventDefault();
+                        _self.infowindow.switchContent($('#add-new'), $('#step1'), $('#step2'), 100)
                     })
                     _self.$elements.streetviewHolding = $('#add-new .missing-streetview')
                     _self.streetview = _self._createStreetView(_self.$elements.streetview.get(0));
@@ -243,7 +248,7 @@ var AddressSearch;
 			,zIndex: null
 //			,alignBottom: true
 			,boxStyle: {
-			  background: "red url('/img/532px-TriangleArrow-Up.png') no-repeat center top"
+			  background: "transparent url('/img/532px-TriangleArrow-Up.png') no-repeat center top"
 			  ,width: "330px"
 			 }
 			,closeBoxMargin: "10px 2px 2px 2px"

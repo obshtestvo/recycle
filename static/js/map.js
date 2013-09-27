@@ -198,6 +198,7 @@ $.when(GeoDetection, DOM).then(function(coords) {
 
     // "Add new" infowindow template
     var infoTemplate = $('.infowindow-add-template');
+    infoTemplate.find('.step.hide').css('display', 'none').removeClass('hide')
     var infoContent = infoTemplate.html();
     infoTemplate.remove();
 

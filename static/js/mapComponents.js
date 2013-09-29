@@ -178,7 +178,7 @@ var AddressSearch;
                     })
                     _self.$elements.step1DoneTrigger.click(function(e){
                         e.preventDefault();
-                        _self.infowindow.switchContent($('#add-new'), $('#step1'), $('#step2'), 100)
+                        _self.infowindow.switchContent($content, $('#step1'), $('#step2'), 100)
                         _self.map.setOptions({draggableCursor: 'url(https://maps.gstatic.com/mapfiles/openhand_8_8.cur),default'});
                         _self.marker.setOptions({cursor: 'url(https://maps.gstatic.com/mapfiles/openhand_8_8.cur),default'});
                         _self.marker.setDraggable(false);

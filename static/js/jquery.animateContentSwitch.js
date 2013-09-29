@@ -73,14 +73,18 @@
 			};
 			$this.data('animateContentSwich.animating', data);
 			var hide = function() {
-				$toHide.animate({opacity: 0}, speed, function(){
-					$toHide.hide();
-					if ( $.isFunction( callbacks.beforeShow ) ) {
-						callbacks.beforeShow(show);
-					} else {
-						show();
-					}
-				});
+                console.log(speed)
+				$toHide.animate({opacity: 0}, {
+                    duration: speed,
+                    complete: function(){
+                        $toHide.hide();
+                        if ( $.isFunction( callbacks.beforeShow ) ) {
+                            callbacks.beforeShow(show);
+                        } else {
+                            show();
+                        }
+                    }
+                });
 			}
 
 			var show = function () {
@@ -94,7 +98,7 @@
 
 				var heightDfd = $.Deferred();
                 var animationOptions = {
-                    "speed": speed,
+                    duration: speed,
                     complete: heightDfd.resolve
                 }
                 if ( $.isFunction( callbacks.step ) ) {

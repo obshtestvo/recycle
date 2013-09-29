@@ -176,22 +176,18 @@ var AddressSearch;
                         e.preventDefault();
                         _self._cancelStreetView()
                     })
+                    _self.$elements.step2 = $content.find('#step2');
                     _self.$elements.step1DoneTrigger.click(function(e){
                         e.preventDefault();
-                        var $step2img  =  $('#step2 .street img');
-                        var pov = _self.streetview.getPov()
-                        var loc = _self.marker.getPosition()
-                        var values=[120, 90, 53.5, 28.3, 14.3, 10];
-                        var fov=values[Math.round(pov.zoom)];
-                        var src = 'http://maps.googleapis.com/maps/api/streetview?size='+$step2img.width()+'x'+$step2img.height()+'&location='+loc.lat()+','+loc.lng()+'&fov='+fov+'&heading='+pov.heading+'&pitch'+pov.pitch+'&sensor=false';
-                        $step2img.attr('src', src)
+                        var $step2img  =  _self.$elements.step2.find('.street img');
+                        $step2img.attr('src', _self._getPhotoUrl($step2img.width(), $step2img.height()))
                         _self.infowindow.switchContent($content, $('#step1'), $('#step2'), 100)
                         _self.map.setOptions({draggableCursor: 'url(https://maps.gstatic.com/mapfiles/openhand_8_8.cur),default'});
                         _self.marker.setOptions({cursor: 'url(https://maps.gstatic.com/mapfiles/openhand_8_8.cur),default'});
                         _self.marker.setDraggable(false);
                         gMap.event.removeListener(_self.events.mapClick);
                     })
-                    _self.$elements.streetviewHolding = $('#add-new .missing-streetview')
+                    _self.$elements.streetviewHolding = $content.find('.missing-streetview')
                     _self.streetview = _self._createStreetView(_self.$elements.streetview.get(0));
                     _self.streetview.bindTo("position", _self.marker);
                     _self.checkStreetView(_self.marker.getPosition());
@@ -339,6 +335,21 @@ var AddressSearch;
                     _self.$elements.streetviewHolding.show()
                 }
             });
+        },
+
+        /**
+         * Get url to static image representing Google Street View
+         * @param height
+         * @param width
+         * @returns {string} Url to image
+         * @private
+         */
+        _getPhotoUrl: function(width, height) {
+            var pov = this.streetview.getPov()
+            var loc = this.marker.getPosition()
+            var values = [120, 90, 53.5, 28.3, 14.3, 10];
+            var fov = values[Math.round(pov.zoom)];
+            return 'http://maps.googleapis.com/maps/api/streetview?size='+width+'x'+height+'&location='+loc.lat()+','+loc.lng()+'&fov='+fov+'&heading='+pov.heading+'&pitch'+pov.pitch+'&sensor=false';
         },
         /**
          * Clean after the popup is not in use

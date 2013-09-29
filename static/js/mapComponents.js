@@ -161,12 +161,21 @@ var AddressSearch;
             _self.infowindow.open(_self.map, _self.marker);
             _self.map.setOptions({draggableCursor: 'pointer'});
             _self.$elements = {}
+            var createMapClickListener = function() {
+                return gMap.event.addListener(_self.map, 'click', function (event) {
+                    //this is how we access the streetview params _self.streetview.pov
+                    _self._animateMarker(event.latLng, function () {
+                        _self.checkStreetView(_self.marker.getPosition());
+                    });
+                })
+            }
             _self.events = {
                 infoWindowReady: gMap.event.addListener(_self.infowindow, 'domready', function() {
                     var $content = $('#add-new');
                     _self.$elements.streetview = $content.find('.streetview')
                     _self.$elements.step1 = $content.find('#step1');
                     _self.$elements.streetviewCancelTrigger = _self.$elements.step1.find('a.close');
+                    _self.$elements.streetviewReactivateTrigger = _self.$elements.step1.find('a.reactivate');
                     _self.$elements.step1DoneTrigger = _self.$elements.step1.find('a.accept');
                     _self.$elements.streetviewCancelled = $content.find('.cancelled-streetview');
                     $content.find('a.address-focus').click(function(e) {
@@ -176,8 +185,24 @@ var AddressSearch;
                     _self.$elements.streetviewCancelTrigger.click(function(e) {
                         e.preventDefault();
                         _self._cancelStreetView()
+                        $(this).addClass('hide')
+                        _self.$elements.streetviewReactivateTrigger.removeClass('hide')
+                    })
+                    _self.$elements.streetviewReactivateTrigger.click(function(e) {
+                        e.preventDefault();
+                        _self.checkStreetView(_self.marker.getPosition());
+                        $(this).addClass('hide')
+                        _self.$elements.streetviewCancelTrigger.removeClass('hide')
                     })
                     _self.$elements.step2 = $content.find('#step2');
+                    _self.$elements.step2backTrigger = _self.$elements.step2.find('a.back');
+                    _self.$elements.step2backTrigger.click(function(e) {
+                        e.preventDefault();
+                        _self.infowindow.switchContent($content, _self.$elements.step2, _self.$elements.step1, 100)
+                        _self.marker.setDraggable(true);
+                        _self.events.markerDrag = createMapClickListener();
+                        _self.map.setOptions({draggableCursor: 'pointer'});
+                    });
                     _self.$elements.step1DoneTrigger.click(function(e){
                         e.preventDefault();
                         var $step2img = _self.$elements.step2.find('.street img');
@@ -200,12 +225,7 @@ var AddressSearch;
                 markerDrag: gMap.event.addListener(_self.marker, "dragend", function () {
                     _self.checkStreetView(_self.marker.getPosition());
                 }),
-                mapClick: gMap.event.addListener(_self.map, 'click', function (event) {
-                    //this is how we access the streetview params _self.streetview.pov
-                    _self._animateMarker(event.latLng, function () {
-                        _self.checkStreetView(_self.marker.getPosition());
-                    });
-                })
+                mapClick: createMapClickListener()
             }
             callback();
         })

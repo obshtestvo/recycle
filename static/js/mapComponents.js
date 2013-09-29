@@ -205,8 +205,12 @@ var AddressSearch;
                     });
                     _self.$elements.step1DoneTrigger.click(function(e){
                         e.preventDefault();
+                        var src = 'http://placehold.it/300x100';
                         var $step2img = _self.$elements.step2.find('.street img');
-                        $step2img.attr('src', _self._getPhotoUrl($step2img.width(), $step2img.height()))
+                        if (_self.$elements.streetview.is(':visible')) {
+                            src = _self._getPhotoUrl($step2img.width(), $step2img.height())
+                        }
+                        $step2img.attr('src',src)
                         _self.infowindow.switchContent($content, _self.$elements.step1, _self.$elements.step2, 100)
                         _self.map.setOptions({draggableCursor: 'url(https://maps.gstatic.com/mapfiles/openhand_8_8.cur),default'});
                         _self.marker.setOptions({cursor: 'url(https://maps.gstatic.com/mapfiles/openhand_8_8.cur),default'});
@@ -276,10 +280,7 @@ var AddressSearch;
 //			,alignBottom: true
 			,boxStyle: {
 			  background: "transparent url('/img/532px-TriangleArrow-Up.png') no-repeat center top"
-			  ,width: "330px"
 			 }
-			,closeBoxMargin: "10px 2px 2px 2px"
-			,closeBoxURL: "http://www.google.com/intl/en_us/mapfiles/close.gif"
 			,infoBoxClearance: new google.maps.Size(1, 1)
 			,pane: "floatPane"
 			,enableEventPropagation: false
@@ -366,7 +367,7 @@ var AddressSearch;
             var loc = this.marker.getPosition()
             var values = [120, 90, 53.5, 28.3, 14.3, 10];
             var fov = values[Math.round(pov.zoom)];
-            return 'http://maps.googleapis.com/maps/api/streetview?size='+width+'x'+height+'&location='+loc.toUrlValue()+'&fov='+fov+'&heading='+pov.heading+'&pitch'+pov.pitch+'&sensor=false';
+            return 'http://maps.googleapis.com/maps/api/streetview?size='+width+'x'+height+'&location='+loc.toUrlValue()+'&fov='+fov+'&heading='+pov.heading+'&pitch='+pov.pitch+'&sensor=false';
         },
         /**
          * Clean after the popup is not in use

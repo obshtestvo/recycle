@@ -178,6 +178,13 @@ var AddressSearch;
                     })
                     _self.$elements.step1DoneTrigger.click(function(e){
                         e.preventDefault();
+                        var $step2img  =  $('#step2 .street img');
+                        var pov = _self.streetview.getPov()
+                        var loc = _self.marker.getPosition()
+                        var values=[120, 90, 53.5, 28.3, 14.3, 10];
+                        var fov=values[Math.round(pov.zoom)];
+                        var src = 'http://maps.googleapis.com/maps/api/streetview?size='+$step2img.width()+'x'+$step2img.height()+'&location='+loc.lat()+','+loc.lng()+'&fov='+fov+'&heading='+pov.heading+'&pitch'+pov.pitch+'&sensor=false';
+                        $step2img.attr('src', src)
                         _self.infowindow.switchContent($content, $('#step1'), $('#step2'), 100)
                         _self.map.setOptions({draggableCursor: 'url(https://maps.gstatic.com/mapfiles/openhand_8_8.cur),default'});
                         _self.marker.setOptions({cursor: 'url(https://maps.gstatic.com/mapfiles/openhand_8_8.cur),default'});
@@ -195,6 +202,9 @@ var AddressSearch;
                 }),
                 markerDrag: gMap.event.addListener(_self.marker, "dragend", function () {
                     _self.checkStreetView(_self.marker.getPosition());
+                    console.log(_self.streetview.getPhotographerPov())
+                    console.log(_self.streetview.getPov())
+                    console.log(_self.streetview.getZoom())
                 }),
                 mapClick: gMap.event.addListener(_self.map, 'click', function (event) {
                     //this is how we access the streetview params _self.streetview.pov

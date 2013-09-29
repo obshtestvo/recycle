@@ -18,8 +18,8 @@ InfoBoxAnimated.prototype.switchContent = function($container, $hide, $show, spe
     toggleFixedHeight($container, true)
     $container.animateContentSwitch($hide, $show, speed, {
         beforeShow: function (show) {
-            show();
             // do stuff when both slides are hidden
+            show();
         },
         step: function(width, meta) {
             if (meta.prop!='width') return;

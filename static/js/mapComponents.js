@@ -165,8 +165,9 @@ var AddressSearch;
                 infoWindowReady: gMap.event.addListener(_self.infowindow, 'domready', function() {
                     var $content = $('#add-new');
                     _self.$elements.streetview = $content.find('.streetview')
-                    _self.$elements.streetviewCancelTrigger = $content.find('#step1 a.close');
-                    _self.$elements.step1DoneTrigger = $content.find('#step1 a.accept');
+                    _self.$elements.step1 = $content.find('#step1');
+                    _self.$elements.streetviewCancelTrigger = _self.$elements.step1.find('a.close');
+                    _self.$elements.step1DoneTrigger = _self.$elements.step1.find('a.accept');
                     _self.$elements.streetviewCancelled = $content.find('.cancelled-streetview');
                     $content.find('a.address-focus').click(function(e) {
                         e.preventDefault();
@@ -179,9 +180,9 @@ var AddressSearch;
                     _self.$elements.step2 = $content.find('#step2');
                     _self.$elements.step1DoneTrigger.click(function(e){
                         e.preventDefault();
-                        var $step2img  =  _self.$elements.step2.find('.street img');
+                        var $step2img = _self.$elements.step2.find('.street img');
                         $step2img.attr('src', _self._getPhotoUrl($step2img.width(), $step2img.height()))
-                        _self.infowindow.switchContent($content, $('#step1'), $('#step2'), 100)
+                        _self.infowindow.switchContent($content, _self.$elements.step1, _self.$elements.step2, 100)
                         _self.map.setOptions({draggableCursor: 'url(https://maps.gstatic.com/mapfiles/openhand_8_8.cur),default'});
                         _self.marker.setOptions({cursor: 'url(https://maps.gstatic.com/mapfiles/openhand_8_8.cur),default'});
                         _self.marker.setDraggable(false);
@@ -198,15 +199,11 @@ var AddressSearch;
                 }),
                 markerDrag: gMap.event.addListener(_self.marker, "dragend", function () {
                     _self.checkStreetView(_self.marker.getPosition());
-                    console.log(_self.streetview.getPhotographerPov())
-                    console.log(_self.streetview.getPov())
-                    console.log(_self.streetview.getZoom())
                 }),
                 mapClick: gMap.event.addListener(_self.map, 'click', function (event) {
                     //this is how we access the streetview params _self.streetview.pov
                     _self._animateMarker(event.latLng, function () {
                         _self.checkStreetView(_self.marker.getPosition());
-        //                console.log(_self.marker.getPosition().toUrlValue(), _self.marker.getPosition())
                     });
                 })
             }
@@ -349,7 +346,7 @@ var AddressSearch;
             var loc = this.marker.getPosition()
             var values = [120, 90, 53.5, 28.3, 14.3, 10];
             var fov = values[Math.round(pov.zoom)];
-            return 'http://maps.googleapis.com/maps/api/streetview?size='+width+'x'+height+'&location='+loc.lat()+','+loc.lng()+'&fov='+fov+'&heading='+pov.heading+'&pitch'+pov.pitch+'&sensor=false';
+            return 'http://maps.googleapis.com/maps/api/streetview?size='+width+'x'+height+'&location='+loc.toUrlValue()+'&fov='+fov+'&heading='+pov.heading+'&pitch'+pov.pitch+'&sensor=false';
         },
         /**
          * Clean after the popup is not in use

@@ -73,7 +73,6 @@
 			};
 			$this.data('animateContentSwich.animating', data);
 			var hide = function() {
-                console.log(speed)
 				$toHide.animate({opacity: 0}, {
                     duration: speed,
                     complete: function(){

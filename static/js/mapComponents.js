@@ -170,39 +170,43 @@ var AddressSearch;
                 })
             }
             _self.events = {
+                // The infowindow DOM is ready
                 infoWindowReady: gMap.event.addListener(_self.infowindow, 'domready', function() {
                     var $content = $('#add-new');
+                    _self.$elements.close = $content.find('a.close')
                     _self.$elements.streetview = $content.find('.streetview')
                     _self.$elements.step1 = $content.find('#step1');
-                    _self.$elements.streetviewCancelTrigger = _self.$elements.step1.find('a.close');
+                    _self.$elements.streetviewCancelTrigger = _self.$elements.step1.find('a.cancel-streetview');
                     _self.$elements.streetviewReactivateTrigger = _self.$elements.step1.find('a.reactivate');
                     _self.$elements.step1DoneTrigger = _self.$elements.step1.find('a.accept');
                     _self.$elements.streetviewCancelled = $content.find('.cancelled-streetview');
-                    $content.find('a.address-focus').click(function(e) {
+
+
+                    // Custom close link on the infowindow
+                    _self.$elements.close.click(function(e){
                         e.preventDefault();
-                        $(o.addressInputSelector).focus();
-                    });
+                        gMap.event.trigger(_self.infowindow, "closeclick");
+                        _self.infowindow.close();
+                    })
+
+                    // Cancel streetview
                     _self.$elements.streetviewCancelTrigger.click(function(e) {
                         e.preventDefault();
                         _self._cancelStreetView()
                         $(this).addClass('hide')
                         _self.$elements.streetviewReactivateTrigger.removeClass('hide')
                     })
+
+                    // Reactivate streetview
                     _self.$elements.streetviewReactivateTrigger.click(function(e) {
                         e.preventDefault();
                         _self.checkStreetView(_self.marker.getPosition());
                         $(this).addClass('hide')
                         _self.$elements.streetviewCancelTrigger.removeClass('hide')
                     })
-                    _self.$elements.step2 = $content.find('#step2');
-                    _self.$elements.step2backTrigger = _self.$elements.step2.find('a.back');
-                    _self.$elements.step2backTrigger.click(function(e) {
-                        e.preventDefault();
-                        _self.infowindow.switchContent($content, _self.$elements.step2, _self.$elements.step1, 100)
-                        _self.marker.setDraggable(true);
-                        _self.events.markerDrag = createMapClickListener();
-                        _self.map.setOptions({draggableCursor: 'pointer'});
-                    });
+                    _self.$elements.streetviewHolding = $content.find('.missing-streetview')
+
+                    // Step 1 is complete
                     _self.$elements.step1DoneTrigger.click(function(e){
                         e.preventDefault();
                         var src = 'http://placehold.it/300x100';
@@ -217,18 +221,39 @@ var AddressSearch;
                         _self.marker.setDraggable(false);
                         gMap.event.removeListener(_self.events.mapClick);
                     })
-                    _self.$elements.streetviewHolding = $content.find('.missing-streetview')
+
+                    // Step 2
+                    _self.$elements.step2 = $content.find('#step2');
+
+                    // Go back to step1
+                    _self.$elements.step2backTrigger = _self.$elements.step2.find('a.back');
+                    _self.$elements.step2backTrigger.click(function(e) {
+                        e.preventDefault();
+                        _self.infowindow.switchContent($content, _self.$elements.step2, _self.$elements.step1, 100)
+                        _self.marker.setDraggable(true);
+                        _self.events.markerDrag = createMapClickListener();
+                        _self.map.setOptions({draggableCursor: 'pointer'});
+                        _self.marker.setOptions({cursor: 'pointer'});
+                    });
+
+                     // Create streetview and sync its location with the marker
                     _self.streetview = _self._createStreetView(_self.$elements.streetview.get(0));
                     _self.streetview.bindTo("position", _self.marker);
                     _self.checkStreetView(_self.marker.getPosition());
                 }),
+
+                // When the infowindow is closed
                 infoClose: gMap.event.addListener(_self.infowindow, 'closeclick', function() {
                     _self.map.setOptions({draggableCursor: 'url(https://maps.gstatic.com/mapfiles/openhand_8_8.cur),default'});
                     _self.destroy();
                 }),
+
+                // When the marker is dragged
                 markerDrag: gMap.event.addListener(_self.marker, "dragend", function () {
                     _self.checkStreetView(_self.marker.getPosition());
                 }),
+
+                // When the map is clicked
                 mapClick: createMapClickListener()
             }
             callback();

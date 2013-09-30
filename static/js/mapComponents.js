@@ -206,6 +206,11 @@ var AddressSearch;
                     })
                     _self.$elements.streetviewHolding = $content.find('.missing-streetview')
 
+                     // Create streetview and sync its location with the marker
+                    _self.streetview = _self._createStreetView(_self.$elements.streetview.get(0));
+                    _self.streetview.bindTo("position", _self.marker);
+                    _self.checkStreetView(_self.marker.getPosition());
+
                     // Step 1 is complete
                     _self.$elements.step1DoneTrigger.click(function(e){
                         e.preventDefault();
@@ -235,11 +240,43 @@ var AddressSearch;
                         _self.map.setOptions({draggableCursor: 'pointer'});
                         _self.marker.setOptions({cursor: 'pointer'});
                     });
+                    _self.$elements.step2DoneTrigger = _self.$elements.step2.find('a.accept');
+                    _self.$elements.step2DoneTrigger.click(function(e){
+                        e.preventDefault();
+                        _self.$elements.step2.block({
+                            message: null,
+                            overlayCSS: {
+                                backgroundColor:'rgba(255, 255, 255, 0.6)',
+                                opacity:1
+                            }
+                        });
+                        var $veil = _self.$elements.step2.find('.blockOverlay');
+                        console.log($veil)
+                        new Spinner({
+                            top: 'auto',
+                            left: 'auto',
+                            lines: 15, // The number of lines to draw
+                            length: 0, // The length of each line
+                            width: 5, // The line thickness
+                            radius: 4, // The radius of the inner circle
+                            corners: 1, // Corner roundness (0..1)
+                            color: '#65E034', // #rgb or #rrggbb
+                            speed: 1, // Rounds per second
+                            trail: 31, // Afterglow percentage
+                            shadow: false, // Whether to render a shadow
+                            hwaccel: true // Whether to use hardware acceleration
+                        }).spin($veil.get(0));
 
-                     // Create streetview and sync its location with the marker
-                    _self.streetview = _self._createStreetView(_self.$elements.streetview.get(0));
-                    _self.streetview.bindTo("position", _self.marker);
-                    _self.checkStreetView(_self.marker.getPosition());
+                        // simulate ajax
+                        setTimeout(function() {
+                            _self.$elements.step2.unblock();
+                            _self.infowindow.switchContent($content, _self.$elements.step2, _self.$elements.step3, 100)
+                        },2000)
+                    })
+
+                    _self.$elements.step3 = $content.find('#step3');
+
+
                 }),
 
                 // When the infowindow is closed

@@ -12,7 +12,7 @@ var InfoBoxAnimated = function() {
     InfoBox.apply(this, arguments);
 }
 InfoBoxAnimated.prototype = new InfoBox();
-InfoBoxAnimated.prototype.switchContent = function($container, $hide, $show, speed) {
+InfoBoxAnimated.prototype.switchContent = function($container, $hide, $show, speed, final) {
     var self = this;
     var $infoWindowContentContainer = $(this.div_);
     toggleFixedHeight($container, true)
@@ -30,6 +30,9 @@ InfoBoxAnimated.prototype.switchContent = function($container, $hide, $show, spe
         },
         final: function () {
             toggleFixedHeight($container, false)
+            if ($.isFunction( final )) {
+                final()
+            }
             // scroll window if needed
     //      var $resizeContainer = (window.opera) ? (document.compatMode=="CSS1Compat"? $('html') : $('body')) : $('html,body')
     //      $resizeContainer.animate({scrollTop: 300},300);

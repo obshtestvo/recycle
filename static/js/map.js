@@ -243,12 +243,11 @@ $.when(GeoDetection, DOM).then(function(coords) {
     var recyclables = $filter.data('recyclables');
 
 	var all_markers;
-    $.get($filterForm.data('action'), {
-        coords: coords
-    }, function (data) {
-		all_markers = data;
-		app.map.populateMarkers(data);
-    }, 'json');
+    var recycle = new RecycleServices($filterForm.data('action'));
+    recycle.find(coords, function(markers) {
+		all_markers = markers;
+		app.map.populateMarkers(markers);
+    });
 
 //    $filter.change(function (e) {
 //        var tags = []

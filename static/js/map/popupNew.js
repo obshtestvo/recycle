@@ -1,9 +1,7 @@
 /**
  * Export
  */
-var geoServices;
 var PopupAddNew;
-var AddressSearch;
 
 (function(gMap) {
     /**

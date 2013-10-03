@@ -26,7 +26,7 @@ var geoServices;
             },
             /**
              * Get a location on the map relative to the bounds by proportion of the map size (in percentages)
-             * @returns {{height: number, width: number}}
+             * @returns {gMap.LatLng}
              */
             getProportionallyRelativeLocation: function(map, offset) {
                 var defaultOffset = {
@@ -55,6 +55,16 @@ var geoServices;
                     lngPercentage = offset.right;
                 }
                 return new gMap.LatLng(latBase + mapDim.height*(latPercentage/100), lngBase + mapDim.width*(lngPercentage/100));
+            },
+            /**
+             * Transforms a location (assuming it will be a center of the map) by a proportion of the map size
+             * @param loc {gMap.LatLng}
+             * @param Proportion {Object} Height and Width percentage, each ranging from 100 to -100
+             * @returns {gMap.LatLng}
+             */
+            makeProportionallyRelativeLocation: function(loc, proportion) {
+                var mapDim = geoServices.map.getDimensions(map)
+                return new gMap.LatLng(loc.lat() + mapDim.height*(proportion.height/100), loc.lng() + mapDim.width*(proportion.width/100));
             }
         },
         human: {

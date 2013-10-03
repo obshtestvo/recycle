@@ -27,10 +27,15 @@ body, html {
     width:400px;
     height:30px;
 }
-.floater.main .select2-container,
+#search .select2-container,
+div.change-address .address,
+div.add-new .new-address,
 input.address {
     margin:30px 200px 0 200px;
     width:400px;
+}
+div.add-new .new-address {
+    margin: 0;
 }
 #add-new {
     background: #fff;
@@ -80,7 +85,7 @@ box-shadow: 0 3px 5px rgba(0,0,0,0.16);
 #add-new #step2 label {
     display: block;
 }
-div.address {
+#search div.address {
     width:398px;
     margin:0 200px 0 200px;
 }

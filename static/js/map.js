@@ -157,15 +157,15 @@ $.when(GeoDetection, DOM).then(function(coords) {
     var $changeAddress = $('div.change-address');
     var $addressSearch = $('input.address');
     var $addressDisplay = $('div.address');
-    var addressDisplayAutocompleteEvent = null;
-    var addressAddNewAutocompleteEvent = null;
     var addressIgnore = $map.data('addressIgnore');
     var $addNewInfo = $('div.add-new');
     var $addressNewSearch = $addNewInfo.find('input.new-address');
     app.map = new Map($map, coords, geoServices, function(map) {initialisingMap.resolve(map)});
-    var turnOffAddressChange = function() {
+    var turnOffAddressChange = function(text) {
+        if (text) {
+            $addressDisplay.find('em').text(geoServices.human.cleanAddress(text, addressIgnore))
+        }
         $changeAddress.addClass('hide')
-        $addressDisplay.find('em').text(geoServices.human.cleanAddress($addressSearch.val(), addressIgnore))
         $search.removeClass('hide')
     }
     initialisingMap.then(function(map) {
@@ -175,7 +175,10 @@ $.when(GeoDetection, DOM).then(function(coords) {
                 $addressDisplay.find('em').text(geoServices.human.cleanAddress(city, addressIgnore))
             }
             app.addressSearch = new AddressSearch($addressSearch, map)
-            addressDisplayAutocompleteEvent = gMap.event.addListener(app.addressSearch.autocomplete, 'place_changed', turnOffAddressChange)
+            $addressSearch.bind('found', function(e, text, loc) {
+                turnOffAddressChange(text);
+                //@todo ajax query for new recycle points
+            })
         })
     });
     $changeAddress.find('a.close').click(function(e) {
@@ -183,9 +186,13 @@ $.when(GeoDetection, DOM).then(function(coords) {
         turnOffAddressChange()
     })
     initialisingMap.then(function(map) {
-        app.addressNewSearch = new AddressSearch($addressNewSearch, map)
-        addressAddNewAutocompleteEvent = gMap.event.addListener(app.addressNewSearch.autocomplete, 'place_changed', function() {
-            app.map.addNewPopup.marker.setPosition(geoServices.map.getProportionallyRelativeLocation(app.map.map, {bottom: 10, left:50}))
+        app.addressNewSearch = new AddressSearch($addressNewSearch, map, function(loc) {
+            return _self.geo.makeProportionallyRelativeLocation()
+        })
+        $addressNewSearch.bind('found', function(e, text, loc) {
+            app.map.addNewPopup.marker.setPosition(loc)
+            //@todo don't center the map or at least modify the center so that the popup is visible
+            //@todo ajax query for new recycle points
         })
     })
     var $addressChangeTrigger = $addressDisplay.find('a.change');
@@ -193,7 +200,7 @@ $.when(GeoDetection, DOM).then(function(coords) {
         e.preventDefault();
         $search.addClass('hide')
         $changeAddress.removeClass('hide')
-        $addressSearch.focus()
+        app.addressSearch.focus()
     })
 
     // "Add new" infowindow template

@@ -133,7 +133,6 @@ var PopupAddNew;
                             }
                         });
                         var $veil = _self.$elements.step2.find('.blockOverlay');
-                        console.log($veil)
                         new Spinner({
                             top: 'auto',
                             left: 'auto',
@@ -231,7 +230,6 @@ var PopupAddNew;
 		}
 
         , options)
-            console.log('asdasd')
             var infoWindow = new InfoBoxAnimated(options);
 //            var options = $.extend({}, options)
 //            var infoWindow = new gMap.InfoWindow(options);

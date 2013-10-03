@@ -62,7 +62,7 @@ var geoServices;
              * @param Proportion {Object} Height and Width percentage, each ranging from 100 to -100
              * @returns {gMap.LatLng}
              */
-            makeProportionallyRelativeLocation: function(loc, proportion) {
+            makeProportionallyRelativeLocation: function(map, loc, proportion) {
                 var mapDim = geoServices.map.getDimensions(map)
                 return new gMap.LatLng(loc.lat() + mapDim.height*(proportion.height/100), loc.lng() + mapDim.width*(proportion.width/100));
             }

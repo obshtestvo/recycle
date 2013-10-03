@@ -10,7 +10,7 @@ var AddressSearch;
      * @param map
      * @constructor
      */
-    AddressSearch = function($el, map) {
+    AddressSearch = function($el, map, centerTransformation) {
         var _self = this;
         _self.events = {};
         _self.map = map;
@@ -88,9 +88,13 @@ var AddressSearch;
                     _self.map.fitBounds(place.geometry.viewport);
                 } else {
                     loc = place.geometry.location
-                    _self.map.setCenter(loc);
                     _self.map.setZoom(17);  // Why 17? Because it looks good.
                 }
+                var centerLoc = loc;
+                if ($.isFunction(centerTransformation)) {
+                    centerLoc = centerTransformation(loc)
+                }
+                _self.map.setCenter(centerLoc);
                 $el.trigger('found', [text, loc])
             }
             if (val.indexOf(',')<0) {

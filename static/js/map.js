@@ -187,11 +187,10 @@ $.when(GeoDetection, DOM).then(function(coords) {
     })
     initialisingMap.then(function(map) {
         app.addressNewSearch = new AddressSearch($addressNewSearch, map, function(loc) {
-            return _self.geo.makeProportionallyRelativeLocation()
+            return geoServices.map.makeProportionallyRelativeLocation(map, loc, {height:30, width:0})
         })
         $addressNewSearch.bind('found', function(e, text, loc) {
             app.map.addNewPopup.marker.setPosition(loc)
-            //@todo don't center the map or at least modify the center so that the popup is visible
             //@todo ajax query for new recycle points
         })
     })

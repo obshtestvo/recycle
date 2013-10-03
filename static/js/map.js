@@ -128,9 +128,14 @@ $.when(GeoDetection, DOM).then(function(coords) {
 
     // Locations on the map
     initialisingMap.then(function(map) {
+        // "Add new location" infowindow template
+        var infoTemplate = $('.infowindow-show-template');
+        var infoContent = infoTemplate.html();
+        infoTemplate.remove();
+
         var recyclables = $filter.data('recyclables');
         var recycle = new RecycleServices($filterForm.data('action'), $filter, recyclables);
-        app.map.locationManager = new LocationManager(map, recycle);
+        app.map.locationManager = new LocationManager(map, recycle, infoContent);
         console.log(coords, 'ha! undefined')
         // Find all spots in radius of 20km from the center of the map
         app.map.locationManager.loadLocations({

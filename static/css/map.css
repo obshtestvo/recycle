@@ -40,8 +40,8 @@ div.add-new .new-address {
 #add-new {
     background: #fff;
     margin-top: 10px;-webkit-box-shadow: 0 3px 5px rgba(0,0,0,0.16);
--moz-box-shadow: 0 3px 5px rgba(0,0,0,0.16);
-box-shadow: 0 3px 5px rgba(0,0,0,0.16);
+    -moz-box-shadow: 0 3px 5px rgba(0,0,0,0.16);
+    box-shadow: 0 3px 5px rgba(0,0,0,0.16);
 }
 #add-new #step1 .streetview {
     width:332px;
@@ -131,4 +131,21 @@ div.add-new input {
 /* Google maps infobox styling*/
 .infoBox > img {
     display: none;
+}
+#show-location {
+    background: #fff;
+    margin-top: 10px;-webkit-box-shadow: 0 3px 5px rgba(0,0,0,0.16);
+    -moz-box-shadow: 0 3px 5px rgba(0,0,0,0.16);
+    box-shadow: 0 3px 5px rgba(0,0,0,0.16);
+    font-size: 11px;
+}
+#show-location div {
+    font-family: Arial, sans-serif!important;
+}
+#show-location #page {
+    width:400px;
+    padding: 10px;
+}
+#show-location a {
+    font-size: 11px;
 }

@@ -4,10 +4,10 @@
 var LocationManager;
 
 (function (gMap) {
-    LocationManager = function (map, recycleService) {
+    LocationManager = function (map, recycleService, infoContent) {
         this.map = map;
         this.recycle = recycleService;
-        this.infoWindow = new gMap.InfoWindow();
+        this.infoWindow = this._createInfoWindow({"content": infoContent})
     }
     LocationManager.prototype = {
         map: null,
@@ -120,11 +120,40 @@ var LocationManager;
             $.each(locations.markers, function (i, marker) {
                 gMap.event.addListener(marker, 'click', (function (marker, i) {
                     return function () {
-                        _self.infoWindow.setContent(locations.data[i].name);
-                        _self.infoWindow.open(_selfmap, marker);
+                        var eventChangingContent = gMap.event.addListener(_self.infoWindow, 'domready', function () {
+                            $(_self.infoWindow.div_).find('h2').html(locations.data[i].name)
+                            gMap.event.removeListener(eventChangingContent);
+                        })
+                        _self.infoWindow.open(_self.map, marker);
                     }
                 })(marker, i));
             })
+        },
+
+        /**
+         * Creates an infowindow
+         *
+         * @param options Infowindow options
+         * @returns {InfoBoxAnimated}
+         * @private
+         */
+        _createInfoWindow: function(options) {
+            var $content = $(options.content).hide()
+            $(this.map.getDiv()).append($content)
+            options = $.extend({
+			    pixelOffset: new google.maps.Size(-$content.outerWidth()/2, 0)
+                ,zIndex: null
+    //			,alignBottom: true
+                ,boxStyle: {
+                  background: "transparent url('/img/532px-TriangleArrow-Up.png') no-repeat center top"
+                 }
+                ,infoBoxClearance: new google.maps.Size(1, 1)
+                ,pane: "floatPane"
+                ,enableEventPropagation: false
+            } , options);
+            $content.remove();
+            var infoWindow = new InfoBoxAnimated(options);
+            return infoWindow;
         }
     }
 })(google.maps)

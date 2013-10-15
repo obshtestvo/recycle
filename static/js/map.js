@@ -7,7 +7,6 @@ var app = {
     map: null
 }
 
-
 var Map = function($el, centerLoc, geoServices, callback)
 {
     // Init vars
@@ -22,7 +21,7 @@ var Map = function($el, centerLoc, geoServices, callback)
     })
     callback = callback || $.noop;
     var onReady = gMap.event.addListener(_self.map, 'idle', function(){
-        callback(_self.map);
+        callback(_self.map);3
         gMap.event.removeListener(onReady);
     })
 }
@@ -195,8 +194,9 @@ $.when(GeoDetection, DOM).then(function(coords) {
         app.addressNewSearch = new AddressSearch($addressNewSearch, map, function(loc) {
             return geoServices.map.makeProportionallyRelativeLocation(map, loc, {height:30, width:0})
         })
-        $addressNewSearch.bind('found', function(e, text, loc) {
+        $addressNewSearch.bind('found', function(e, text, loc, addressInfo) {
             app.map.addNewPopup.marker.setPosition(loc)
+            app.map.addNewPopup.addressInfo = addressInfo;
             if (!app.map.hasVisibleMarkers()) {
                 app.map.locationManager.topUp(function(locations) {
                     //@todo merge with markers registry in app.map.markers
@@ -214,6 +214,7 @@ $.when(GeoDetection, DOM).then(function(coords) {
     // "Add new location" Triggers for popup
     var $triggerAddNew = $('.floater a.add-new');
     var infoWindowCloseListener = null;
+    var markerMoveListener = null;
     var cancelAddNew = function() {
         gMap.event.removeListener(infoWindowCloseListener)
         infoWindowCloseListener = null;
@@ -231,15 +232,32 @@ $.when(GeoDetection, DOM).then(function(coords) {
             cancelAddNew();
             return;
         }
+        var initialLocation = geoServices.map.getProportionallyRelativeLocation(app.map.map, {bottom: 10, left:50});
+        var updateAddNewAddressFromMap = function(loc) {
+            geoServices.human.convertToAddress(loc, function(err, address) {
+                if (!err) {
+                    app.map.addNewPopup.addressInfo = address.components;
+                    $addressNewSearch.select2("data", {id: initialLocation.toUrlValue(), text: address.full});
+                }
+            }, true)
+        }
+
         $triggerAddNew.addClass('active');
         $addNewInfo.removeClass('hide')
         $search.addClass('hide')
-        app.map.addNewPopup = new PopupAddNew({ map: app.map.map, content: infoContent, geo: geoServices}, function() {
-            infoWindowCloseListener = gMap.event.addListener(app.map.addNewPopup.infowindow, 'closeclick', function () {
+        app.map.addNewPopup = new PopupAddNew({ map: app.map.map, content: infoContent, geo: geoServices, location: initialLocation}, function(popup) {
+            markerMoveListener = gMap.event.addListener(popup.marker, 'position_changed_custom', function () {
+                console.log('check',Math.random())
+                updateAddNewAddressFromMap(popup.marker.getPosition());
+            });
+            infoWindowCloseListener = gMap.event.addListener(popup.infowindow, 'closeclick', function () {
                 $triggerAddNew.removeClass('active')
                 $addressNewSearch.blur()
                 $addNewInfo.addClass('hide')
                 $search.removeClass('hide')
+                gMap.event.removeListener(infoWindowCloseListener);
+                gMap.event.removeListener(markerMoveListener);
+
             });
         });
     })

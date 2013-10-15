@@ -46,8 +46,14 @@ var PopupAddNew;
             var createMapClickListener = function() {
                 return gMap.event.addListener(_self.map, 'click', function (event) {
                     //this is how we access the streetview params _self.streetview.pov
+                    _self.markerPositionChangedRecently = true;
+                    if (_self.markerPositionChangedTimeout) {
+                        clearTimeout(_self.markerPositionChangedTimeout);
+                    }
                     _self._animateMarker(event.latLng, function () {
                         _self.checkStreetView(_self.marker.getPosition());
+                        gMap.event.trigger(_self.marker, 'position_changed_custom');
+                        _self.timeoutMarkerPositionChange();
                     });
                 })
             }
@@ -167,19 +173,36 @@ var PopupAddNew;
                 }),
 
                 // When the marker is dragged
+                markerDragStart: gMap.event.addListener(_self.marker, "dragstart", function () {
+                    _self.markerPositionChangedRecently = true;
+                }),
+
+                // When the marker is dragged
                 markerDrag: gMap.event.addListener(_self.marker, "dragend", function () {
+                    _self.markerPositionChangedRecently = false;
                     _self.checkStreetView(_self.marker.getPosition());
+                }),
+
+                // When the marker is dragged
+                markerPositionChange: gMap.event.addListener(_self.marker, "position_changed", function () {
+                    if (!_self.markerPositionChangedRecently) {
+                        gMap.event.trigger(_self.marker, 'position_changed_custom');
+                        _self.timeoutMarkerPositionChange();
+                    }
                 }),
 
                 // When the map is clicked
                 mapClick: createMapClickListener()
             }
-            callback();
+            callback(_self);
         })
     }
     PopupAddNew.prototype = {
         map: null,
+        addressInfo: null,
         marker: null,
+        markerPositionChangedRecently: false,
+        markerPositionChangedTimeout: false,
         infowindow: null,
         streetview: null,
         geo: null,
@@ -318,6 +341,8 @@ var PopupAddNew;
         destroy: function() {
             var _self = this;
             gMap.event.removeListener(_self.events.markerDrag);
+            gMap.event.removeListener(_self.events.markerDragStart);
+            gMap.event.removeListener(_self.events.markerPositionChange);
             gMap.event.removeListener(_self.events.mapClick);
             gMap.event.removeListener(_self.events.infoWindowReady);
             gMap.event.removeListener(_self.events.infoClose);
@@ -325,6 +350,14 @@ var PopupAddNew;
                 _self.infowindow.close()
             _self.streetview.unbind("position");;
             _self.marker.setMap(null);
+        },
+        /**
+         * Delays marker position change by ceratin milliseconds.
+         */
+        timeoutMarkerPositionChange: function() {
+            var _self = this;
+            _self.markerPositionChangedRecently = true;
+            _self.markerPositionChangedTimeout = setTimeout(function() {_self.markerPositionChangedRecently = false;}, 200)
         }
     }
 })(google.maps)

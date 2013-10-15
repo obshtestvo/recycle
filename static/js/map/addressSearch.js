@@ -80,7 +80,7 @@ var AddressSearch;
             var text = $el.select2('data').text;
             var val = changes.val;
             var loc = null;
-            var center = function(place) {
+            var finish = function(place) {
                 if (place.geometry.viewport) {
                     loc = place.geometry.viewport.getCenter();
                     _self.map.fitBounds(place.geometry.viewport);
@@ -93,16 +93,16 @@ var AddressSearch;
                     centerLoc = centerTransformation(loc)
                 }
                 _self.map.setCenter(centerLoc);
-                $el.trigger('found', [text, loc])
+                $el.trigger('found', [text, loc, place.address_components])
             }
             if (val.indexOf(',')<0) {
                 _self.placesService.getDetails({
                     reference: val
                 }, function(result, status) {
-                    center(result);
+                    finish(result);
                 })
             } else {
-                center(lastResults[text])
+                finish(lastResults[text])
             }
         })
     }

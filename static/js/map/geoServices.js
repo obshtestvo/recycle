@@ -92,26 +92,46 @@ var geoServices;
              * @param latLng
              * @param callback In the form callback(err, data )
              */
-            convertToAddress: function(latLng, callback) {
+            convertToAddress: function(latLng, callback, mustBeStreetAddress) {
+                var _self = this;
                 geoServices.coder.geocode({
                     "latLng": latLng
                 }, function (results, status) {
                     if (status == gMap.GeocoderStatus.OK) {
-                        var address = {
-                            full: results[0]['formatted_address'],
-                            city: null
+                        var match = results[0];
+                        if (mustBeStreetAddress) {
+                            $.each(results, function(i, result) {
+                                if ($.inArray("street_address", result.types)>-1) {
+                                    match = result;
+                                    return false;
+                                }
+                            })
                         }
-                        $.each(results, function(i, token) {
-                            if ($.inArray('locality', token.types)>-1) {
-                                address.city = token.formatted_address
-                                return false;
-                            }
-                        })
+                        var address = {
+                            full: match['formatted_address'],
+                            city: _self.getCity(match.address_components),
+                            components: match.address_components
+                        }
                         callback(null, address);
                     } else {
                         callback(status, results);
                     }
                 });
+            },
+            /**
+             * Extract city from address components
+             * @param addressComponents
+             * @returns {*}
+             */
+            getCity: function(addressComponents) {
+                var city = null;
+                $.each(addressComponents, function(i, component) {
+                    if ($.inArray('locality', component.types)>-1) {
+                        city = component.long_name;
+                        return false;
+                    }
+                })
+                return city;
             },
             /**
              * Clean address from tokens

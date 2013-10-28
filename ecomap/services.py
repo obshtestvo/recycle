@@ -1,7 +1,8 @@
 from models import *
 import logging
 class RecycleSpotService():
-    def get_by_types(self, **params):
+    @staticmethod
+    def get_by_types(params):
         
         if 'types' not in params or len(params.getlist('types'))==0:
             return RecycleSpot.objects.all()
@@ -10,7 +11,7 @@ class RecycleSpotService():
         # check if the provided types are valid
         if RecycleSpot.check_type(*types) > 0:
             raise Exception("Invalid recycle spot type")
-
+        
         return RecycleSpot.objects.filter(type__in=types)
 
     def get_by_id(self, **params):

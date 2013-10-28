@@ -1,21 +1,15 @@
 {
-	"batteries": [
-		{
-			"name": "Spot 1",
-			"lat": 42.693413,
-			"lng": 23.322601
-		},
-		{
-			"name": "Technomarket",
-			"lat": 42.698347,
-			"lng": 23.345368
-		}
-	],
-	"paper":[
-		{
-			"name": "Ecopack",
-			"lat": 42.679894,
-			"lng": 23.323267
-		}
-	]
+
+{% for i in spots %}
+    "{{i.type.name}}": [
+    {
+	    "name": "{{i.name}}",
+        "id"  : {{i.id}},
+	    "description": "{{i.description}}",
+	    "lat": {{i.lat}},
+	    "lng": {{i.lng}}
+    }
+    ]
+{% endfor %}
+
 }

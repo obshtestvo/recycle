@@ -4,16 +4,14 @@ from django.views.generic.base import View
 from core.exception.verbose import VerboseRedirectException
 from ecomap.services import *
 
-
 class HomeView(View):
     def get(self, request):
-        spotService = RecycleSpotService()
         recyclableService = RecyclableItemService()
         return TemplateResponse(request, 'home/get', {
-            'spots': [{"name": "glass", "material": "glass"}],
-            'recyclables': {"glass": "glass", "beer": "glass", "paper": "paper", "batteries": "batteries"}
-            # 'spots': spotService.get_by_types(request.params.getlist('types')),
-            # 'recyclables':  recyclableService.get_all()
+            #'spots': [{"name": "glass", "material": "glass"}],
+            'recyclables': {"glass": "glass", "beer": "glass", "paper": "paper", "batteries": "batteries"},
+             'spots': RecycleSpotService.get_by_types(request.params.getlist('types')),
+             #'recyclables':  recyclableService.get_all()
         })
 
     def put(self, request):

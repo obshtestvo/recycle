@@ -12,7 +12,7 @@
          data-address-ignore="[ &quot;България&quot;,  &quot;Bulgaria&quot;]"
     ></div>
     <div class="floater main">
-        <div id="search" data-spots="{{ spots|jsonify }}">
+        <div id="search" data-spots="{{ spots }}">
             <a class="add-new" href="" style="">+</a>
             <form action="{% url 'home' %}" data-action="{% url 'spots' %}">
                 <select name="filter" id="filter" multiple data-recyclables="{{ recyclables|jsonify }}">

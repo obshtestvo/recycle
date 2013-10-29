@@ -8,6 +8,7 @@ var AddressSearch;
      * Places autocomplete
      * @param $el
      * @param map
+     * @param [centerTransformation]
      * @constructor
      */
     AddressSearch = function($el, map, centerTransformation) {
@@ -24,15 +25,18 @@ var AddressSearch;
         _self.placesService = new google.maps.places.PlacesService(_self.map);
         var lastResults = {}
         var GoogleMapAjaxTransport = function(options) {
+            var cancelled = false;
             var googleXhr = {
                 abort: function() {
-                    console.log('pff aborting, yeah right')
-                    //@todo remove timeout for displaying results
+                    cancelled = true;
                 }
             }
             _self.autocompleteService.getPlacePredictions($.extend({}, googleOptions, {
                 'input': options.data.q
             }), function (list, status) {
+                    if (cancelled) {
+                        return;
+                    }
                     if (list == null || list.length == 0) {
                         _self.geocoder.geocode({
                             address: options.data.q,
@@ -72,7 +76,7 @@ var AddressSearch;
                 data: function(term) {
                     return {q: term}
                 },
-                quietMillis: 100
+                quietMillis: 600
             }
         })
 
@@ -111,9 +115,15 @@ var AddressSearch;
         $el: null,
         map: null,
         autocomplete: null,
+
         focus: function() {
             this.$el.select2('open')
         },
+
+        update: function(id, text) {
+            this.$el.select2("data", {"id": id , "text": text });
+        },
+
         destroy: function() {
             var _self = this;
             _self.autocomplete.unbind("bounds");

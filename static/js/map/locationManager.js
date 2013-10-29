@@ -15,6 +15,7 @@ var LocationManager;
         recycle: null,
         filteredMarkers: [],
         markerCluster: null,
+
         /**
          * Loads new loations based on criteria
          * @param criteria
@@ -31,7 +32,7 @@ var LocationManager;
         },
 
         /**
-         * Helper of loadLocations where the passed criteria is the centere of the map and chosen tags
+         * Helper of loadLocations where the passed criteria is the center of the map and chosen tags
          */
         filterLocations: function (callback) {
             var _self = this;
@@ -110,6 +111,7 @@ var LocationManager;
                 data: filteredMarkerData
             };
         },
+
         /**
          * Enriches functionality of locations
          * @param locations
@@ -120,8 +122,18 @@ var LocationManager;
             $.each(locations.markers, function (i, marker) {
                 gMap.event.addListener(marker, 'click', (function (marker, i) {
                     return function () {
+                        // Add info window
                         var eventChangingContent = gMap.event.addListener(_self.infoWindow, 'domready', function () {
-                            $(_self.infoWindow.div_).find('h2').html(locations.data[i].name)
+                            var $infoWindow = $(_self.infoWindow.div_);
+                            $infoWindow.find('h2').html(locations.data[i].name);
+                            var $close = $infoWindow.find('a.close');
+                            // Custom close link on the infowindow
+                            $close.click(function(e){
+                                e.preventDefault();
+                                gMap.event.trigger(_self.infoWindow, "closeclick");
+                                _self.infoWindow.close();
+                            })
+
                             gMap.event.removeListener(eventChangingContent);
                         })
                         _self.infoWindow.open(_self.map, marker);

@@ -183,7 +183,7 @@ var PopupAddNew;
                     _self.checkStreetView(_self.marker.getPosition());
                 }),
 
-                // When the marker is dragged
+                // When the marker is dragged or address is changed
                 markerPositionChange: gMap.event.addListener(_self.marker, "position_changed", function () {
                     if (!_self.markerPositionChangedRecently) {
                         gMap.event.trigger(_self.marker, 'position_changed_custom');

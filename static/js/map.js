@@ -19,9 +19,11 @@ var Map = function($el, centerLoc, geoServices, callback)
 	_self.map = _self._createMap($el.get(0), {
         center: centerLoc
     })
+
+    // Wait map to be idle/ready and trigger callback
     callback = callback || $.noop;
     var onReady = gMap.event.addListener(_self.map, 'idle', function(){
-        callback(_self.map);3
+        callback(_self.map);
         gMap.event.removeListener(onReady);
     })
 }
@@ -33,6 +35,7 @@ Map.prototype = {
     locationManager: null,
     geo: null,
     markers: [],
+
     /**
      * Creates a map
      *
@@ -42,19 +45,21 @@ Map.prototype = {
      * @private
      */
     _createMap: function(el, options) {
+
         var options = $.extend({
             disableDefaultUI: true,
             zoomControl: true,
             zoomControlOptions: {
-                style: google.maps.ZoomControlStyle.SMALL
+                style: gMap.ZoomControlStyle.SMALL
             },
             zoom: 13,
             minZoom: 7,
             streetViewControl: false,
             backgroundColor: '#B2F7A6',
-            mapTypeId: google.maps.MapTypeId.ROADMAP
+            mapTypeId: gMap.MapTypeId.ROADMAP
         }, options);
-        var map = new google.maps.Map(el,options);
+
+        var map = new gMap.Map(el,options);
         var styles = [
             {
                 featureType: "poi",
@@ -76,6 +81,7 @@ Map.prototype = {
         map.setMapTypeId("Recycle Style");
         return map;
     },
+
     /**
      * Check for visible markers on the map
      * @returns {boolean}
@@ -96,18 +102,28 @@ Map.prototype = {
 }
 
 /**
- * Boot...
+ * Booting application.
+ *
+ * Waiting for various processes or services to finish loading and then trigger the correct actions
  */
+
 // Wait for DOM
-var DOM = $.Deferred()
-$(function() {DOM.resolve()})
+var initialisingDOM = $.Deferred()
+$(function() {initialisingDOM.resolve()})
+
 // Wait for HTML5 Geo-loc
-var GeoDetection = $.Deferred();
-geoServices.human.detectUser(GeoDetection.resolve)
+var retrievingGeoDetection = $.Deferred();
+geoServices.human.detectUser(retrievingGeoDetection.resolve)
+
 // Wait for Map
 var initialisingMap = $.Deferred();
-// When both DOM and Geo-loc are ready
-$.when(GeoDetection, DOM).then(function(coords) {
+
+// Wait for initial human friendly address of the center of the map
+var retrievingFirstMapAddress = $.Deferred();
+
+
+// When DOM is ready
+$.when(initialisingDOM).then(function() {
     // Materials tags
     var $search = $('#search');
     var $filter = $search.find('select');
@@ -122,12 +138,44 @@ $.when(GeoDetection, DOM).then(function(coords) {
     var addressIgnore = $map.data('addressIgnore');
     var $addNewInfo = $('div.add-new');
     var $addressNewSearch = $addNewInfo.find('input.new-address');
-    app.map = new Map($map, coords, geoServices, function(map) {initialisingMap.resolve(map)});
+    app.map = new Map($map, undefined, geoServices, function(map) {initialisingMap.resolve(map)});
 
+    // User address search
+    var turnOffAddressChange = function(text) {
+        if (text) {
+            $addressDisplay.find('em').text(geoServices.human.cleanAddress(text, addressIgnore))
+        }
+        $changeAddress.addClass('hide')
+        $search.removeClass('hide')
+    }
 
-    // Locations on the map
+    // Get current human-friendly address of the center of the map and display the city
     initialisingMap.then(function(map) {
-        // "Add new location" infowindow template
+        geoServices.human.convertToAddress(map.getCenter(), function(err, address) {
+            if (!err) {
+                var city = address.city == null ? '': address.city;
+                turnOffAddressChange(city)
+                retrievingFirstMapAddress.resolve();
+            }
+        })
+    });
+
+    // Add the user address search
+    initialisingMap.then(function(map) {
+        app.addressSearch = new AddressSearch($addressSearch, map)
+        $addressSearch.bind('found', function(e, text) {
+            turnOffAddressChange(text);
+            if (!app.map.hasVisibleMarkers()) {
+                app.map.locationManager.topUp(function(locations) {
+                    //@todo merge with markers registry in app.map.markers
+                })
+            }
+        })
+    });
+
+    // Take care of showing locations on the map
+    $.when(initialisingMap).then(function(map) {
+        // "Show location details" infowindow template
         var infoTemplate = $('.infowindow-show-template');
         var infoContent = infoTemplate.html();
         infoTemplate.remove();
@@ -135,10 +183,10 @@ $.when(GeoDetection, DOM).then(function(coords) {
         var recyclables = $filter.data('recyclables');
         var recycle = new RecycleServices($filterForm.data('action'), $filter, recyclables);
         app.map.locationManager = new LocationManager(map, recycle, infoContent);
-        console.log(coords, 'ha! undefined')
+
         // Find all spots in radius of 20km from the center of the map
         app.map.locationManager.loadLocations({
-            "coords": coords
+            "coords": map.getCenter().toUrlValue()
         }, function(locations) {
             app.map.markers = locations.markers;
         })
@@ -150,31 +198,19 @@ $.when(GeoDetection, DOM).then(function(coords) {
     })
 
 
-    // User address search
-    var turnOffAddressChange = function(text) {
-        if (text) {
-            $addressDisplay.find('em').text(geoServices.human.cleanAddress(text, addressIgnore))
-        }
-        $changeAddress.addClass('hide')
-        $search.removeClass('hide')
-    }
-    initialisingMap.then(function(map) {
-        geoServices.human.convertToAddress(map.getCenter(), function(err, address) {
+    // Detect location if allowed and move map to new coordinates
+    $.when(initialisingMap, retrievingGeoDetection, retrievingFirstMapAddress).then(function(map, loc) {
+        map.setCenter(loc);
+        //@todo load locations if none on map
+        geoServices.human.convertToAddress(loc, function(err, address) {
             if (!err) {
                 var city = address.city == null ? '': address.city;
-                $addressDisplay.find('em').text(geoServices.human.cleanAddress(city, addressIgnore))
+                turnOffAddressChange(city)
+                $addressSearch.select2("data", {id: loc.toUrlValue(), text: address.full});
             }
-            app.addressSearch = new AddressSearch($addressSearch, map)
-            $addressSearch.bind('found', function(e, text) {
-                turnOffAddressChange(text);
-                if (!app.map.hasVisibleMarkers()) {
-                    app.map.locationManager.topUp(function(locations) {
-                        //@todo merge with markers registry in app.map.markers
-                    })
-                }
-            })
         })
-    });
+    })
+
     $changeAddress.find('a.close').click(function(e) {
         e.preventDefault();
         turnOffAddressChange()
@@ -195,7 +231,8 @@ $.when(GeoDetection, DOM).then(function(coords) {
             return geoServices.map.makeProportionallyRelativeLocation(map, loc, {height:30, width:0})
         })
         $addressNewSearch.bind('found', function(e, text, loc, addressInfo) {
-            app.map.addNewPopup.marker.setPosition(loc)
+            app.map.addNewPopup.marker.setPosition(loc);
+            app.map.addNewPopup.checkStreetView(loc);
             app.map.addNewPopup.addressInfo = addressInfo;
             if (!app.map.hasVisibleMarkers()) {
                 app.map.locationManager.topUp(function(locations) {

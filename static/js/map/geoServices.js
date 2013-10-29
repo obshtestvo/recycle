@@ -11,6 +11,7 @@ var geoServices;
         panorama: new gMap.StreetViewService(),
         coder: new gMap.Geocoder(),
         map: {
+
             /**
              * Get dimensions in coordinates difference
              * @returns {{height: number, width: number}}
@@ -24,6 +25,7 @@ var geoServices;
                     width: lngDiff
                 }
             },
+
             /**
              * Get a location on the map relative to the bounds by proportion of the map size (in percentages)
              * @returns {gMap.LatLng}
@@ -56,6 +58,7 @@ var geoServices;
                 }
                 return new gMap.LatLng(latBase + mapDim.height*(latPercentage/100), lngBase + mapDim.width*(lngPercentage/100));
             },
+
             /**
              * Transforms a location (assuming it will be a center of the map) by a proportion of the map size
              * @param loc {gMap.LatLng}
@@ -67,18 +70,16 @@ var geoServices;
                 return new gMap.LatLng(loc.lat() + mapDim.height*(proportion.height/100), loc.lng() + mapDim.width*(proportion.width/100));
             }
         },
+
         human: {
             /**
              * Fetch coordinates of the user via WC3 geolocation service
              * @param callback
              */
             detectUser: function(callback){
-                if (false) {//navigator.geolocation) {
+                if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(function(loc){
-                        callback({
-                            lat: loc.coords.latitude,
-                            lng: loc.coords.longitude
-                        })
+                        callback(new gMap.LatLng(loc.coords.latitude, loc.coords.longitude))
                     }, function() {
                         callback();
                     });
@@ -86,11 +87,13 @@ var geoServices;
                     callback();
                 }
             },
+
             /**
              * Get address based on coordinates
              *
              * @param latLng
              * @param callback In the form callback(err, data )
+             * @param mustBeStreetAddress Flags whether to return always a street address
              */
             convertToAddress: function(latLng, callback, mustBeStreetAddress) {
                 var _self = this;

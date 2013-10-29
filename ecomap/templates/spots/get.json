@@ -1,14 +1,17 @@
 {
-
-{% for i in spots %}
-    "{{i.type.name}}": [
-    {
-	    "name": "{{i.name}}",
-        "id"  : {{i.id}},
-	    "description": "{{i.description}}",
-	    "lat": {{i.lat}},
-	    "lng": {{i.lng}}
-    }
+{% for k,v in spots.items %}
+    "{{k}}": [
+    {% for i in v %}
+        {
+	        "name": "{{i.name}}",
+            "id"  : {{i.id}},
+	        "description": "{{i.description}}",
+	        "lat": {{i.lat}},
+	        "lng": {{i.lng}}
+        }
+        {% if not forloop.last %},{% endif %}
+    {% endfor %}
+    {% if not forloop.last %},{% endif %}
     ]
 {% endfor %}
 

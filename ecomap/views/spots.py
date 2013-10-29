@@ -7,10 +7,8 @@ from ecomap.services import *
 
 class RecycleSpotsView(View):
     def get(self, request):
-        service = RecycleSpotService()
-        request.params.get('types')
         return TemplateResponse(request, 'spots/get', {
-            'spots': service.get_by_types(request.params.getlist('test'))
+            'spots': RecycleSpotService.get_by_types(request.params.getlist('test'))
         })
 
     def put(self, request):

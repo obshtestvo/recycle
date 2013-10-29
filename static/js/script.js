@@ -141,9 +141,12 @@ $.when(initialisingDOM).then(function() {
             })
             .on('show', function(e, text, loc, addressInfo) {
                 $search.addClass('hide')
+                app.map.locationManager.close()
+                app.map.locationManager.pause()
             })
             .on('hide', function(e, text, loc, addressInfo) {
                 $search.removeClass('hide')
+                app.map.locationManager.resume()
             })
     })
 });

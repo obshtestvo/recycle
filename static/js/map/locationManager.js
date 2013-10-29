@@ -10,6 +10,7 @@ var LocationManager;
         this.infoWindow = this._createInfoWindow({"content": infoContent})
     }
     LocationManager.prototype = {
+        isPaused: false,
         map: null,
         infoWindow: null,
         recycle: null,
@@ -56,6 +57,29 @@ var LocationManager;
                 _self._decorate(locations);
                 callback(locations)
             });
+        },
+
+        /**
+         * Close info dialog
+         */
+        close: function() {
+            this.infoWindow.close();
+        },
+
+
+        /**
+         * Temporarily disable the ability to click on info windows
+         */
+        pause: function() {
+            this.isPaused = true;
+        },
+
+
+        /**
+         * Re-enable the ability to click on info windows
+         */
+        resume: function() {
+            this.isPaused = false;
         },
 
         /**
@@ -122,6 +146,9 @@ var LocationManager;
             $.each(locations.markers, function (i, marker) {
                 gMap.event.addListener(marker, 'click', (function (marker, i) {
                     return function () {
+                        if (_self.isPaused) {
+                            return;
+                        }
                         // Add info window
                         var eventChangingContent = gMap.event.addListener(_self.infoWindow, 'domready', function () {
                             var $infoWindow = $(_self.infoWindow.div_);

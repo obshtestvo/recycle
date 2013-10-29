@@ -136,6 +136,47 @@ var geoServices;
                 })
                 return city;
             },
+
+            /**
+             * Extract street or area
+             * @param addressComponents
+             * @returns {*}
+             */
+            getStreetOrArea: function(addressComponents) {
+                var street = null;
+                $.each(addressComponents, function(i, component) {
+                    if ($.inArray('street_address', component.types)>-1) {
+                        street = component.long_name;
+                        return false;
+                    }
+                })
+                if (street == null) {
+                    $.each(addressComponents, function(i, component) {
+                        if ($.inArray('route', component.types)>-1) {
+                            street = component.long_name;
+                            return false;
+                        }
+                    })
+                }
+                return street;
+            },
+
+            /**
+             * Extract street number
+             * @param addressComponents
+             * @returns {*}
+             */
+            getStreetNumber: function(addressComponents) {
+                var number = null;
+                $.each(addressComponents, function(i, component) {
+                    if ($.inArray('street_number', component.types)>-1) {
+                        number = component.long_name;
+                        return false;
+                    }
+                })
+                return number;
+            },
+
             /**
              * Clean address from tokens
              *

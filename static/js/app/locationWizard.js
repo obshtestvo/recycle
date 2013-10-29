@@ -32,7 +32,7 @@ var LocationWizard;
         _self.$searchInput.bind('found', function(e, text, loc, addressComponents) {
             _self.popup.marker.setPosition(loc);
             _self.popup.checkStreetView(loc);
-            _self.popup.addressInfo = addressInfo;
+            _self.popup.addressInfo = addressComponents;
             _self.$container.trigger('found');
         })
 
@@ -87,6 +87,9 @@ var LocationWizard;
         ignoredAddressParts: null,
         gMapListeners: [],
 
+        /**
+         * Cancels wizard
+         */
         cancel: function() {
             var _self = this;
             $.each(_self.gMapListeners, function(i, listener) {
@@ -101,6 +104,11 @@ var LocationWizard;
             _self.$container.trigger('hide');
         },
 
+        /**
+         * Updates address based on passed location
+         * @param loc
+         * @private
+         */
         _updateAddress: function(loc) {
             var _self = this;
             _self.geo.human.convertToAddress(loc, function(err, address) {
@@ -111,6 +119,11 @@ var LocationWizard;
             }, true)
         },
 
+        /**
+         * Integrates popup with other elements
+         * @param popup
+         * @private
+         */
         _integratePopup: function(popup) {
             var _self = this;
             var markerMoveListener = gMap.event.addListener(popup.marker, 'position_changed_custom', function () {
@@ -119,6 +132,38 @@ var LocationWizard;
             _self.gMapListeners.push(markerMoveListener)
             var infoWindowCloseListener = gMap.event.addListener(popup.infowindow, 'closeclick', function() {_self.cancel()});
             _self.gMapListeners.push(infoWindowCloseListener)
+        },
+
+        /**
+         * Retrieves map-related input
+         * @returns {{loc: {lat: *, lng: *}, streetview: {fov: *, heading: (*|Number), pitch: (*|CSSStyleDeclaration.pitch)}, address: {simple: {city: *, street: *, number: *}}}}
+         */
+        getMapInput: function() {
+            var addressInfo = this.popup.addressInfo;
+            var pov = this.popup.streetview.getPov()
+            var loc = this.popup.marker.getPosition()
+            var values=[120, 90, 53.5, 28.3, 14.3, 10];
+            var fov=values[Math.round(pov.zoom)];
+            return {
+                loc: {
+                    lat: loc.lat(),
+                    lng: loc.lng()
+                },
+                streetview: {
+                    fov: fov,
+                    heading: pov.heading,
+                    pitch: pov.pitch
+                },
+                address: {
+                    simple: {
+                        city: this.geo.human.getCity(addressInfo),
+                        street: this.geo.human.getStreetOrArea(addressInfo),
+                        number: this.geo.human.getStreetNumber(addressInfo)
+                    }
+                }
+            }
         }
+
+
     }
 })(AddressSearch, PopupAddNew, google.maps)

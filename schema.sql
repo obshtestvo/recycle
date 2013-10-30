@@ -1,3 +1,9 @@
+/*
+SQLyog Community v11.12 (64 bit)
+MySQL - 5.5.31-0ubuntu0.12.10.1 : Database - recycle
+*********************************************************************
+*/
+
 /*!40101 SET NAMES utf8 */;
 
 /*!40101 SET SQL_MODE=''*/;
@@ -6,7 +12,9 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-CREATE DATABASE /*!32312 IF NOT EXISTS*/`recycle` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`recycle` /*!40100 DEFAULT CHARACTER SET latin1 */;
+
+USE `recycle`;
 
 /*Table structure for table `material_mapping` */
 
@@ -26,7 +34,7 @@ DROP TABLE IF EXISTS `spot`;
 
 CREATE TABLE `spot` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `type` int(11) DEFAULT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `organisation` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
   `area` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'kvartal',
@@ -39,9 +47,8 @@ CREATE TABLE `spot` (
   `pointer` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'path to custom pointer',
   `streetview_params` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `type` (`type`),
-  CONSTRAINT `spot_ibfk_1` FOREIGN KEY (`type`) REFERENCES `spot_type` (`name`) ON DELETE SET NULL ON UPDATE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  KEY `type` (`type`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `spot_material` */
 
@@ -61,8 +68,8 @@ CREATE TABLE `spot_material_link` (
   `material` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`spot`,`material`),
   KEY `material` (`material`),
-  CONSTRAINT `spot_material_link_ibfk_2` FOREIGN KEY (`spot`) REFERENCES `spot` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `spot_material_link_ibfk_1` FOREIGN KEY (`material`) REFERENCES `spot_material` (`name`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `spot_material_link_ibfk_1` FOREIGN KEY (`material`) REFERENCES `spot_material` (`name`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `spot_material_link_ibfk_2` FOREIGN KEY (`spot`) REFERENCES `spot` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `spot_type` */
@@ -70,9 +77,11 @@ CREATE TABLE `spot_material_link` (
 DROP TABLE IF EXISTS `spot_type`;
 
 CREATE TABLE `spot_type` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  PRIMARY KEY (`id`),
+  KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

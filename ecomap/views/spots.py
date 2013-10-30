@@ -4,7 +4,7 @@ from django.http import HttpResponse
 
 from core.exception.verbose import VerboseRedirectException
 from ecomap.services import *
-
+import urlparse
 
 class RecycleSpotsView(View):
     def get(self, request):
@@ -13,9 +13,8 @@ class RecycleSpotsView(View):
         })
 
     def put(self, request):
-        data = request.PUT
-        
-        RecycleSpot.save(data)
+        data = urlparse.parse_qs(request.raw_post_data) # Hack to parse put data, because django doesn't recognise PUT request
+        RecycleSpot.add_spot(data)
         return HttpResponse(content = "123", status = 200)
         # ...nothing happens here yet, test redirection with errors...
        # failure = VerboseRedirectException('Unable to change home page').set_redirect('home')

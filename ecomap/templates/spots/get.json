@@ -1,6 +1,6 @@
 {
 {% for k,v in spots.items %}
-    "paper": [
+    "{{k}}": [
     {% for i in v %}
         {
 	        "name"       : "{{i.name}}",

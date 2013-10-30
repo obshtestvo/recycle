@@ -3,7 +3,7 @@ from django.db import models
 class RecycleSpotMaterial(models.Model):
     class Meta:
         db_table = 'spot_material'
-    name = models.CharField(max_length=255, primary_key=True)
+    name = models.CharField(max_length=255)
 
 
 class RecyclableItem(models.Model):
@@ -21,7 +21,7 @@ class RecycleSpot(models.Model):
     TYPE_YARD = 'yard'
     TYPE_STORE = 'store'
 
-    type = models.ForeignKey('RecycleSpotType', db_column = 'type', related_name = 'spots')
+    type = models.ForeignKey('RecycleSpotType', related_name = 'spot_types')
     name = models.CharField(max_length=255)
     organisation = models.CharField(max_length=64)
     area = models.CharField(max_length=255)
@@ -44,6 +44,25 @@ class RecycleSpot(models.Model):
             cls.TYPE_YARD,
         }) == 0
 
+    @classmethod
+    def add_spot(cls, data):
+        fields = {
+            'type_id'        : data['object_type'][0],
+            'description' : data['object_description'][0],
+            'lat'         : data['lat'][0],
+            'lng'         : data['lng'][0],
+            'address'     : data['address'][0],
+            'streetview_params': data['streetview_params'][0]
+        }
+
+        spot_id = cls.objects.create(**fields)
+        spot_material_fields = {
+                'spot_id': spot_id.id,
+                'material_id': data['object_services'][0]
+        }
+        RecycleSpotMaterialLink.objects.create(**spot_material_fields)
+        
+        
 class RecycleSpotMaterialLink(models.Model):
     class Meta:
         db_table = 'spot_material_link'

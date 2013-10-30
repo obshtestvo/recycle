@@ -34,7 +34,7 @@ DROP TABLE IF EXISTS `spot`;
 
 CREATE TABLE `spot` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `type` int(11) DEFAULT NULL,
+  `type_id` int(11) DEFAULT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `organisation` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
   `area` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'kvartal',
@@ -47,29 +47,29 @@ CREATE TABLE `spot` (
   `pointer` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'path to custom pointer',
   `streetview_params` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `type` (`type`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  KEY `type` (`type_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `spot_material` */
 
 DROP TABLE IF EXISTS `spot_material`;
 
 CREATE TABLE `spot_material` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  PRIMARY KEY (`name`,`id`),
+  KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `spot_material_link` */
 
 DROP TABLE IF EXISTS `spot_material_link`;
 
 CREATE TABLE `spot_material_link` (
-  `spot` int(11) unsigned NOT NULL,
-  `material` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`spot`,`material`),
-  KEY `material` (`material`),
-  CONSTRAINT `spot_material_link_ibfk_1` FOREIGN KEY (`material`) REFERENCES `spot_material` (`name`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `spot_material_link_ibfk_2` FOREIGN KEY (`spot`) REFERENCES `spot` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  `spot_id` int(11) unsigned NOT NULL,
+  `material_id` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`spot_id`,`material_id`),
+  KEY `material` (`material_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `spot_type` */
@@ -81,7 +81,7 @@ CREATE TABLE `spot_type` (
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

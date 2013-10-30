@@ -155,10 +155,18 @@ var PopupAddNew;
                         }).spin($veil.get(0));
 
                         // simulate ajax
-                        setTimeout(function() {
+                        location_data = app.locationWizard.getMapInput();
+                        var data = $content.find('input,select,textarea').serialize() + "&lat=" + location_data['loc']['lat'] +"&lng=" +location_data['loc']['lng']+ "&address=" +location_data['address']['simple']['street'] + "&streetview_params=" + JSON.stringify(location_data['streetview']);
+
+                        $.ajax({
+                          url: '/spots/',
+                          type: 'PUT',
+                          data: data,
+                          success: function() {
                             _self.$elements.step2.unblock();
-                            _self.infowindow.switchContent($content, _self.$elements.step2, _self.$elements.step3, 100)
-                        },2000)
+                            _self.infowindow.switchContent($content, _self.$elements.step2, _self.$elements.step3, 100);
+                          }
+                        });
                     })
 
                     _self.$elements.step3 = $content.find('#step3');

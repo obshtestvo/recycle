@@ -152,7 +152,9 @@ var LocationManager;
                         // Add info window
                         var eventChangingContent = gMap.event.addListener(_self.infoWindow, 'domready', function () {
                             var $infoWindow = $(_self.infoWindow.div_);
-                            $infoWindow.find('h2').html(locations.data[i].name);
+                            //$infoWindow.find('h2').html(locations.data[i].name);
+                            console.log(locations.data[i]);
+                            $infoWindow.find('h2').html(locations.data[i].address);
                             var $close = $infoWindow.find('a.close');
                             // Custom close link on the infowindow
                             $close.click(function(e){

@@ -1,13 +1,15 @@
 {
 {% for k,v in spots.items %}
-    "{{k}}": [
+    "paper": [
     {% for i in v %}
         {
-	        "name": "{{i.name}}",
-            "id"  : {{i.id}},
+	        "name"       : "{{i.name}}",
+            "id"         : {{i.id}},
 	        "description": "{{i.description}}",
-	        "lat": {{i.lat}},
-	        "lng": {{i.lng}}
+            "address"    : "{{i.address}}",
+	        "lat"        : {{i.lat}},
+	        "lng"        : {{i.lng}},
+            "streetview_params"    : "{{i.streetview_params}}"
         }
         {% if not forloop.last %},{% endif %}
     {% endfor %}

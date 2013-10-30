@@ -77,10 +77,28 @@
     <div class="infowindow-show-template hide">
         <div id="show-location">
             <a class="close" href="">Close</a>
+            <div class="streetview-thumb">
+                <img src="about:blank" width="400" heigth="200" rel="streetview-img"/>
+                <span class="address" rel="address"></span>        
+            </div>
+            <div class="more-info">
+                <h5>Допълнителна информация</h5>
+                <p rel="description"></p>
+            </div>
+            <img src="" />
+            <div class="company-info">
+                <img src="" class="logo" rel="logo"/>
+                <p></p>
+            </div>
+        </div>
+        {% comment %}
+        <div id="show-location">
+            <a class="close" href="">Close</a>
             <div id="page" class="step">
               <h2>Tadaa</h2>
             </div>
         </div>
+        {% endcomment %}
     </div>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>

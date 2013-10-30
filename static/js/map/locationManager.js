@@ -155,6 +155,10 @@ var LocationManager;
                             //$infoWindow.find('h2').html(locations.data[i].name);
                             console.log(locations.data[i]);
                             $infoWindow.find('h2').html(locations.data[i].address);
+                            streetview_params = JSON.parse(locations.data[i].streetview_params);
+                            var src = 'http://maps.googleapis.com/maps/api/streetview?size=100x100&location='+data[i].lat+',' + data[i].lng +'&fov='+streetview_params.fov+'&heading='+streetview_params.heading+'&pitch='+ streetview_params.pitch+'&sensor=false';
+                            console.warn(src);
+                            $infoWindow.find('img').attr('src', src);
                             var $close = $infoWindow.find('a.close');
                             // Custom close link on the infowindow
                             $close.click(function(e){

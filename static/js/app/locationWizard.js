@@ -31,7 +31,7 @@ var LocationWizard;
 
         _self.$searchInput.bind('found', function(e, text, loc, addressComponents) {
             _self.popup.marker.setPosition(loc);
-            _self.popup.checkStreetView(loc);
+            _self.streetviewPicker.handleAvailability(loc);
             _self.popup.addressInfo = addressComponents;
             _self.$container.trigger('found');
         })

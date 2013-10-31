@@ -1,3 +1,4 @@
+{% load fragments %}
 {
 {% for k,v in spots.items %}
     "{{k}}": [
@@ -9,7 +10,8 @@
             "address"    : "{{i.address}}",
 	        "lat"        : {{i.lat}},
 	        "lng"        : {{i.lng}},
-            "streetview_params"    : "{{i.streetview_params}}"
+            "streetview_params"    : {{i.streetview_params|default:"{}"|safe}},
+            "recyclables": [1,2,3]
         }
         {% if not forloop.last %},{% endif %}
     {% endfor %}

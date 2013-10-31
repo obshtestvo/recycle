@@ -10,7 +10,7 @@ class RecycleSpotsView(View):
     def get(self, request):
         return TemplateResponse(request, 'spots/get', {
             'spots': RecycleSpotService.get_by_types(request.params.getlist('test'))
-        })
+        },content_type = "application/json")
 
     def put(self, request):
         data = urlparse.parse_qs(request.raw_post_data) # Hack to parse put data, because django doesn't recognise PUT request

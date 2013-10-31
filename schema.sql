@@ -22,10 +22,9 @@ DROP TABLE IF EXISTS `material_mapping`;
 
 CREATE TABLE `material_mapping` (
   `alias` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `material` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`alias`,`material`),
-  KEY `material` (`material`),
-  CONSTRAINT `material_mapping_ibfk_1` FOREIGN KEY (`material`) REFERENCES `spot_material` (`name`) ON DELETE CASCADE ON UPDATE CASCADE
+  `material_id` int(11) NOT NULL,
+  PRIMARY KEY (`alias`,`material_id`),
+  KEY `material` (`material_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `spot` */
@@ -48,7 +47,7 @@ CREATE TABLE `spot` (
   `streetview_params` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `type` (`type_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `spot_material` */
 

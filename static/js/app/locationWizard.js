@@ -77,7 +77,7 @@ var LocationWizard;
                         width: step2.$photo.width(),
                         height: step2.$photo.height()
                     };
-                    var src = _self.options.placeholderGenerator(photoSize.width, photoSize.height);
+                    var src = options.placeholderGenerator(photoSize.width, photoSize.height);
                     if (_self.streetviewPicker.isActive()) {
                         src = _self.streetviewPicker.getSnapshotUrl(photoSize.width, photoSize.height)
                     }

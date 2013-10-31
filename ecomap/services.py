@@ -14,8 +14,10 @@ class RecycleSpotService():
                 'lat',
                 'lng',
                 'streetview_params',
-                'type__name'
+                'type__name',
+                'materials__name'
             ]
+           logging.critical(RecycleSpot.objects.select_related().values(*fields).query)
            for i in RecycleSpot.objects.select_related().values(*fields):
             logging.critical(i)
             if i['type__name'] not in results:

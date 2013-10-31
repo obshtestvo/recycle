@@ -46,9 +46,9 @@ class RecycleSpot(models.Model):
 
     @classmethod
     def add_spot(cls, data):
-        fields = {
-            'type_id'        : data['object_type'][0],
-            'description' : data['object_description'][0],
+        fields = { # This will be refactored
+            'type_id'     : data['object_type'][0],
+            'description' : data['object_description'][0] if 'object_description' in data else "",
             'lat'         : data['lat'][0],
             'lng'         : data['lng'][0],
             'address'     : data['address'][0],
@@ -57,8 +57,8 @@ class RecycleSpot(models.Model):
 
         spot_id = cls.objects.create(**fields)
         spot_material_fields = {
-                'spot_id': spot_id.id,
-                'material_id': data['object_services'][0]
+            'spot_id'    : spot_id.id,
+            'material_id': data['object_services'][0]
         }
         RecycleSpotMaterialLink.objects.create(**spot_material_fields)
         
@@ -67,8 +67,8 @@ class RecycleSpotMaterialLink(models.Model):
     class Meta:
         db_table = 'spot_material_link'
 
-    spot = models.ForeignKey('RecycleSpot', primary_key = True)
-    material = models.ForeignKey('RecycleSpotMaterial', related_name = 'spot_materials')
+    spot        = models.ForeignKey('RecycleSpot', primary_key = True)
+    material    = models.ForeignKey('RecycleSpotMaterial', related_name = 'spot_materials')
 
 class RecycleSpotType(models.Model):
     class Meta:

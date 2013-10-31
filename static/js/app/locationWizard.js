@@ -94,7 +94,15 @@ var LocationWizard;
                     step2.block();
 
                     var location_data = _self.getMapInput();
-                    var data = _self.popup.$infoWindowContainer.find('input,select,textarea').serialize() + "&lat=" + location_data['loc']['lat'] +"&lng=" +location_data['loc']['lng']+ "&address=" +location_data['address']['simple']['street'] + "&streetview_params=" + JSON.stringify(location_data['streetview']);
+                    data = {
+                        'object_type'       : _self.popup.$infoWindowContainer.find("#object_type").val(),
+                        'object_services'   : _self.popup.$infoWindowContainer.find("#object_services").val(),
+                        'object_description': _self.popup.$infoWindowContainer.find("#object_description").val(),
+                        'lat'               : location_data['loc']['lat'],
+                        'lng'               : location_data['loc']['lng'],
+                        'address'           : location_data['address']['simple']['street'],
+                        'streetview_params' : JSON.stringify(location_data['streetview'])
+                    }
                     $.ajax({
                       url: '/spots/',
                       type: 'PUT',

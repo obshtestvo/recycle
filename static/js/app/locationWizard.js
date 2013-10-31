@@ -278,7 +278,11 @@ var LocationWizard;
             _self.trigger('done')
         });
 
-        _self.$materialsPicker.select2({})
+        _self.$materialsPicker.select2({
+            formatSelection: function(item) {
+                return item.id
+            }
+        })
 
     }
 

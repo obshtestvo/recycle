@@ -17,7 +17,7 @@
             <form action="{% url 'home' %}" data-action="{% url 'spots' %}">
                 <select name="filter" id="filter" multiple data-recyclables="{{ recyclables|jsonify }}" data-placeholder="вестници, бутилки, батерии, метал">
                     {% for recyclable, material in recyclables.items %}
-                    <option value="{{ recyclable }}">{{ recyclable }}</option>
+                    <option value="{{ material }}">{{ recyclable }}</option>
                     {% endfor %}
                 </select>
                 <div class="address"><em></em> <a href="#" class="change">Смени</a></div>
@@ -62,7 +62,7 @@
                 <select name="object_services" multiple id="object_services"
                         data-placeholder="вестници, бутилки, батерии, метал">
                     {% for recyclable, material in recyclables.items %}
-                        <option value="{{ recyclable }}">{{ recyclable }}</option>
+                        <option value="{{ material }}">{{ recyclable }}</option>
                     {% endfor %}
                 </select>
                 <label for="">Допълнително описание</label>

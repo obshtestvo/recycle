@@ -73,6 +73,9 @@ div.add-new .new-address {
 #add-new #step2 {
     padding: 20px;
 }
+#add-new #step2 .select2-container {
+    width:300px
+}
 #add-new #step1 a.accept,
 #add-new #step2 a.accept  {
     display: block;

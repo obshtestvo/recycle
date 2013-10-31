@@ -157,7 +157,7 @@ var LocationManager;
                             $infoWindow.find('.address').html(locations.data[i].address);
                             $infoWindow.find('.more-info p').html(locations.data[i].description);
                             streetview_params = locations.data[i].streetview_params;
-                            var src = 'http://maps.googleapis.com/maps/api/streetview?size=100x100&location='+locations.data[i].lat+',' + locations.data[i].lng +'&fov='+streetview_params.fov+'&heading='+streetview_params.heading+'&pitch='+ streetview_params.pitch+'&sensor=false';
+                            var src = 'http://maps.googleapis.com/maps/api/streetview?size=400x150&location='+locations.data[i].lat+',' + locations.data[i].lng +'&fov='+streetview_params.fov+'&heading='+streetview_params.heading+'&pitch='+ streetview_params.pitch+'&sensor=false';
                             $infoWindow.find('.streetview-thumb img').attr('src', src);
                             var $close = $infoWindow.find('a.close');
                             // Custom close link on the infowindow

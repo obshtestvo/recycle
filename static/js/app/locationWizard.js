@@ -266,6 +266,7 @@ var LocationWizard;
         _self.$photo = _self.$container.find('.street img');
         _self.$back = _self.$container.find('a.back');
         _self.$finishTrigger = _self.$container.find('a.accept');
+        _self.$materialsPicker = _self.$container.find('#object_services');
 
         _self.$back.click(function(e) {
             e.preventDefault();
@@ -276,12 +277,16 @@ var LocationWizard;
             e.preventDefault();
             _self.trigger('done')
         });
+
+        _self.$materialsPicker.select2({})
+
     }
 
     Step2.prototype = $.extend({}, EventEmitter(), {
         $container: null,
         $photo: null,
         $back: null,
+        $materialsPicker: null,
         $finishTrigger: null,
 
         refresh: function(photoUrl) {

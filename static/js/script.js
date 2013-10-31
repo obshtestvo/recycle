@@ -99,6 +99,18 @@ $.when(initialisingDOM).then(function() {
         })
     })
 
+    // When map is panned calcualte width and height
+    $.when(initialisingMap).then(function(map) {
+        gMap.event.addListener(map, 'drag', function () {
+            var mapBounds = map.getBounds();
+            var diagonalDistance = gMap.geometry.spherical.computeDistanceBetween(
+                mapBounds.getNorthEast(),
+                mapBounds.getSouthWest()
+            )
+            var humanFriendly = Math.round(diagonalDistance)+'meters';
+        })
+    })
+
     // Take care of showing locations on the map
     $.when(initialisingMap).then(function(map) {
         // "Show location details" infowindow template

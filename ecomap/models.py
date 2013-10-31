@@ -10,7 +10,7 @@ class RecyclableItem(models.Model):
     class Meta:
         db_table = 'material_mapping'
     alias = models.CharField(max_length=255, primary_key=True)
-    material = models.ForeignKey('RecycleSpotMaterial')
+    material = models.ForeignKey('RecycleSpotMaterial', related_name = 'aliases')
 
 class RecycleSpot(models.Model):
     class Meta:

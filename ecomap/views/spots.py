@@ -8,10 +8,15 @@ from ecomap.services import *
 import logging
 
 class RecycleSpotsView(View):
-    def get(self, request):
-        logging.critical(request)
+    def get(self, request, **args):
+        
+        if "spot_id" in args and args['spot_id'] > 0:
+            data = RecycleSpotService.get_by_id(args['spot_id'])
+        else:
+            data = RecycleSpotService.get_by_types(request.params.getlist('tags[]'))
+        
         return TemplateResponse(request, 'spots/get', {
-            'spots': RecycleSpotService.get_by_types(request.params.getlist('test'))
+            'spots': data
         })
 
     def put(self, request):      

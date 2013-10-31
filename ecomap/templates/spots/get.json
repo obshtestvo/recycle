@@ -1,4 +1,3 @@
-{% load fragments %}
 {
 {% for k,v in spots.items %}
     "{{k}}": [

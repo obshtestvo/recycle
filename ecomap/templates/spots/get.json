@@ -1,21 +1,17 @@
 {
-{% for k,v in spots.items %}
-    "{{k}}": [
-    {% for i in v %}
-        {
-	        "name"       : "{{i.name}}",
-            "id"         : {{i.id}},
-	        "description": "{{i.description}}",
-            "address"    : "{{i.address}}",
-	        "lat"        : {{i.lat}},
-	        "lng"        : {{i.lng}},
-            "streetview_params"    : {{i.streetview_params|default:"{}"|safe}},
-            "recyclables": [1,2,3]
-        }
-        {% if not forloop.last %},{% endif %}
-    {% endfor %}
-    {% if not forloop.last %},{% endif %}
+    "spots": [
+        {% for i in spots %}
+            {
+	            "name"       : "{{i.name}}",
+                "id"         : {{i.id}},
+	            "description": "{{i.description}}",
+                "address"    : "{{i.address}}",
+	            "lat"        : {{i.lat}},
+	            "lng"        : {{i.lng}},
+                "streetview_params"    : {{i.streetview_params|default:"{}"|safe}},
+                "recyclables": [1,2,3]
+            }
+            {% if not forloop.last %},{% endif %}
+        {% endfor %}
     ]
-{% endfor %}
-
 }

@@ -17,15 +17,15 @@ class RecycleSpotService():
     def get_by_types(cls, types):
         logging.critical(types)
         if not types or len(types)==0:
-            return cls.build_dict(RecycleSpot.objects.select_related().values(*cls.FIELDS))
+            return RecycleSpot.objects.select_related().values(*cls.FIELDS)
         # check if the provided types are valid
         if RecycleSpot.check_type(*types) > 0:  
             raise Exception("Invalid recycle spot type")
         
-        return cls.build_dict(RecycleSpot.objects.select_related().filter(materials__name__in=types).values(*cls.FIELDS))
+        return RecycleSpot.objects.select_related().filter(materials__name__in=types).values(*cls.FIELDS)
     @classmethod
     def get_by_id(cls, id):
-        return cls.build_dict(RecycleSpot.objects.select_related().get(id=int(id)).values(*cls.FIELDS))
+        return RecycleSpot.objects.select_related().get(id=int(id)).values(*cls.FIELDS)
     
     @staticmethod
     def build_dict(data):

@@ -106,6 +106,8 @@ var LocationWizard;
                     $.ajax({
                       url: '/spots/',
                       type: 'PUT',
+                      contentType: "application/json; charset=utf-8",
+                      dataType:"json",
                       data: data,
                       success: function() {
                         step2.unblock();

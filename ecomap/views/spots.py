@@ -9,22 +9,23 @@ import logging
 
 class RecycleSpotsView(View):
     def get(self, request):
+        logging.critical(request)
         return TemplateResponse(request, 'spots/get', {
             'spots': RecycleSpotService.get_by_types(request.params.getlist('test'))
         })
 
-    def put(self, request):
-        
+    def put(self, request):      
         response = {}
         try:
             RecycleSpot.add_spot(request.PUT)
-            response['status'] = 201
-            response['content'] = '{"status": "OK"}'
+            status  = 201
+            message = 'OK'
         except:
-            response['status'] = 400
-            response['content'] = '{"status": "Error"}'
+            status  = 400
+            message = 'Error'
 
-        return HttpResponse(content_type = "application/json", **response)
+        return TemplateResponse(request, 'spots/put',{ 'status': message }, status = status)
+
         # ...nothing happens here yet, test redirection with errors...
        # failure = VerboseRedirectException('Unable to change home page').set_redirect('home')
         # ...processing changes on home page...

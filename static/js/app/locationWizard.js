@@ -93,16 +93,19 @@ var LocationWizard;
 
                 step2.on('done', function() {
                     step2.block();
-
-                    var location_data = _self.getMapInput();
-                    data = {
+                    var objectServices = []
+                    $.each(step2.$materialsPicker.select2("data"), function (i, serviceObj) {
+                        objectServices.push(serviceObj.id);
+                    });
+                    var locationData = _self.getMapInput();
+                    var data = {
                         'object_type'       : _self.popup.$infoWindowContainer.find("#object_type").val(),
-                        'object_services'   : _self.popup.$infoWindowContainer.find("#object_services").val(),
+                        'object_services'   : objectServices,
                         'object_description': _self.popup.$infoWindowContainer.find("#object_description").val(),
-                        'lat'               : location_data['loc']['lat'],
-                        'lng'               : location_data['loc']['lng'],
-                        'address'           : location_data['address']['simple']['street'],
-                        'streetview_params' : JSON.stringify(location_data['streetview'])
+                        'lat'               : locationData['loc']['lat'],
+                        'lng'               : locationData['loc']['lng'],
+                        'address'           : locationData['address']['simple']['street'],
+                        'streetview_params' : JSON.stringify(locationData['streetview'])
                     }
                     $.ajax({
                       url: '/spots/',

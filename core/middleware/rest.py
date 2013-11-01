@@ -1,6 +1,5 @@
 from django.utils.datastructures import MultiValueDict
 import urlparse
-import logging 
 
 class HttpMergeParameters(object):
     def process_request(self, request):
@@ -8,7 +7,7 @@ class HttpMergeParameters(object):
             base = request.POST
             override = request.GET
         elif request.method.lower() == 'put':
-            request.PUT = urlparse.parse_qs(request.raw_post_data)
+            request.PUT = urlparse.parse_qs(request.body)
             base = request.PUT
             override = request.GET
         else:

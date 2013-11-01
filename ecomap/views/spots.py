@@ -5,8 +5,6 @@ from django.http import HttpResponse
 from core.exception.verbose import VerboseRedirectException
 from ecomap.services import *
 
-import logging
-
 class RecycleSpotsView(View):
     def get(self, request, **args):
         
@@ -20,7 +18,6 @@ class RecycleSpotsView(View):
         })
 
     def put(self, request):      
-        response = {}
         try:
             RecycleSpot.add_spot(request.PUT)
             status  = 201

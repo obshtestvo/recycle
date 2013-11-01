@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 
-from ecomap.views import spots, home
+from ecomap.views import spots, spot, home
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -8,9 +8,8 @@ from ecomap.views import spots, home
 
 urlpatterns = patterns('',
     url(r'^$', home.HomeView.as_view(), name='home'),
-    url(r'^spots/(?P<spot_id>\d+)/$', spots.RecycleSpotsView.as_view()),
     url(r'^spots/$', spots.RecycleSpotsView.as_view(), name='spots'),
-	url(r'^static/(?P<path>.*)$', 'django.contrib.staticfiles.views.serve'),
+    url(r'^spot/$', spot.RecycleSpotView.as_view(), name='spot'),
 
     # url(r'^mysite/', include('mysite.foo.urls')),
 
@@ -20,7 +19,3 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
 )
-
-
-
-    

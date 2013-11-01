@@ -12,8 +12,11 @@ var LocationWizard;
             ignoredAddressParts: [],
             searchInputSelector: 'div.add-new input.new-address',
             displaySelector: 'div.add-new',
+            addressDisplaySelector: 'div.add-new .address',
+            detailsDisplaySelector: 'div.add-new .details',
             closeSelector: 'div.add-new a.close',
             triggerSelector: '.floater a.add-new',
+            formSelector: '#add-new form',
             template: '',
             placeholderGenerator: function(width, height) {
                 return 'http://placehold.it/'+width+'x'+height;
@@ -25,6 +28,8 @@ var LocationWizard;
         _self.$display = $(options.displaySelector);
         _self.$close = $(options.closeSelector);
         _self.$trigger = $(options.triggerSelector);
+        _self.$addressDisplay = $(options.addressDisplaySelector);
+        _self.$detailsDisplay = $(options.detailsDisplaySelector);
         _self.geo = geo;
         _self.map = map;
 
@@ -72,6 +77,24 @@ var LocationWizard;
                 var step2 = new Step2();
                 var step3 = new Step3();
 
+                var $form = $(options.formSelector)
+                $form.validate({
+                    errorPlacement: function ($err, $el) {
+                        var name = $el.attr('name')
+                        var $errLbl = $('label.'+name+' span.err')
+                        $errLbl.append($err)
+                    },
+                    ignore: 'input[type=hidden]'
+                });
+                step2.$materialsPicker.change(function() {
+                    $(this).valid()
+                })
+
+                var $addressFocus = step1.$container.find('.address-focus')
+                $addressFocus.click(function() {
+                    _self.search.focus()
+                })
+
                 step1.on('done', function() {
                     var photoSize = {
                         width: step2.$photo.width(),
@@ -82,27 +105,37 @@ var LocationWizard;
                         src = _self.streetviewPicker.getSnapshotUrl(photoSize.width, photoSize.height)
                     }
                     step2.refresh(src)
+                    _self.$addressDisplay.addClass('hide')
+                    _self.$detailsDisplay.removeClass('hide')
                     _self.popup.infowindow.switchContent(_self.popup.$infoWindowContainer, step1.$container, step2.$container, 100)
                     _self.popup.disableMoving();
                 })
 
                 step2.on('back', function() {
+                    _self.$detailsDisplay.addClass('hide')
+                    _self.$addressDisplay.removeClass('hide')
                     _self.popup.infowindow.switchContent(_self.popup.$infoWindowContainer, step2.$container, step1.$container, 100)
                     _self.popup.enableMoving();
                 })
 
                 step2.on('done', function() {
+                    if (!$form.valid()) {
+                        return;
+                    }
                     step2.block();
-
-                    var location_data = _self.getMapInput();
-                    data = {
+                    var objectServices = []
+                    $.each(step2.$materialsPicker.select2("data"), function (i, serviceObj) {
+                        objectServices.push(serviceObj.id);
+                    });
+                    var locationData = _self.getMapInput();
+                    var data = {
                         'object_type'       : _self.popup.$infoWindowContainer.find("#object_type").val(),
-                        'object_services'   : _self.popup.$infoWindowContainer.find("#object_services").val(),
+                        'object_services'   : objectServices,
                         'object_description': _self.popup.$infoWindowContainer.find("#object_description").val(),
-                        'lat'               : location_data['loc']['lat'],
-                        'lng'               : location_data['loc']['lng'],
-                        'address'           : location_data['address']['simple']['street'],
-                        'streetview_params' : JSON.stringify(location_data['streetview'])
+                        'lat'               : locationData['loc']['lat'],
+                        'lng'               : locationData['loc']['lng'],
+                        'address'           : locationData['address']['simple']['street'],
+                        'streetview_params' : JSON.stringify(locationData['streetview'])
                     }
                     $.ajax({
                       url: '/spots/',
@@ -144,6 +177,8 @@ var LocationWizard;
         $trigger: null,
         $close: null,
         $display: null,
+        $addressDisplay: null,
+        $detailsDisplay: null,
         geo: null,
         map: null,
         popup: null,
@@ -166,6 +201,8 @@ var LocationWizard;
             _self.$trigger.removeClass('active');
             _self.$searchInput.blur()
             _self.$container.addClass('hide')
+            _self.$detailsDisplay.addClass('hide')
+            _self.$addressDisplay.removeClass('hide')
             _self.trigger('hide');
             _self.streetviewPicker.streetview.unbind("position");;
         },
@@ -278,7 +315,11 @@ var LocationWizard;
             _self.trigger('done')
         });
 
-        _self.$materialsPicker.select2({})
+        _self.$materialsPicker.select2({
+            formatSelection: function(item) {
+                return item.id
+            }
+        })
 
     }
 

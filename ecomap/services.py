@@ -14,19 +14,22 @@ class RecycleSpotService():
         'materials__name',
         'materials__id'
     ]    
+
     @classmethod
     def get_by_types(cls, types):
         if not types or len(types)==0:
             return RecycleSpot.objects.select_related("type").only(*cls.FIELDS)
 
         # check if the provided types are valid
-        if RecycleSpot.check_type(*types) > 0:  
+        if RecycleSpot.check_type(*types) > 0:
             raise Exception("Invalid recycle spot type")
+
         return RecycleSpot.objects.select_related("type").filter(materials__id__in=types).only(*cls.FIELDS).distinct()
+
     @classmethod
     def get_by_id(cls, id):
         return RecycleSpot.objects.select_related("type").get(id=int(id)).values(*cls.FIELDS)
-    
+
     @staticmethod
     def build_dict(data):
         results = {}

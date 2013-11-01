@@ -19,9 +19,13 @@ var RecycleServices;
         tags: function() {
             var tags = []
             var _self = this;
-            var val = this.$el.val();
-            if ($.isArray(val)) {
-                $.each(this.$el.val(), function (i, tag) {
+            var services = []
+            $.each(this.$el.select2("data"), function (i, serviceObj) {
+                services.push(serviceObj.id);
+            });
+
+            if ($.isArray(services)) {
+                $.each(services, function (i, tag) {
                     tag = _self.recyclables[tag]
                     if ($.inArray(tag, tags) < 0) tags.push(tag)
                 });

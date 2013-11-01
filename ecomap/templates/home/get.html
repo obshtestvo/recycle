@@ -15,9 +15,9 @@
         <div id="search" data-spots="{{ spots }}">
             <a class="add-new" href="" style="">+</a>
             <form action="{% url 'home' %}" data-action="{% url 'spots' %}">
-                <select name="filter" id="filter" multiple data-recyclables="{{ recyclables|jsonify }}" data-placeholder="вестници, бутилки, батерии, метал">
+                <select name="filter" id="filter" multiple data-recyclables="{{ recyclables|jsonify }}" data-placeholder="вестници, бутилки, батерии, метал" data-no-matches="__material__ не се рециклира, пробвайте нещо друго">
                     {% for recyclable, material in recyclables.items %}
-                    <option value="{{ recyclable }}">{{ recyclable }}</option>
+                    <option value="{{ material }}">{{ recyclable }}</option>
                     {% endfor %}
                 </select>
                 <div class="address"><em></em> <a href="#" class="change">Смени</a></div>
@@ -29,50 +29,59 @@
         </div>
         <div class="add-new hide">
             <a class="close" href="" style="">x</a>
-            <p>Можете да преместите маркера като го привлачете на желания адрес или потърсите адреса в полето по долу:</p>
-            <input class="new-address" type="text" name="address-new" id="addressNewSearch" placeholder="Адрес на новия пункт"/>
+            <div class="address">
+                <p>Можете да преместите маркера като го привлачете на желания адрес или потърсите адреса в полето по
+                    долу:</p>
+                <input class="new-address" type="text" name="address-new" id="addressNewSearch" placeholder="Адрес на новия пункт"/>
+            </div>
+            <div class="details hide">
+                <p>И малко информация за това какво се рециклира тук, какво представлява мястото. Можете и накратко да
+                    опишете как да го намерят хората по-лесно</p>
+            </div>
         </div>
     </div>
     <div class="infowindow-add-template hide">
         <div id="add-new">
-            <a class="close" href="">Close</a>
-            <div id="step1" class="step">
-                <a class="btn cancel-streetview" href="#">Не се вижда мястото [ x ]</a>
-                <a class="btn reactivate hide" href="#">< Назад към камерата</a>
-                <div class="streetview">
+            <form action="{% url 'spots' %}" method="post">
+                <a class="close" href="">Close</a>
+                <div id="step1" class="step">
+                    <a class="btn cancel-streetview" href="#">Не се вижда мястото [ x ]</a>
+                    <a class="btn reactivate hide" href="#">< Назад към камерата</a>
+                    <div class="streetview">
+                    </div>
+                    <div class="missing-streetview">
+                        На това място няма streetview
+                    </div>
+                    <div class="cancelled-streetview">
+                        Е, айде сега, голяма работа, не се виждало. <a href="#" class="address-focus">Адрес има, нали?</a>
+                    </div>
+                    <a class="btn accept" href="#">Готов съм</a>
                 </div>
-                <div class="missing-streetview">
-                    На това място няма streetview
+                <div id="step2" class="step hide">
+                    <a class="back" href="">Стъпка назад</a>
+                    <div class="street">
+                        <img src="" alt="" width="300" height="100"/>
+                    </div>
+                    <label class="object_type">Тип на обекта <span class="err"></span></label>
+                    <label><input type="radio" name="object_type" id="object_type" value="1" required/> Пункт</label>
+                    <label><input type="radio" name="object_type" id="object_type" value="2" /> Депо</label>
+                    <label><input type="radio" name="object_type" id="object_type" value="3"/> Търговски обект</label>
+                    <label for="object_services" class="object_services">Изкупува <span class="err"></span></label>
+                    <select required name="object_services" multiple id="object_services"
+                            data-placeholder="вестници, бутилки, батерии, метал">
+                        {% for recyclable, material in recyclables.items %}
+                            <option value="{{ material }}">{{ recyclable }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="object_description" class="object_description">Допълнително описание <span class="err"></span></label>
+                    <textarea minlength="10" name="object_description" id="object_description" cols="30" rows="10"></textarea>
+                    <a class="btn accept" href="#">Готов съм</a>
                 </div>
-                <div class="cancelled-streetview">
-                    Е, айде сега, голяма работа, не се виждало. <a href="#" class="address-focus">Адрес има, нали?</a>
+                <div id="step3" class="step hide">
+                    <div class="success">Готово!</div>
+                    <a class="btn accept" href="#">Обратно към картата</a>
                 </div>
-                <a class="btn accept" href="#">Готов съм</a>
-            </div>
-            <div id="step2" class="step hide">
-                <a class="back" href="">Стъпка назад</a>
-                <div class="street">
-                    <img src="" alt="" width="300" height="100"/>
-                </div>
-                <label for="">Тип на обекта</label>
-                <input type="radio" name="object_type" id="object_type" value="1" checked="checked"/> Пункт
-                <input type="radio" name="object_type" id="object_type" value="2" /> Депо
-                <input type="radio" name="object_type" id="object_type" value="3"/> Търговски обект
-                <label for="">Изкупува</label>
-                <select name="object_services" multiple id="object_services"
-                        data-placeholder="вестници, бутилки, батерии, метал">
-                    {% for recyclable, id in recyclables.items %}
-                        <option value="{{ id }}">{{ recyclable }}</option>
-                    {% endfor %}
-                </select>
-                <label for="">Допълнително описание</label>
-                <textarea name="object_description" id="object_description" cols="30" rows="10"></textarea>
-                <a class="btn accept" href="#">Готов съм</a>
-            </div>
-            <div id="step3" class="step hide">
-                <div class="success">Готово!</div>
-                <a class="btn accept" href="#">Обратно към картата</a>
-            </div>
+            </form>
         </div>
     </div>
 
@@ -108,6 +117,7 @@
     <script src="{% static 'js/lib/pubsub.js' %}"></script>
     <script src="{% static 'js/lib/jquery.easing.1.3.js' %}"></script>
     <script src="{% static 'js/lib/jquery.blockUI.js' %}"></script>
+    <script src="{% static 'js/lib/jquery.validate.js' %}"></script>
     <script src="{% static 'js/lib/spin.js' %}"></script>
     <script src="{% static 'js/jquery.animateContentSwitch.js' %}"></script>
     <script src="{% static 'js/infobox.js' %}"></script>

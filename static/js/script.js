@@ -39,7 +39,14 @@ $.when(initialisingDOM).then(function() {
     var $search = $('#search');
     var $filter = $search.find('select');
     var $filterForm = $filter.closest('form');
-    $filter.select2({})
+    $filter.select2({
+        formatNoMatches: function(searchTerm) {
+            return $filter.data('noMatches').replace('__material__', "'"+searchTerm+"'")
+        },
+        formatSelection: function(item) {
+            return item.id
+        }
+    })
 
     // Map
     var $map = $('#map-canvas');

@@ -16,6 +16,7 @@ var LocationWizard;
             detailsDisplaySelector: 'div.add-new .details',
             closeSelector: 'div.add-new a.close',
             triggerSelector: '.floater a.add-new',
+            formSelector: '#add-new form',
             template: '',
             placeholderGenerator: function(width, height) {
                 return 'http://placehold.it/'+width+'x'+height;
@@ -76,6 +77,19 @@ var LocationWizard;
                 var step2 = new Step2();
                 var step3 = new Step3();
 
+                var $form = $(options.formSelector)
+                $form.validate({
+                    errorPlacement: function ($err, $el) {
+                        var name = $el.attr('name')
+                        var $errLbl = $('label.'+name+' span.err')
+                        $errLbl.append($err)
+                    },
+                    ignore: 'input[type=hidden]'
+                });
+                step2.$materialsPicker.change(function() {
+                    $(this).valid()
+                })
+
                 step1.on('done', function() {
                     var photoSize = {
                         width: step2.$photo.width(),
@@ -100,6 +114,9 @@ var LocationWizard;
                 })
 
                 step2.on('done', function() {
+                    if (!$form.valid()) {
+                        return;
+                    }
                     step2.block();
                     var objectServices = []
                     $.each(step2.$materialsPicker.select2("data"), function (i, serviceObj) {

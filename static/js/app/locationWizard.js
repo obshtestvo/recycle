@@ -150,6 +150,11 @@ var LocationWizard;
                     });
                 })
 
+                step3.on('done', function() {
+                    _self.cancel();
+                    _self.trigger('done')
+                })
+
             })
 
 
@@ -368,10 +373,16 @@ var LocationWizard;
     var Step3 = function() {
         var _self = this;
         _self.$container = $('#step3');
+        _self.$finish = _self.$container.find('.accept');
+        _self.$finish.on('click', function(e) {
+            e.preventDefault();
+            _self.trigger('done')
+        });
     }
 
     Step3.prototype = $.extend({}, EventEmitter(), {
-        $container: null
+        $container: null,
+        $finish: null
     })
 
 

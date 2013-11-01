@@ -166,5 +166,8 @@ $.when(initialisingDOM).then(function() {
                 $search.removeClass('hide')
                 app.map.locationManager.resume()
             })
+            .on('done', function() {
+                app.map.locationManager.filterLocations()
+            })
     })
 });

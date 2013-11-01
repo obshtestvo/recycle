@@ -14,7 +14,10 @@ var LocationWizard;
             displaySelector: 'div.add-new',
             closeSelector: 'div.add-new a.close',
             triggerSelector: '.floater a.add-new',
-            template: ''
+            template: '',
+            placeholderGenerator: function(width, height) {
+                return 'http://placehold.it/'+width+'x'+height;
+            }
         }, options);
 
         _self.$container = $el;
@@ -33,7 +36,7 @@ var LocationWizard;
             _self.popup.marker.setPosition(loc);
             _self.streetviewPicker.handleAvailability(loc);
             _self.popup.addressInfo = addressComponents;
-            _self.$container.trigger('found');
+            _self.trigger('move');
         })
 
         _self.$trigger.click(function(e) {
@@ -42,7 +45,7 @@ var LocationWizard;
                 _self.cancel();
                 return;
             }
-            _self.$container.trigger('show');
+            _self.trigger('show');
             _self.$trigger.addClass('active')
             _self.$container.removeClass('hide')
             var initialLocation = geo.map.getProportionallyRelativeLocation(map, {bottom: 10, left:50});
@@ -70,15 +73,13 @@ var LocationWizard;
                 var step3 = new Step3();
 
                 step1.on('done', function() {
-                //    var placeholderBase = 'http://placehold.it';
-                //    var photoSize = {
-                //        width: 300,
-                //        height: 100
-                //    };
-                //    var placeholderSuffix = '';
-                    var src = 'http://placehold.it/300x100';
+                    var photoSize = {
+                        width: step2.$photo.width(),
+                        height: step2.$photo.height()
+                    };
+                    var src = options.placeholderGenerator(photoSize.width, photoSize.height);
                     if (_self.streetviewPicker.isActive()) {
-                        src = _self.streetviewPicker.getSnapshotUrl(step2.$photo.width(), step2.$photo.height())
+                        src = _self.streetviewPicker.getSnapshotUrl(photoSize.width, photoSize.height)
                     }
                     step2.refresh(src)
                     _self.popup.infowindow.switchContent(_self.popup.$infoWindowContainer, step1.$container, step2.$container, 100)
@@ -107,7 +108,7 @@ var LocationWizard;
                       url: '/spots/',
                       type: 'PUT',
                       contentType: "application/json; charset=utf-8",
-                      dataType:"json",
+                      dataType: "json",
                       data: data,
                       success: function() {
                         step2.unblock();
@@ -137,7 +138,7 @@ var LocationWizard;
         return infoContent;
     }
 
-    LocationWizard.prototype = {
+    LocationWizard.prototype = $.extend({}, EventEmitter() ,{
         $container: null,
         $searchInput: null,
         $trigger: null,
@@ -165,7 +166,7 @@ var LocationWizard;
             _self.$trigger.removeClass('active');
             _self.$searchInput.blur()
             _self.$container.addClass('hide')
-            _self.$container.trigger('hide');
+            _self.trigger('hide');
             _self.streetviewPicker.streetview.unbind("position");;
         },
 
@@ -240,7 +241,7 @@ var LocationWizard;
                 }
             }
         }
-    }
+    });
 
 
     var Step1 = function() {
@@ -265,6 +266,7 @@ var LocationWizard;
         _self.$photo = _self.$container.find('.street img');
         _self.$back = _self.$container.find('a.back');
         _self.$finishTrigger = _self.$container.find('a.accept');
+        _self.$materialsPicker = _self.$container.find('#object_services');
 
         _self.$back.click(function(e) {
             e.preventDefault();
@@ -275,12 +277,16 @@ var LocationWizard;
             e.preventDefault();
             _self.trigger('done')
         });
+
+        _self.$materialsPicker.select2({})
+
     }
 
     Step2.prototype = $.extend({}, EventEmitter(), {
         $container: null,
         $photo: null,
         $back: null,
+        $materialsPicker: null,
         $finishTrigger: null,
 
         refresh: function(photoUrl) {

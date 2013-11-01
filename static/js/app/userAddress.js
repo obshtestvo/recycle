@@ -27,15 +27,15 @@ var UserAddress;
 
         _self.search = new AddressSearch(_self.$input, map)
         _self.$input.bind('found', function(e, text, loc, addressComponents) {
-            _self.turnOffChange(_self.geo.getCity(addressComponents));
-            _self.$container.trigger('found');
+            _self.turnOffChange(_self.geo.human.getCity(addressComponents));
+            _self.trigger('found');
         })
 
         _self.$trigger.click(function(e) {
             e.preventDefault();
-            _self.$container.trigger('show')
+            _self.trigger('show')
             _self.$container.removeClass('hide')
-            _self.$input.focus()
+            _self.search.focus()
         })
 
         _self.$close.click(function(e) {
@@ -44,7 +44,7 @@ var UserAddress;
         })
     }
 
-    UserAddress.prototype = {
+    UserAddress.prototype = $.extend({}, EventEmitter(), {
         $container: null,
         $input: null,
         $trigger: null,
@@ -61,11 +61,11 @@ var UserAddress;
                 _self.$display.text(_self.geo.human.cleanAddress(text, _self.ignoredAddressParts))
             }
             _self.$container.addClass('hide');
-            _self.$container.trigger('hide');
+            _self.trigger('hide');
         },
 
         update: function(id, text) {
             this.search.update(id, text);
         }
-    }
+    });
 })(AddressSearch)

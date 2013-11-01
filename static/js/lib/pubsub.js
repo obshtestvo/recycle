@@ -44,7 +44,7 @@
 					cache[topic] = [];
 				}
 				cache[topic].push(callback);
-				return [topic, callback];
+				return this;
 			},
 			/**
 			 *	Events.unsubscribe

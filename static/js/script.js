@@ -62,12 +62,11 @@ $.when(initialisingDOM).then(function() {
 
 
     // User Address
-    var $userAddressArea = $('div.change-address');
     $.when(initialisingMap).then(function(map) {
-        app.userAddress = new UserAddress($userAddressArea, geoServices, map, {
+        app.userAddress = new UserAddress($('div.change-address'), geoServices, map, {
             ignoredAddressParts: addressIgnore
         })
-        $userAddressArea
+        app.userAddress
             .on('show', function() {
                 $search.addClass('hide')
             })
@@ -100,6 +99,18 @@ $.when(initialisingDOM).then(function() {
         })
     })
 
+    // When map is panned calcualte width and height
+    $.when(initialisingMap).then(function(map) {
+        gMap.event.addListener(map, 'drag', function () {
+            var mapBounds = map.getBounds();
+            var diagonalDistance = gMap.geometry.spherical.computeDistanceBetween(
+                mapBounds.getNorthEast(),
+                mapBounds.getSouthWest()
+            )
+            var humanFriendly = Math.round(diagonalDistance)+'meters';
+        })
+    })
+
     // Take care of showing locations on the map
     $.when(initialisingMap).then(function(map) {
         // "Show location details" infowindow template
@@ -115,6 +126,7 @@ $.when(initialisingDOM).then(function() {
         app.map.locationManager.loadLocations({
             "coords": map.getCenter().toUrlValue()
         }, function(locations) {
+            //@todo standartise this with the merge of markers after a topup
             app.map.markers = locations.markers;
         })
 
@@ -125,26 +137,25 @@ $.when(initialisingDOM).then(function() {
     })
 
     // app.locationWizard: "Add new location" wizard
-    var $newLocationArea = $('div.add-new');
     $.when(initialisingMap).then(function(map) {
-        app.locationWizard = new LocationWizard($newLocationArea, geoServices, map, {
+        app.locationWizard = new LocationWizard($('div.add-new'), geoServices, map, {
             ignoredAddressParts: addressIgnore,
             template: LocationWizard.extractTemplateFrom('.infowindow-add-template', true)
         })
-        $newLocationArea
-            .on('found', function(e, text, loc, addressInfo) {
+        app.locationWizard
+            .on('move', function() {
                 if (!app.map.hasVisibleMarkers()) {
                     app.map.locationManager.topUp(function(locations) {
                         //@todo merge with markers registry in app.map.markers
                     })
                 }
             })
-            .on('show', function(e, text, loc, addressInfo) {
+            .on('show', function() {
                 $search.addClass('hide')
                 app.map.locationManager.close()
                 app.map.locationManager.pause()
             })
-            .on('hide', function(e, text, loc, addressInfo) {
+            .on('hide', function() {
                 $search.removeClass('hide')
                 app.map.locationManager.resume()
             })

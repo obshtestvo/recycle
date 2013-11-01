@@ -21,7 +21,7 @@ class RecycleSpot(models.Model):
     TYPE_YARD = 'yard'
     TYPE_STORE = 'store'
 
-    type = models.ForeignKey('RecycleSpotType', related_name = 'spot_types')
+    type = models.OneToOneField('RecycleSpotType', related_name = 'spot_types')
     name = models.CharField(max_length=255)
     organisation = models.CharField(max_length=64)
     area = models.CharField(max_length=255)

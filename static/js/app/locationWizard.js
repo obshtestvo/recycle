@@ -12,6 +12,8 @@ var LocationWizard;
             ignoredAddressParts: [],
             searchInputSelector: 'div.add-new input.new-address',
             displaySelector: 'div.add-new',
+            addressDisplaySelector: 'div.add-new .address',
+            detailsDisplaySelector: 'div.add-new .details',
             closeSelector: 'div.add-new a.close',
             triggerSelector: '.floater a.add-new',
             template: '',
@@ -25,6 +27,8 @@ var LocationWizard;
         _self.$display = $(options.displaySelector);
         _self.$close = $(options.closeSelector);
         _self.$trigger = $(options.triggerSelector);
+        _self.$addressDisplay = $(options.addressDisplaySelector);
+        _self.$detailsDisplay = $(options.detailsDisplaySelector);
         _self.geo = geo;
         _self.map = map;
 
@@ -82,11 +86,15 @@ var LocationWizard;
                         src = _self.streetviewPicker.getSnapshotUrl(photoSize.width, photoSize.height)
                     }
                     step2.refresh(src)
+                    _self.$addressDisplay.addClass('hide')
+                    _self.$detailsDisplay.removeClass('hide')
                     _self.popup.infowindow.switchContent(_self.popup.$infoWindowContainer, step1.$container, step2.$container, 100)
                     _self.popup.disableMoving();
                 })
 
                 step2.on('back', function() {
+                    _self.$detailsDisplay.addClass('hide')
+                    _self.$addressDisplay.removeClass('hide')
                     _self.popup.infowindow.switchContent(_self.popup.$infoWindowContainer, step2.$container, step1.$container, 100)
                     _self.popup.enableMoving();
                 })
@@ -147,6 +155,8 @@ var LocationWizard;
         $trigger: null,
         $close: null,
         $display: null,
+        $addressDisplay: null,
+        $detailsDisplay: null,
         geo: null,
         map: null,
         popup: null,

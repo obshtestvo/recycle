@@ -40,6 +40,9 @@ $.when(initialisingDOM).then(function() {
     var $filter = $search.find('select');
     var $filterForm = $filter.closest('form');
     $filter.select2({
+        formatNoMatches: function(searchTerm) {
+            return $filter.data('noMatches').replace('__material__', "'"+searchTerm+"'")
+        },
         formatSelection: function(item) {
             return item.id
         }

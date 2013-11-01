@@ -15,7 +15,7 @@
         <div id="search" data-spots="{{ spots }}">
             <a class="add-new" href="" style="">+</a>
             <form action="{% url 'home' %}" data-action="{% url 'spots' %}">
-                <select name="filter" id="filter" multiple data-recyclables="{{ recyclables|jsonify }}" data-placeholder="вестници, бутилки, батерии, метал">
+                <select name="filter" id="filter" multiple data-recyclables="{{ recyclables|jsonify }}" data-placeholder="вестници, бутилки, батерии, метал" data-no-matches="__material__ не се рециклира, пробвайте нещо друго">
                     {% for recyclable, material in recyclables.items %}
                     <option value="{{ material }}">{{ recyclable }}</option>
                     {% endfor %}
@@ -29,8 +29,15 @@
         </div>
         <div class="add-new hide">
             <a class="close" href="" style="">x</a>
-            <p>Можете да преместите маркера като го привлачете на желания адрес или потърсите адреса в полето по долу:</p>
-            <input class="new-address" type="text" name="address-new" id="addressNewSearch" placeholder="Адрес на новия пункт"/>
+            <div class="address">
+                <p>Можете да преместите маркера като го привлачете на желания адрес или потърсите адреса в полето по
+                    долу:</p>
+                <input class="new-address" type="text" name="address-new" id="addressNewSearch" placeholder="Адрес на новия пункт"/>
+            </div>
+            <div class="details hide">
+                <p>И малко информация за това какво се рециклира тук, какво представлява мястото. Можете и накратко да
+                    опишете как да го намерят хората по-лесно</p>
+            </div>
         </div>
     </div>
     <div class="infowindow-add-template hide">

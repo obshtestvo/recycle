@@ -90,6 +90,11 @@ var LocationWizard;
                     $(this).valid()
                 })
 
+                var $addressFocus = step1.$container.find('.address-focus')
+                $addressFocus.click(function() {
+                    _self.search.focus()
+                })
+
                 step1.on('done', function() {
                     var photoSize = {
                         width: step2.$photo.width(),

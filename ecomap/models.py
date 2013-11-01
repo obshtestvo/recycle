@@ -56,10 +56,12 @@ class RecycleSpot(models.Model):
         }
 
         spot_id = cls.objects.create(**fields)
-        for i in set(data['object_services[]']):
+        
+        materials = RecycleSpotMaterial.objects.filter(name__in = data['object_services[]'])
+        for i in materials:
             spot_material_fields = {
                 'spot_id'    : spot_id.id,
-                'material_id': int(i)
+                'material_id': int(i.id)
             }
             RecycleSpotMaterialLink.objects.create(**spot_material_fields)
         

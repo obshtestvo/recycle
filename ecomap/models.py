@@ -1,5 +1,5 @@
 from django.db import models
-
+import logging 
 class RecycleSpotMaterial(models.Model):
     class Meta:
         db_table = 'spot_material'
@@ -56,11 +56,12 @@ class RecycleSpot(models.Model):
         }
 
         spot_id = cls.objects.create(**fields)
-        spot_material_fields = {
-            'spot_id'    : spot_id.id,
-            'material_id': data['object_services'][0]
-        }
-        RecycleSpotMaterialLink.objects.create(**spot_material_fields)
+        for i in set(data['object_services[]']):
+            spot_material_fields = {
+                'spot_id'    : spot_id.id,
+                'material_id': int(i)
+            }
+            RecycleSpotMaterialLink.objects.create(**spot_material_fields)
         
         
 class RecycleSpotMaterialLink(models.Model):

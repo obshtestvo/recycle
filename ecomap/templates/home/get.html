@@ -61,8 +61,8 @@
                 <label for="">Изкупува</label>
                 <select name="object_services" multiple id="object_services"
                         data-placeholder="вестници, бутилки, батерии, метал">
-                    {% for recyclable, material in recyclables.items %}
-                        <option value="{{ recyclable }}">{{ recyclable }}</option>
+                    {% for recyclable, id in recyclables.items %}
+                        <option value="{{ id }}">{{ recyclable }}</option>
                     {% endfor %}
                 </select>
                 <label for="">Допълнително описание</label>

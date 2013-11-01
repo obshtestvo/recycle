@@ -196,6 +196,8 @@ var LocationWizard;
             _self.$trigger.removeClass('active');
             _self.$searchInput.blur()
             _self.$container.addClass('hide')
+            _self.$detailsDisplay.addClass('hide')
+            _self.$addressDisplay.removeClass('hide')
             _self.trigger('hide');
             _self.streetviewPicker.streetview.unbind("position");;
         },

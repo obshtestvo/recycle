@@ -10,7 +10,7 @@ class HomeView(View):
         return TemplateResponse(request, 'home/get', {
             #'spots': [{"name": "glass", "material": "glass"}],
             'recyclables': RecycleMaterialService.get_all(),
-             'spots': RecycleSpotService.get_by_types(request.params.getlist('types')),
+             'spots': RecycleSpotService.get_by_types(request.POST.getlist('types')),
              #'recyclables':  recyclableService.get_all()
         })
 

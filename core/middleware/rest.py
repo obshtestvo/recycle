@@ -52,6 +52,8 @@ class ResponseFormatDetection(object):
         json_types = ['application/json']
         csv_types = ['text/comma-separated-values', 'text/csv', 'application/csv']
 
+        import logging
+        logging.critical(request.META)
         # todo think of adding Content-Disposition: like
         # Content-Disposition: attachment; filename="download.csv"
         if len(filter(set(expected).__contains__, json_types)) > 0:
@@ -60,8 +62,10 @@ class ResponseFormatDetection(object):
         elif len(filter(set(expected).__contains__, csv_types)) > 0:
             ext = '.csv'
             response['Content-Type'] = 'text/csv; charset='+response._charset
-        else:
+        elif "/admin" not in request.META['PATH_INFO']:
             ext = '.html'
+        else:
+            ext = ''
 
         response.template_name += ext
         return response

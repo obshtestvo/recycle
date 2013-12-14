@@ -1,7 +1,17 @@
 from django.contrib import admin
 from ecomap.models import RecycleSpot, RecycleSpotType, RecycleSpotMaterial, RecyclableItem
 
-admin.site.register(RecycleSpot)
-admin.site.register(RecycleSpotType)
-admin.site.register(RecycleSpotMaterial)
+class RecycleSpotAdmin(admin.ModelAdmin):
+    list_filter = ('type__name',)
+    list_display = ('name', 'description',)
+
+class RecycleSpotTypeAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+
+class RecycleSpotMaterialAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+
+admin.site.register(RecycleSpot,RecycleSpotAdmin)
+admin.site.register(RecycleSpotType, RecycleSpotTypeAdmin)
+admin.site.register(RecycleSpotMaterial, RecycleSpotMaterialAdmin)
 admin.site.register(RecyclableItem)

@@ -5,6 +5,8 @@ class RecycleSpotMaterial(models.Model):
         db_table = 'spot_material'
     name = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.name.encode("utf-8")
 
 class RecyclableItem(models.Model):
     class Meta:
@@ -79,3 +81,5 @@ class RecycleSpotType(models.Model):
  
     name = models.CharField(max_length = 255)
 
+    def __str__(self):
+        return self.name

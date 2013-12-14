@@ -23,7 +23,7 @@ class RecycleSpot(models.Model):
     TYPE_YARD = 'yard'
     TYPE_STORE = 'store'
 
-    type = models.OneToOneField('RecycleSpotType', related_name = 'spot_types')
+    type = models.ForeignKey('RecycleSpotType', related_name = 'spot_types')
     name = models.CharField(max_length=255)
     organisation = models.CharField(max_length=64)
     area = models.CharField(max_length=255)
@@ -33,7 +33,7 @@ class RecycleSpot(models.Model):
     added_at = models.DateTimeField()
     description = models.TextField()
     contact = models.TextField()
-    pointer = models.CharField(max_length=255)
+    pointer = models.CharField(max_length=255, blank=True)
     streetview_params = models.CharField(max_length=255)
     materials = models.ManyToManyField('RecycleSpotMaterial', through= 'RecycleSpotMaterialLink' )
 

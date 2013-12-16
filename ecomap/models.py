@@ -72,7 +72,7 @@ class RecycleSpotMaterialLink(models.Model):
     class Meta:
         db_table = 'spot_material_link'
 
-    spot        = models.ForeignKey('RecycleSpot', primary_key = True)
+    spot        = models.ForeignKey('RecycleSpot')
     material    = models.ForeignKey('RecycleSpotMaterial', related_name = 'spot_materials')
 
 class RecycleSpotType(models.Model):

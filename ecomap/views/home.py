@@ -11,6 +11,7 @@ class HomeView(View):
             #'spots': [{"name": "glass", "material": "glass"}],
             'recyclables': RecycleMaterialService.get_all(),
              'spots': RecycleSpotService.get_by_types(request.POST.getlist('types')),
+             'spot_types': RecycleSpotType.objects.all(),
              #'recyclables':  recyclableService.get_all()
         })
 

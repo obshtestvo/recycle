@@ -63,9 +63,9 @@
                         <img src="" alt="" width="300" height="100"/>
                     </div>
                     <label class="object_type">Тип на обекта <span class="err"></span></label>
-                    <label><input type="radio" name="object_type" id="object_type" value="1" required/> Пункт</label>
-                    <label><input type="radio" name="object_type" id="object_type" value="2" /> Депо</label>
-                    <label><input type="radio" name="object_type" id="object_type" value="3"/> Търговски обект</label>
+                    {%  for i in spot_types %}
+                        <label><input type="radio" name="object_type" id="object_type" value="{{ i.id }}"/> {{ i.name }}</label>
+                    {% endfor %}
                     <label for="object_services" class="object_services">Изкупува <span class="err"></span></label>
                     <select required name="object_services" multiple id="object_services"
                             data-placeholder="вестници, бутилки, батерии, метал">

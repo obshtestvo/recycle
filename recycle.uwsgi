@@ -11,6 +11,8 @@ socket  = /tmp/recycle.sock
 chdir = /home/ubuntu/web/recycle
 module = app.wsgi
 # the virtualenv
-#home = /home/ubuntu/.virtualenvs/recycle
+virtualenv = /home/ubuntu/.virtualenvs/recycle
+# make sure all required plugins are loaded
+plugins=python
 # clear environment on exit
 vacuum = true

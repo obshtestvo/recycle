@@ -1,6 +1,6 @@
 # Django settings for mysite project.
 
-from secret_settings import *
+from server.settings_app import *
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -52,7 +52,7 @@ MEDIA_URL = ''
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = '/'
+STATIC_URL = '/static/'
 
 # List of finder classes that know how to find static files in
 # various locations.
@@ -86,10 +86,10 @@ MIDDLEWARE_CLASSES = (
     'restful.error_handler.ErrorHandler',
 )
 
-ROOT_URLCONF = 'app.urls'
+ROOT_URLCONF = 'urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'app.wsgi.application'
+WSGI_APPLICATION = 'server.wsgi.application'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".

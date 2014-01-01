@@ -1,4 +1,4 @@
-## RE:CYCLE
+# RE:CYCLE
 
 ## Есенция
 Карта с пунктове, депа, места са хвърляне на батерии, скрап, и (ако има) други. Всеки посетител ще има възможността да добави нов пункт. Вече има идеи за допълнителни функционалности в бъдещи версии.
@@ -24,12 +24,9 @@ https://docs.google.com/document/d/1zinC_iEABr7-FLKzZWNhTXp3DxhgUaNKqynUTVxed7I/
  - Да има начин сайта да извежда идеини предложения тип [Какво мога да направя с моите ___ (30 празни бутилки,старо радио ...)___ ?](https://github.com/obshtestvo/what-should-i-do) с помощта на които хората могат да се справят с излищните вещи типа "направи си сам", да си "измайстрят" нещо от привидно непотребните вещи
  - още в горния документ описващ включеното във версия 1
 
-Recycling Spots - Recycling spots nearby you, проект от https://docs.google.com/spreadsheet/ccc?key=0AoQEIaPHnvx6dHVWTDJIUDBrN0FEOURzMUZaRnFTTXc
+## Инсталация (за програмисти)
 
-## Includes
-**...да се допише...**
-
-## Requirements
+### Изисквания
  - nginx server
  - uwsgi server
  - uwsgi python plugin
@@ -38,18 +35,18 @@ Recycling Spots - Recycling spots nearby you, проект от https://docs.goo
  - virtualenvwrapper
  - mysql driver and its dependencies
 
-### Installing requirements
+#### Инсталация на изискванията (на debian-базирана машина)
 
 ```sh
 sudo apt-get install nginx-full uwsgi uwsgi-plugin-python python-pip && sudo pip install django virtualenvwrapper
 ```
-and for the capricious MySQL:
+и за mysql:
 
 ```sh
 sudo apt-get install libmysqlclient-dev python-dev
 ```
 
-### App setup
+### Инсталация на проекта
 
 ```sh
 django-admin.py startproject recycle
@@ -59,38 +56,53 @@ pip install django # even if you have django, install it in the virtual env
 pip install mysql-python # mysql...
 ```
 
-Edit the domain name for your website in `recycle.nginx`.
 
-Enable "recycle" in `nginx` server:
-```sh
-# in development:
-sudo ln -s /home/ubuntu/web/recycle/recycle.dev.nginx /etc/nginx/sites-enabled/
-# in production
-sudo ln -s /home/ubuntu/web/recycle/recycle.nginx /etc/nginx/sites-enabled/
+### Подкарване
+#### Повреме на разработка
+
+```
+django-admin.py runserver --settings=app.settings --pythonpath=/home/ubuntu/projects/recycle  --insecure
+
 ```
 
-And then to activate:
+#### Официалното издание / Production server
+Редактирайте домейна в `settings_nginx.optimised.conf` и `settings_nginx.basic.conf`.
+
+##### Настройки за `nginx`
+
+```sh
+# basic (no caching, no tweaking):
+sudo ln -s /home/ubuntu/projects/recycle/server/settings_nginx.basic.conf /etc/nginx/sites-enabled/recycle.conf
+# optimised
+sudo ln -s /home/ubuntu/projects/recycle/server/settings_nginx.optimised.conf /etc/nginx/sites-enabled/recycle.conf
+```
+
+Които се активират с :
 ```sh
 sudo service nginx restart
 ```
 
-Enable & activate "recycle" in the `uwsgi` server:
+##### Настройки за `uwsgi`
 ```sh
-sudo ln -s /home/ubuntu/web/recycle/recycle.uwsgi /etc/uwsgi/apps-enabled/recycle.ini
+# debian/ubuntu/mint...:
+sudo ln -s /home/ubuntu/projects/recycle/server/settings_uwsgi.ini /etc/uwsgi/apps-enabled/recycle.ini
+# fedora/centos/redhat...
+sudo ln -s /home/ubuntu/projects/recycle/server/settings_uwsgi.ini /etc/uwsgi.d/recycle.ini
+```
+
+Които се активират с :
+```
 sudo service uwsgi restart
 ```
 
-*These should be moved to the config file*:
+##### Опресняване на направени промени
+
+```
+sudo service uwsgi reload && sudo service nginx reload
+```
+
+##### Забележки
+*Следното трябва да се премести в конфигурационен файл*:
 
 - Edit `/ecomap/templates/home/get.html` to specify the ignorable address parts. Usually this project will be integrated in a specific region, so you can safely remove this region from the addresses being displayed.
-- Edit `/ecomap/templates/home/get.html` to specify the defaul map center.
-
-**...да се допише...**
-
-## Опресняване на направени промени
-
-Докато сайта е още в разработка може да се изпълни:
-
-```
-sudo service uwsgi restart && sudo service nginx restart
-```
+- Edit `/ecomap/templates/home/get.html` to specify the default map center.

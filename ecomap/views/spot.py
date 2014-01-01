@@ -1,12 +1,12 @@
-from django.template.response import TemplateResponse
+from restful.decorators import restful_view_templates
 from django.views.generic.base import View
 
-from core.exception.verbose import VerboseRedirectException
 from ecomap.services import *
 
+@restful_view_templates('spot')
 class RecycleSpotView(View):
     def get(self, request, **args):
         data = RecycleSpotService.get_by_id(args['id'])
-        return TemplateResponse(request, 'spot/get', {
+        return {
             'spot': data
-        })
+        }

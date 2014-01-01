@@ -1,19 +1,17 @@
-from django.template.response import TemplateResponse
+from restful.decorators import restful_view_templates
 from django.views.generic.base import View
 
-from core.exception.verbose import VerboseRedirectException
+from restful.exception.verbose import VerboseRedirectException
 from ecomap.services import *
 
+@restful_view_templates('home')
 class HomeView(View):
     def get(self, request):
-        recyclableService = RecyclableItemService()
-        return TemplateResponse(request, 'home/get', {
-            #'spots': [{"name": "glass", "material": "glass"}],
+        return {
             'recyclables': RecycleMaterialService.get_all(),
-             'spots': RecycleSpotService.get_by_types(request.POST.getlist('types')),
-             'spot_types': RecycleSpotType.objects.all(),
-             #'recyclables':  recyclableService.get_all()
-        })
+            'spots': RecycleSpotService.get_by_types(request.POST.getlist('types')),
+            'spot_types': RecycleSpotType.objects.all(),
+        }
 
     def put(self, request):
         # ...nothing happens here yet, test redirection with errors...

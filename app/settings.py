@@ -71,8 +71,8 @@ TEMPLATE_LOADERS = (
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
-    'core.middleware.rest.HttpMergeParameters',
-    'core.middleware.rest.HttpMethodOverride',
+    'restful.middleware.HttpMergeParameters',
+    'restful.middleware.HttpMethodOverride',
     'django.contrib.sessions.middleware.SessionMiddleware',
 
     # Before using CSRF make sure it's ONLY enabled when user is logging in or already logged in via cookies
@@ -82,8 +82,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'core.middleware.rest.ResponseFormatDetection',
-    'core.middleware.error_handler.ErrorHandler',
+    'restful.middleware.ResponseFormatDetection',
+    'restful.error_handler.ErrorHandler',
 )
 
 ROOT_URLCONF = 'app.urls'
@@ -108,8 +108,8 @@ INSTALLED_APPS = (
      'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-        'core',
-        'ecomap',
+    'restful',
+    'ecomap',
 )
 
 # A sample logging configuration. The only tangible logging

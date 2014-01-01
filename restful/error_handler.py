@@ -3,8 +3,8 @@ import pickle
 from django.contrib import messages
 from django.shortcuts import resolve_url
 
-from core.exception.verbose import VerboseException, VerboseRedirectException
-from core.exception.http import HttpResponseNotModifiedRedirect
+from restful.exception.verbose import VerboseException, VerboseRedirectException
+from restful.exception.http import HttpResponseNotModifiedRedirect
 
 class ErrorHandler(object):
     def process_exception(self, request, exception):

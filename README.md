@@ -54,18 +54,18 @@ mkvirtualenv recycle --no-site-packages #this will create a virtual environment 
 workon recycle
 pip install django # even if you have django, install it in the virtual env
 pip install mysql-python # mysql...
+sudo ln -s ~/.virtualenvs/recycle/lib/python2.7/site-packages/django/contrib/admin/static/admin ./static/
 ```
 
-
 ### Подкарване
-#### Повреме на разработка
+#### Когато още се разработва
 
 ```
 django-admin.py runserver --settings=app.settings --pythonpath=/home/ubuntu/projects/recycle  --insecure
 
 ```
 
-#### Официалното издание / Production server
+#### Когато вече сайта е готов и е пуснат / Production server
 Редактирайте домейна в `settings_nginx.optimised.conf` и `settings_nginx.basic.conf`.
 
 ##### Настройки за `nginx`

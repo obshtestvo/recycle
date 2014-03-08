@@ -1,0 +1,285 @@
+.hide {
+    display: none!important;
+}
+body, html {
+    height: 100%;
+    width: 100%;
+}
+#map-canvas {
+    height: 100%;
+    width: 100%;
+}
+
+
+/* Floater START */
+.floater {
+    position: absolute;
+}
+.floater.main {
+    top:30px;
+    width:800px;
+    height:150px;
+    left:50%;
+    margin-left:-400px;
+    background: #fff;
+}
+.floater.main select {
+    width:400px;
+    height:30px;
+}
+#search .select2-container,
+div.change-address .address,
+div.add-new .new-address,
+input.address {
+    margin:30px 200px 0 200px;
+    width:400px;
+}
+div.add-new .new-address {
+    margin: 0;
+}
+#add-new {
+    background: #fff;
+    margin-bottom: 21px;
+    -webkit-box-shadow: 0 3px 5px rgba(0,0,0,0.16);
+    -moz-box-shadow: 0 3px 5px rgba(0,0,0,0.16);
+    box-shadow: 0 3px 5px rgba(0,0,0,0.16);
+    overflow: hidden;
+}
+#add-new #step1 .streetview {
+    width:560px;
+    height:315px;
+}
+#add-new #step1 .cancelled-streetview,
+#add-new #step1 .missing-streetview {
+    width:540px;
+    padding:80px 10px 0 10px;
+    height:235px;
+    display: none;
+    background: gray;
+    text-align: center;
+}
+#add-new #step1 .missing-streetview {
+    position: relative;
+    z-index: 4;
+}
+#add-new #step1 a.reactivate:hover,
+#add-new #step1 a.cancel-streetview:hover {
+    background: #36cc34;
+}
+#add-new #step1 a.reactivate,
+#add-new #step1 a.cancel-streetview {
+    position: absolute;
+    top: 260px;
+    height:29px;
+    line-height: 29px;
+    padding: 0 9px;
+    background: rgba(111, 227, 109, 0.9);
+    left:0;
+    font-size: 13px;
+    display: inline-block;
+    color: #fff;
+    text-decoration: none;
+    z-index: 2;
+}
+#add-new a.close  {
+    text-indent: -9999em;
+    width:54px;
+    height:54px;
+    display: block;
+    position: absolute;
+    top:8px;
+    right:-54px;
+}
+#add-new a.close:before,
+#add-new a.close:after{
+    content:'';
+    position:absolute;
+    width:46px;
+    height:8px;
+    background:#6fe36d;
+    border-radius:4px;
+    top:16px;
+}
+
+#add-new a.close:hover:before,
+#add-new a.close:hover:after {
+    background: #36cc34;
+}
+
+#add-new textarea {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+#add-new #step2 fieldset {
+    padding: 20px;
+    border:0;
+    margin: 0;
+}
+
+#add-new #step2 .controls label {
+    display: inline-block;
+    color:#36cc34;
+}
+
+#add-new a.close:before{
+    -webkit-transform:rotate(45deg);
+    -moz-transform:rotate(45deg);
+    transform:rotate(45deg);
+    left:4px;
+}
+#add-new a.close:after{
+    -webkit-transform:rotate(-45deg);
+    -moz-transform:rotate(-45deg);
+    transform:rotate(-45deg);
+    right:4px;
+}
+#add-new #step2 {
+    padding: 0;
+}
+#add-new #step2 .select2-container {
+    width:300px
+}
+#add-new #step1 a.accept,
+#add-new #step2 a.accept  {
+    display: block;
+    background: #6fe36d;
+    color:#fff;
+    height:40px;
+    font-size: 18px;
+    border:20px solid #fff;
+    text-decoration: none;
+    text-align: center;
+    line-height: 40px;
+}
+
+#add-new #step1 a.accept:hover,
+#add-new #step2 a.accept:hover  {
+    background: #36cc34;
+}
+#add-new #step2 label {
+    display: block;
+    color:#114e11;
+    font-size: 15px;
+}
+#add-new #step2 a.back {
+    position: absolute;
+    top:37px;
+    display: inline-block;
+    height:29px;
+    line-height: 29px;
+    padding: 0 9px;
+    font-size: 13px;
+    background: rgba(111, 227, 109, 0.9);
+    color:#fff;
+    text-decoration: none;
+}
+#add-new #step2 a.back:hover  {
+    background: #36cc34;
+}
+#search div.address {
+    width:398px;
+    margin:0 200px 0 200px;
+}
+div.address a.change {
+    font-size: 0.7em;
+    vertical-align: middle;
+}
+div.address em {
+    font-style: normal;
+}
+div.change-address a.close,
+div.add-new a.close,
+a.add-new {
+    border: 1px solid gray;
+    text-decoration: none;
+    display : block;
+    position: absolute;
+    top:10px;
+    left:10px;
+    line-height: 30px;
+    text-align: center;
+    width: 30px;
+    height: 30px
+}
+a.add-new.active {
+    background: yellow;
+}
+
+/** Styling google autocomplete **/
+.pac-container:after {
+    display: none   ;
+}
+
+/* Add new info and address search */
+div.add-new {
+    padding: 10px 200px 0 200px;
+}
+div.add-new input {
+    width:400px;
+}
+
+
+/* Google maps infobox styling*/
+.infoBox > img {
+    display: none;
+}
+.infoBox:after {
+    content: '';
+    position: absolute;
+    /*background: transparent;*/
+    /*border: 21px solid transparent;*/
+    /*border-top-color: #fff;*/
+    width:40px;
+    height: 21px;
+    z-index: 1000001;
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    left:50%;
+    /*bottom:-21px;*/
+    bottom:0;
+    background: url("../img/info-arrow.png") no-repeat bottom center;
+}
+#show-location {
+    background: #fff;
+    margin-top: 10px;-webkit-box-shadow: 0 3px 5px rgba(0,0,0,0.16);
+    -moz-box-shadow: 0 3px 5px rgba(0,0,0,0.16);
+    box-shadow: 0 3px 5px rgba(0,0,0,0.16);
+    font-size: 11px;
+}
+#show-location div {
+    font-family: Arial, sans-serif!important;
+}
+#show-location #page {
+    width:400px;
+    padding: 10px;
+}
+#show-location a {
+    font-size: 11px;
+}
+
+/* Uniform custom styling */
+div.radio, div.radio span, div.radio input {
+    width: 20px;
+    height: 20px;
+    border-radius:50%;
+}
+div.radio span {
+    background: #fff;
+    border: 1px solid #cfffcf;
+}
+div.radio.hover span.checked,
+div.radio.focus span.checked,
+div.radio span.checked {
+    background: #cfffcf url("../img/radio-check.png") no-repeat center center;
+}
+label:hover div.radio span,
+label:hover div.radio span,
+div.radio:hover span.checked,
+div.radio.focus span.checked,
+div.radio.hover span,
+div.radio.focus span {
+    border: 1px solid #36cc34;
+}

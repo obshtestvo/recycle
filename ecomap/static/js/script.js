@@ -110,8 +110,6 @@ $.when(initialisingDOM).then(function() {
     $.when(initialisingMap).then(function(map) {
         var layer = new gMap.StreetViewCoverageLayer()
         layer.setMap(map)
-
-        console.log(layer, Object.keys(layer))
         gMap.event.addListener(map, 'drag', function () {
             var mapBounds = map.getBounds();
             var diagonalDistance = gMap.geometry.spherical.computeDistanceBetween(

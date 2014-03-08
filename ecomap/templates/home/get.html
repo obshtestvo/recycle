@@ -2,8 +2,9 @@
 {% load staticfiles %}
 {% load restful %}
 {% block headTag %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/lib/normalize.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/lib/select2.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'libs/normalize.css/normalize.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'libs/select2/select2.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'libs/jquery.uniform/themes/default/css/uniform.default.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/map.css' %}">
 {% endblock %}
 {% block content %}
@@ -45,8 +46,8 @@
             <form action="{% url 'spots' %}" method="post">
                 <a class="close" href="">Close</a>
                 <div id="step1" class="step">
-                    <a class="btn cancel-streetview" href="#">Не се вижда мястото [ x ]</a>
-                    <a class="btn reactivate hide" href="#">< Назад към камерата</a>
+                    <a class="btn cancel-streetview" href="#">не се вижда мястото</a>
+                    <a class="btn reactivate hide" href="#">назад към камерата</a>
                     <div class="streetview">
                     </div>
                     <div class="missing-streetview">
@@ -60,21 +61,25 @@
                 <div id="step2" class="step hide">
                     <a class="back" href="">Стъпка назад</a>
                     <div class="street">
-                        <img src="" alt="" width="300" height="100"/>
+                        <img src="" alt="" width="500" height="94"/>
                     </div>
-                    <label class="object_type">Тип на обекта <span class="err"></span></label>
-                    {%  for i in spot_types %}
-                        <label><input type="radio" name="object_type" id="object_type" value="{{ i.id }}"/> {{ i.name }}</label>
-                    {% endfor %}
-                    <label for="object_services" class="object_services">Изкупува <span class="err"></span></label>
-                    <select required name="object_services" multiple id="object_services"
-                            data-placeholder="вестници, бутилки, батерии, метал">
-                        {% for recyclable, material in recyclables.items %}
-                            <option value="{{ material }}">{{ recyclable }}</option>
-                        {% endfor %}
-                    </select>
-                    <label for="object_description" class="object_description">Допълнително описание <span class="err"></span></label>
-                    <textarea minlength="10" name="object_description" id="object_description" cols="30" rows="10"></textarea>
+                    <fieldset>
+                        <label class="object_type">Тип на обекта <span class="err"></span></label>
+                        <div class="controls">
+                            {%  for i in spot_types %}
+                                <label><input type="radio" name="object_type" id="object_type" value="{{ i.id }}"/> {{ i.name }}</label>
+                            {% endfor %}
+                        </div>
+                        <label for="object_services" class="object_services">Изкупува <span class="err"></span></label>
+                        <select required name="object_services" multiple id="object_services"
+                                data-placeholder="вестници, бутилки, батерии, метал">
+                            {% for recyclable, material in recyclables.items %}
+                                <option value="{{ material }}">{{ recyclable }}</option>
+                            {% endfor %}
+                        </select>
+                        <label for="object_description" class="object_description">Допълнително описание <span class="err"></span></label>
+                        <textarea minlength="10" name="object_description" id="object_description" cols="30" rows="10"></textarea>
+                    </fieldset>
                     <a class="btn accept" href="#">Готов съм</a>
                 </div>
                 <div id="step3" class="step hide">
@@ -112,19 +117,19 @@
         {% endcomment %}
     </div>
 
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script src="{% static 'libs/jquery/dist/jquery.js' %}"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places,geometry"></script>
     <script src="{% static 'js/lib/pubsub.js' %}"></script>
-    <script src="{% static 'js/lib/jquery.easing.1.3.js' %}"></script>
-    <script src="{% static 'js/lib/jquery.blockUI.js' %}"></script>
-    <script src="{% static 'js/lib/jquery.validate.js' %}"></script>
-    <script src="{% static 'js/lib/spin.js' %}"></script>
+    <script src="{% static 'libs/jquery-easing/jquery.easing.js' %}"></script>
+    <script src="{% static 'libs/blockui/jquery.blockUI.js' %}"></script>
+    <script src="{% static 'libs/jquery.validation/jquery.validate.js' %}"></script>
+    <script src="{% static 'libs/spin.js/spin.js' %}"></script>
+    <script src="{% static 'libs/jquery.uniform/jquery.uniform.js' %}"></script>
     <script src="{% static 'js/jquery.animateContentSwitch.js' %}"></script>
     <script src="{% static 'js/infobox.js' %}"></script>
     <script src="{% static 'js/infoboxAnimated.js' %}"></script>
-    <script src="{% static 'js/lib/jquery.easing.1.3.js' %}"></script>
     <script src="{% static 'js/lib/googleMarkerAnimate.js' %}"></script>
-    <script src="{% static 'js/lib/select2.min.js' %}"></script>
+    <script src="{% static 'libs/select2/select2.js' %}"></script>
     <script src="{% static 'js/lib/markerclusterer_compiled.js' %}"></script>
     <script src="{% static 'js/map/geoServices.js' %}"></script>
     <script src="{% static 'js/map/popupNew.js' %}"></script>

@@ -1,0 +1,19 @@
+{
+  "name": "ecomap",
+  "version": "1.0.0",
+  "main": "static/css/map.css",
+  "ignore": [
+    ".jshintrc",
+    "**/*.txt"
+  ],
+  "dependencies": {
+    "select2": "*",
+    "jquery": "*",
+    "jquery.uniform": "*",
+    "jquery.validation": "*",
+    "spin.js": "*",
+    "blockui": "*",
+    "jquery-easing": "*",
+    "normalize.css": "*"
+  }
+}

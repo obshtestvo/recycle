@@ -186,15 +186,12 @@ var LocationManager;
             var $content = $(options.content).hide()
             $(this.map.getDiv()).append($content)
             options = $.extend({
-			    pixelOffset: new google.maps.Size(-$content.outerWidth()/2, 0)
-                ,zIndex: null
-    //			,alignBottom: true
-                ,boxStyle: {
-                  background: "transparent url('/img/532px-TriangleArrow-Up.png') no-repeat center top"
-                 }
-                ,infoBoxClearance: new google.maps.Size(1, 1)
-                ,pane: "floatPane"
-                ,enableEventPropagation: false
+			    pixelOffset: new google.maps.Size(-$content.outerWidth()/2, 0),
+                zIndex: null,
+//    			alignBottom: true,
+                infoBoxClearance: new google.maps.Size(1, 1),
+                pane: "floatPane",
+                enableEventPropagation: false,
             } , options);
             $content.remove();
             var infoWindow = new InfoBoxAnimated(options);

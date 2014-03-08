@@ -42,9 +42,7 @@ var StreetViewPicker;
         // Reactivate streetview
         _self.$trigger.click(function(e) {
             e.preventDefault();
-            _self.handleAvailability(_self.marker.getPosition());
-            _self.$trigger.addClass('hide')
-            _self.$close.removeClass('hide')
+            _self.handleAvailability(_self.streetview.getPosition());
         })
 
     }
@@ -82,6 +80,8 @@ var StreetViewPicker;
                     _self.$container.show();
                     _self.streetview.setVisible(true);
                     _self.$unavailablePlaceholder.hide();
+                    _self.$trigger.addClass('hide')
+                    _self.$close.removeClass('hide')
                 } else {
                     _self.$container.hide();
                     _self.streetview.setVisible(false);

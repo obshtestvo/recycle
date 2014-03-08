@@ -1,5 +1,8 @@
 server/settings_app.py
 server/access.log
+static/libs
+/static
 *.pyc
 *.DS_Store
 *.idea
+!/static/robots.txt

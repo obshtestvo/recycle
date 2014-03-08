@@ -61,7 +61,7 @@ sudo ln -s ~/.virtualenvs/recycle/lib/python2.7/site-packages/django/contrib/adm
 #### Когато още се разработва
 
 ```
-django-admin.py runserver --settings=app.settings --pythonpath=/home/ubuntu/projects/recycle  --insecure
+django-admin.py runserver --settings=settings --pythonpath=/home/ubuntu/projects/recycle  --insecure
 
 ```
 

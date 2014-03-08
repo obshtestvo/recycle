@@ -78,6 +78,8 @@ var LocationWizard;
                 var step3 = new Step3();
 
                 var $form = $(options.formSelector)
+                $form.find(":radio").uniform();
+
                 $form.validate({
                     errorPlacement: function ($err, $el) {
                         var name = $el.attr('name')

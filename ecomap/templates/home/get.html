@@ -71,14 +71,18 @@
                             {% endfor %}
                         </div>
                         <label for="object_services" class="object_services">Изкупува <span class="err"></span></label>
-                        <select required name="object_services" multiple id="object_services"
-                                data-placeholder="вестници, бутилки, батерии, метал">
-                            {% for recyclable, material in recyclables.items %}
-                                <option value="{{ material }}">{{ recyclable }}</option>
-                            {% endfor %}
-                        </select>
+                        <div class="controls">
+                            <select required name="object_services" multiple id="object_services"
+                                    data-placeholder="вестници, бутилки, батерии, метал">
+                                {% for recyclable, material in recyclables.items %}
+                                    <option value="{{ material }}">{{ recyclable }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                         <label for="object_description" class="object_description">Допълнително описание <span class="err"></span></label>
-                        <textarea minlength="10" name="object_description" id="object_description" cols="30" rows="10"></textarea>
+                        <div class="controls">
+                            <textarea minlength="10" name="object_description" id="object_description" cols="30" rows="10"></textarea>
+                        </div>
                     </fieldset>
                     <a class="btn accept" href="#">Готов съм</a>
                 </div>

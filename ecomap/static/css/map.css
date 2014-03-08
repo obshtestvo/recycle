@@ -110,6 +110,13 @@ div.add-new .new-address {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+    width:100%;
+    border:1px solid #cfffcf;
+}
+#add-new textarea:focus,
+#add-new textarea:hover {
+    border-color:#3bcd39;
+    outline: none;
 }
 #add-new #step2 fieldset {
     padding: 20px;
@@ -158,8 +165,8 @@ div.add-new .new-address {
     background: #36cc34;
 }
 #add-new #step2 label {
-    display: block;
-    color:#114e11;
+    display: inline-block;
+    color: #114e11;
     font-size: 15px;
 }
 #add-new #step2 a.back {
@@ -221,6 +228,18 @@ div.add-new input {
 
 
 /* Google maps infobox styling*/
+.infoBox {
+    pointer-events: none;
+}
+.infoBox a,
+.infoBox label,
+.infoBox input,
+.infoBox .blockUI,
+.infoBox textarea,
+.infoBox .select2-container,
+.infoBox .streetview {
+    pointer-events: auto;
+}
 .infoBox > img {
     display: none;
 }

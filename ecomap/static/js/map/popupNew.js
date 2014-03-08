@@ -96,13 +96,13 @@ var PopupAddNew;
          */
         _createMarker: function(location, options) {
             var _self = this;
-            var options = $.extend({
+            options = $.extend({
                 visible: false,
                 position: location,
                 animation: gMap.Animation.b,
                 draggable: true,
                 icon: {
-                    url: '/img/pointer.png',
+                    url: '#',
                     size: new gMap.Size(64, 64),
                     // The origin for this image is 0,0.
                     origin: new gMap.Point(0, 0),

@@ -24,13 +24,13 @@ class RecycleSpot(models.Model):
     TYPE_STORE = 'store'
 
     type = models.ForeignKey('RecycleSpotType', related_name = 'spot_types')
-    name = models.CharField(max_length=255)
-    organisation = models.CharField(max_length=64)
-    area = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, blank=True)
+    organisation = models.CharField(max_length=64, blank=True)
+    area = models.CharField(max_length=255, blank=True)
     address = models.CharField(max_length=255)
     lng = models.FloatField()
     lat = models.FloatField()
-    added_at = models.DateTimeField()
+    added_at = models.DateTimeField(auto_now=True)
     description = models.TextField()
     contact = models.TextField()
     pointer = models.CharField(max_length=255, blank=True)

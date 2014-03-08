@@ -20,7 +20,7 @@ class RecycleSpotsView(View):
             RecycleSpot.add_spot(request.PUT)
             status = 201
             message = 'OK'
-        except:
+        except Exception as e:
             status = 400
             message = 'Error'
         return {'status': message}, status

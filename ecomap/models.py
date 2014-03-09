@@ -15,7 +15,7 @@ class RecyclableItem(models.Model):
     material = models.ForeignKey('RecycleSpotMaterial', related_name = 'aliases')
 
     def __unicode__(self):
-        return self.alias + ' - ' + self.material
+        return self.alias + ' - ' + self.material.name
 
 class RecycleSpot(models.Model):
     class Meta:

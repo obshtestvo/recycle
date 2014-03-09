@@ -5,14 +5,17 @@ class RecycleSpotMaterial(models.Model):
         db_table = 'spot_material'
     name = models.CharField(max_length=255)
 
-    def __str__(self):
-        return self.name.encode("utf-8")
+    def __unicode__(self):
+        return self.name
 
 class RecyclableItem(models.Model):
     class Meta:
         db_table = 'material_mapping'
     alias = models.CharField(max_length=255, primary_key=True)
     material = models.ForeignKey('RecycleSpotMaterial', related_name = 'aliases')
+
+    def __unicode__(self):
+        return self.alias + ' - ' + self.material
 
 class RecycleSpot(models.Model):
     class Meta:
@@ -36,6 +39,9 @@ class RecycleSpot(models.Model):
     pointer = models.CharField(max_length=255, blank=True)
     streetview_params = models.CharField(max_length=255)
     materials = models.ManyToManyField('RecycleSpotMaterial', through= 'RecycleSpotMaterialLink' )
+
+    def __unicode__(self):
+        return self.name
 
     @classmethod
     def check_type(cls, *args):
@@ -78,8 +84,8 @@ class RecycleSpotMaterialLink(models.Model):
 class RecycleSpotType(models.Model):
     class Meta:
         db_table = "spot_type"
- 
+
     name = models.CharField(max_length = 255)
 
-    def __str__(self):
+    def __unicode__(self):
         return self.name

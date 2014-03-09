@@ -8,7 +8,7 @@
 	 *	@class EventEmitter
 	 */
 	var EventEmitter = function (){
-		var cache = {},
+		var
 			/**
 			 *	Events.publish
 			 *	e.g.: Events.publish("/Article/added", [article], this);
@@ -20,8 +20,8 @@
 			 *	@param scope {Object} Optional
 			 */
 			publish = function (topic, args, scope) {
-				if (cache[topic]) {
-					var thisTopic = cache[topic],
+				if (this.eventCache[topic]) {
+					var thisTopic = this.eventCache[topic],
 						i = thisTopic.length - 1;
 
 					for (i; i >= 0; i -= 1) {
@@ -40,10 +40,10 @@
 			 *	@return Event handler {Array}
 			 */
 			subscribe = function (topic, callback) {
-				if (!cache[topic]) {
-					cache[topic] = [];
+				if (!this.eventCache[topic]) {
+					this.eventCache[topic] = [];
 				}
-				cache[topic].push(callback);
+				this.eventCache[topic].push(callback);
 				return this;
 			},
 			/**
@@ -59,19 +59,20 @@
 			 */
 			unsubscribe = function (handle, completly) {
 				var t = handle[0],
-					i = cache[t].length - 1;
+					i = this.eventCache[t].length - 1;
 
-				if (cache[t]) {
+				if (this.eventCache[t]) {
 					for (i; i >= 0; i -= 1) {
-						if (cache[t][i] === handle[1]) {
-							cache[t].splice(cache[t][i], 1);
-							if(completly){ delete cache[t]; }
+						if (this.eventCache[t][i] === handle[1]) {
+							this.eventCache[t].splice(this.eventCache[t][i], 1);
+							if(completly){ delete this.eventCache[t]; }
 						}
 					}
 				}
 			};
 
 		return {
+			eventCache: null,
 			trigger: publish,
 			on: subscribe,
 			unbind: unsubscribe

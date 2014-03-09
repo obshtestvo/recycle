@@ -6,6 +6,7 @@ var UserAddress;
 (function(AddressSearch) {
 
     UserAddress = function ($el, geo, map, options) {
+        this.eventCache = {}
         var _self = this;
 
         options = $.extend({

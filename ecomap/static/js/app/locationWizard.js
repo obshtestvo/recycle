@@ -6,6 +6,7 @@ var LocationWizard;
 (function(AddressSearch, PopupAddNew, gMap) {
 
     LocationWizard = function ($el, geo, map, options) {
+        this.eventCache = {}
         var _self = this;
 
         options = $.extend({
@@ -284,6 +285,7 @@ var LocationWizard;
 
 
     var Step1 = function() {
+        this.eventCache = {}
         var _self = this;
         _self.$container = $('#step1');
         _self.$finishTrigger = _self.$container.find('a.accept');
@@ -300,6 +302,7 @@ var LocationWizard;
     });
 
     var Step2 = function() {
+        this.eventCache = {}
         var _self = this;
         _self.$container = $('#step2');
         _self.$photo = _self.$container.find('.street img');
@@ -368,6 +371,7 @@ var LocationWizard;
     });
 
     var Step3 = function() {
+        this.eventCache = {}
         var _self = this;
         _self.$container = $('#step3');
     }

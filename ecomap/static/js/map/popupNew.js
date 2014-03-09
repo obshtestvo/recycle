@@ -12,6 +12,7 @@ var PopupAddNew;
      * @constructor
      */
     PopupAddNew = function(options) {
+        this.eventCache = {}
         var o = $.extend({
             map: undefined,
             location: undefined,
@@ -51,7 +52,6 @@ var PopupAddNew;
                     $close.click(function(e){
                         e.preventDefault();
                         gMap.event.trigger(_self.infowindow, "closeclick");
-                        _self.infowindow.close();
                     })
                 }),
 
@@ -189,14 +189,15 @@ var PopupAddNew;
          */
         destroy: function() {
             var _self = this;
-            gMap.event.removeListener(_self.events.markerDrag);
+            if (_self.infowindow == null) return;
+            gMap.event.removeListener(_self.events.infoWindowReady);
             gMap.event.removeListener(_self.events.markerDragStart);
             gMap.event.removeListener(_self.events.markerPositionChange);
             gMap.event.removeListener(_self.events.mapClick);
-            gMap.event.removeListener(_self.events.infoWindowReady);
             gMap.event.removeListener(_self.events.infoClose);
             if (_self.infowindow.getMap() instanceof gMap.Map)
                 _self.infowindow.close()
+            _self.infowindow = null;
             _self.marker.setMap(null);
         },
 

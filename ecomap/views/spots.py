@@ -22,6 +22,6 @@ class RecycleSpotsView(View):
             message = 'OK'
         except Exception as e:
             status = 400
-            message = 'Error'
+            message = str(e)
         return {'status': message}, status
 

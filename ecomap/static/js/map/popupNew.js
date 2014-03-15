@@ -41,6 +41,8 @@ var PopupAddNew;
             _self.infowindow = _self._createInfoWindow({"content": o.content})
             _self.marker.setVisible(true);
             _self.infowindow.open(_self.map, _self.marker);
+            _self.coverageLayer = new gMap.StreetViewCoverageLayer()
+            _self.coverageLayer.setMap(_self.map)
             _self.events = {
                 // The infowindow DOM is ready
                 infoWindowReady: gMap.event.addListener(_self.infowindow, 'domready', function() {
@@ -88,6 +90,7 @@ var PopupAddNew;
         infowindow: null,
         geo: null,
         events: null,
+        coverageLayer: null,
 
         /**
          * Add a marker
@@ -195,6 +198,8 @@ var PopupAddNew;
             gMap.event.removeListener(_self.events.markerPositionChange);
             gMap.event.removeListener(_self.events.mapClick);
             gMap.event.removeListener(_self.events.infoClose);
+            _self.coverageLayer.setMap(null)
+            _self.coverageLayer = null;
             if (_self.infowindow.getMap() instanceof gMap.Map)
                 _self.infowindow.close()
             _self.infowindow = null;

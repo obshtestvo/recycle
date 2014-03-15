@@ -108,8 +108,6 @@ $.when(initialisingDOM).then(function() {
 
     // When map is panned calcualte width and height
     $.when(initialisingMap).then(function(map) {
-        var layer = new gMap.StreetViewCoverageLayer()
-        layer.setMap(map)
         gMap.event.addListener(map, 'drag', function () {
             var mapBounds = map.getBounds();
             var diagonalDistance = gMap.geometry.spherical.computeDistanceBetween(
@@ -117,6 +115,7 @@ $.when(initialisingDOM).then(function() {
                 mapBounds.getSouthWest()
             )
             var humanFriendly = Math.round(diagonalDistance)+'meters';
+            console.log(humanFriendly)
         })
     })
 

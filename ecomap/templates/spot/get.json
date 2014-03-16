@@ -2,9 +2,12 @@
     "id"         : {{spot.id}},
     "description": "{{spot.description}}",
     "address"    : "{{spot.address}}",
+    "number"     : "{{spot.number|default:""}}",
+    "area"       : "{{spot.area|default:""}}",
+    "post_code"  : "{{spot.post_code|default:""}}",
     "lat"        : {{spot.lat}},
     "lng"        : {{spot.lng}},
-    "type"        : "{{spot.type.name}}",
+    "type"       : "{{spot.type.name}}",
     "streetview_params"    : {{spot.streetview_params|default:"{}"|safe}},
     "tags": [
         {% for m in spot.materials.all %}

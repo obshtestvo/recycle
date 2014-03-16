@@ -49,12 +49,16 @@ class RecycleSpot(models.Model):
     contact = models.TextField()
 
     added_at = models.DateTimeField(auto_now=True)
+
     lng = models.FloatField()
     lat = models.FloatField()
-    area = models.CharField(max_length=255, blank=True)
     address = models.CharField(max_length=255)
-    description = models.TextField()
+    area = models.CharField(max_length=255, blank=True, null=True)
+    number = models.IntegerField(blank=True, null=True)
+    post_code = models.IntegerField(blank=True, null=True)
     streetview_params = models.CharField(max_length=255)
+
+    description = models.TextField(blank=True, null=True)
     pointer = models.CharField(max_length=255, blank=True)
     materials = models.ManyToManyField('RecycleSpotMaterial', through='RecycleSpotMaterialLink')
 
@@ -71,24 +75,10 @@ class RecycleSpot(models.Model):
         }) == 0
 
     @classmethod
-    def add_spot(cls, data):
-        fields = { # This will be refactored
-            'type_id'          : data.get('object_type'),
-            'description'      : data.get('object_description', ""),
-            'lat'              : data.get('lat'),
-            'lng'              : data.get('lng'),
-            'address'          : data.get('address'),
-            'streetview_params': data.get('streetview_params')
-        }
-
-        spot = cls.objects.create(**fields)
-        
-        materials = RecycleSpotMaterial.objects.filter(name__in = data.getlist('object_services[]'))
-        for i in materials:
-            spot_material_fields = {
-                'spot_id'    : spot.id,
-                'material_id': int(i.id)
-            }
-            RecycleSpotMaterialLink.objects.create(**spot_material_fields)
+    def add_spot(cls, form, tags):
+        spot = form.save();
+        materials = RecycleSpotMaterial.objects.filter(name__in = tags)
+        for m in materials:
+            RecycleSpotMaterialLink(spot=spot, material=m).save()
 
         return spot.id

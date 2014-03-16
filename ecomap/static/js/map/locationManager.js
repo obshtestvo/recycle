@@ -193,7 +193,8 @@ var LocationManager;
                             //$infoWindow.find('h2').html(data.name);
 
                             var $tagContainer = $infoWindow.find('.tags');
-                            $infoWindow.find('.street').html(data.address);
+                            $infoWindow.find('.street').html(data.address + ' '+data.number);
+                            $infoWindow.find('.area').html(data.area + ' '+data.post_code);
                             $infoWindow.find('.type').html(data.type);
                             $infoWindow.find('.more-info p').html(data.description);
                             for (var i = 0; i < data.tags.length; i++) {

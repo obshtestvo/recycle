@@ -132,14 +132,15 @@ var LocationWizard;
                     });
                     var locationData = _self.getMapInput();
                     var data = {
-                        'object_type'       : _self.popup.$infoWindowContainer.find("#object_type").val(),
+                        'type'              : _self.popup.$infoWindowContainer.find("#object_type").val(),
                         'object_services'   : objectServices,
-                        'object_description': _self.popup.$infoWindowContainer.find("#object_description").val(),
+                        'description'       : _self.popup.$infoWindowContainer.find("#object_description").val(),
                         'lat'               : locationData.loc.lat,
                         'lng'               : locationData.loc.lng,
                         'address'           : locationData.address.simple.street,
+                        'number'            : locationData.address.simple.number,
                         'area'              : locationData.address.simple.city,
-                        'postCode'          : locationData.address.simple.postCode,
+                        'post_code'          : locationData.address.simple.postCode,
                         'streetview_params' : JSON.stringify(locationData['streetview'])
                     }
                     $.ajax({

@@ -20,11 +20,23 @@ class RecycleSpotsView(View):
     def put(self, request):
         data = {}
         try:
-            id = RecycleSpot.add_spot(request.params)
-            status = 201
-            data["message"] = 'OK'
-            data["id"] = id
+            form = LocationForm(data=request.params)
+            if form.is_valid():
+                id = RecycleSpot.add_spot(form, request.params.getlist('object_services[]'))
+                status = 201
+                data["message"] = 'OK'
+                data["id"] = id
+            else:
+                status = 400
+                data["message"] = str(form.errors)
         except Exception as e:
             status = 400
             data["message"] = str(e)
         return { "data": data}, status
+
+
+from django.forms import ModelForm
+class LocationForm(ModelForm):
+    class Meta:
+        model = RecycleSpot
+        fields = ['type', 'description', 'lat', 'lng', 'address', 'area', 'number', 'post_code', 'streetview_params']

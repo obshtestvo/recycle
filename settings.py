@@ -1,10 +1,6 @@
 # Django settings for mysite project.
 
 from server.settings_app import *
-
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )

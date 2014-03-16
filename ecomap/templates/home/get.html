@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% load compress %}
 {% load staticfiles %}
 {% load restful %}
 {% block headTag %}
@@ -139,21 +140,26 @@
         {% endcomment %}
     </div>
 
-    <script src="{% static 'libs/jquery/dist/jquery.js' %}"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places,geometry"></script>
-    <script src="{% static 'js/lib/clipper.js' %}"></script>
-    <script src="{% static 'js/lib/pubsub.js' %}"></script>
+    {% compress js file libs %}
+    <script src="{% static 'libs/jquery/dist/jquery.js' %}"></script>
     <script src="{% static 'libs/jquery-easing/jquery.easing.js' %}"></script>
     <script src="{% static 'libs/blockui/jquery.blockUI.js' %}"></script>
     <script src="{% static 'libs/jquery.validation/jquery.validate.js' %}"></script>
     <script src="{% static 'libs/spin.js/spin.js' %}"></script>
     <script src="{% static 'libs/jquery.uniform/jquery.uniform.js' %}"></script>
-    <script src="{% static 'js/jquery.animateContentSwitch.js' %}"></script>
-    <script src="{% static 'js/infobox.js' %}"></script>
-    <script src="{% static 'js/infoboxAnimated.js' %}"></script>
-    <script src="{% static 'js/lib/googleMarkerAnimate.js' %}"></script>
     <script src="{% static 'libs/select2/select2.js' %}"></script>
+    {% endcompress %}
+    {% compress js file locallibs %}
+    <script src="{% static 'js/lib/clipper.js' %}"></script>
+    <script src="{% static 'js/lib/pubsub.js' %}"></script>
+    <script src="{% static 'js/lib/infobox.js' %}"></script>
+    <script src="{% static 'js/lib/googleMarkerAnimate.js' %}"></script>
     <script src="{% static 'js/lib/markerclusterer.js' %}"></script>
+    <script src="{% static 'js/jquery.animateContentSwitch.js' %}"></script>
+    <script src="{% static 'js/infoboxAnimated.js' %}"></script>
+    {% endcompress %}
+    {% compress js file local %}
     <script src="{% static 'js/map/geoServices.js' %}"></script>
     <script src="{% static 'js/map/popupNew.js' %}"></script>
     <script src="{% static 'js/map/streetViewPicker.js' %}"></script>
@@ -164,4 +170,5 @@
     <script src="{% static 'js/app/userAddress.js' %}"></script>
     <script src="{% static 'js/app/locationWizard.js' %}"></script>
     <script src="{% static 'js/script.js' %}"></script>
+    {% endcompress %}
 {% endblock %}

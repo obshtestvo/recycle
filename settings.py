@@ -60,6 +60,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    'compressor.finders.CompressorFinder',
 )
 
 # List of callables that know how to import templates from various sources.
@@ -110,6 +111,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'restful',
     'ecomap',
+    "compressor",
 )
 
 # A sample logging configuration. The only tangible logging

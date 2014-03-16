@@ -6,6 +6,36 @@ body, html {
     width: 100%;
     font-family: 'Open Sans', sans-serif;
 }
+
+ul.stripped {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+/*
+ * Clearfix: contain floats
+ *
+ * For modern browsers
+ * 1. The space content is one way to avoid an Opera bug when the
+ *    `contenteditable` attribute is included anywhere else in the document.
+ *    Otherwise it causes space to appear at the top and bottom of elements
+ *    that receive the `clearfix` class.
+ * 2. The use of `table` rather than `block` is only necessary if using
+ *    `:before` to contain the top-margins of child elements.
+ */
+
+.clearfix:before,
+.clearfix:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+
+.clearfix:after {
+    clear: both;
+}
+
+
 #map-canvas {
     height: 100%;
     width: 100%;
@@ -40,10 +70,11 @@ div.add-new .new-address {
 }
 #add-new, #show-location {
     font-family: 'Open Sans', sans-serif!important;
+    background: #fff;
+    overflow: hidden;
+    margin-bottom: 21px;
 }
 #add-new {
-    background: #fff;
-    margin-bottom: 21px;
     -webkit-box-shadow: 0 3px 5px rgba(0,0,0,0.16);
     -moz-box-shadow: 0 3px 5px rgba(0,0,0,0.16);
     box-shadow: 0 3px 5px rgba(0,0,0,0.16);
@@ -239,6 +270,7 @@ div.add-new input {
     width:400px;
 }
 
+
 #show-location .streetview-thumb {
     position: relative;
 }
@@ -251,15 +283,72 @@ div.add-new input {
     width: 100%;
     background: url("../img/show-location-overlay-bg.png") no-repeat left bottom;
 }
-#show-location .streetview-thumb .overlay h2 strong {
+#show-location .streetview-thumb .overlay h2.address {
     font-size: 30px;
     font-weight: normal;
     margin: 0;
     padding: 0;
     position: absolute;
-    bottom: 0;
-    left: 0;
+    bottom: 20px;
+    line-height: 35px;
+    left: 20px;
     width: 100%;
+}
+#show-location .streetview-thumb .overlay h2.address strong {
+    font-weight: normal;
+}
+#show-location .streetview-thumb .overlay h2.address strong.area {
+    display: block;
+    top:-20px;
+    height: 20px;
+    position: absolute;
+    left:0;
+    width: 100%;
+}
+#show-location .specs {
+    background: #f4fcf5;
+    color: #36cc34;
+    padding-bottom: 14px;
+}
+#show-location .specs .tags li {
+    display: inline-block;
+    background: #cfffcf;
+    font-size: 13px;
+    padding: 2px 5px 3px 5px;
+    margin-right: 5px;
+    text-transform: lowercase;
+}
+#show-location .specs .column {
+    width: 50%;
+    float: left;
+}
+#show-location .specs .column:first-child > * {
+    margin-left: 19px;
+}
+#show-location .specs strong.type {
+    font-size: 15px;
+    font-weight: normal;
+}
+#show-location h3 {
+    margin: 0;
+    color:#114e11;
+    padding: 0;
+    font-size: 15px;
+    font-weight: normal;
+}
+#show-location .specs  h3 {
+    padding: 14px 0 8px 0;
+}
+
+#show-location .more-info {
+    padding: 14px 0 8px 20px;
+}
+#show-location .more-info {
+    font-size: 13px;
+    color:#114e11;
+}
+#show-location .more-info p {
+    margin-top: 5px;
 }
 
 /* Google maps styling*/

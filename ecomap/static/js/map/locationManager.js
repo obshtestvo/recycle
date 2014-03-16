@@ -192,9 +192,13 @@ var LocationManager;
                             var $infoWindow = $(_self.infoWindow.div_);
                             //$infoWindow.find('h2').html(data.name);
 
+                            var $tagContainer = $infoWindow.find('.tags');
                             $infoWindow.find('.street').html(data.address);
+                            $infoWindow.find('.type').html(data.type);
                             $infoWindow.find('.more-info p').html(data.description);
-
+                            for (var i = 0; i < data.tags.length; i++) {
+                                $('<li>').append(data.tags[i]).appendTo($tagContainer)
+                            }
                             var streetview_params = data.streetview_params;
                             var src = _self.geo.streetview.getStaticUrl(500, 200, data.lat+',' + data.lng, streetview_params.fov, streetview_params);
                             $infoWindow.find('.streetview-thumb img').attr('src', src);

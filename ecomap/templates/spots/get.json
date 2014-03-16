@@ -6,6 +6,7 @@
             "address"    : "{{spot.address}}",
             "lat"        : {{spot.lat}},
             "lng"        : {{spot.lng}},
+            "type"        : "{{spot.type.name}}",
             "streetview_params"    : {{spot.streetview_params|default:"{}"|safe}},
             "tags": [
                 {% for m in spot.materials.all %}

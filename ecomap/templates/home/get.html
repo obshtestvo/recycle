@@ -5,6 +5,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'libs/normalize.css/normalize.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'libs/select2/select2.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'libs/jquery.uniform/themes/default/css/uniform.default.css' %}">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,600,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="{% static 'css/map.css' %}">
 {% endblock %}
 {% block content %}
@@ -98,8 +99,10 @@
         <div id="show-location">
             <a class="close" href="">Close</a>
             <div class="streetview-thumb">
-                <img src="about:blank" width="400" heigth="150" rel="streetview-img"/>
-                <span class="address" rel="address"></span>        
+                <img src="about:blank" width="500px" height="200px" rel="streetview-img"/>
+                <div class="overlay">
+                    <h2 class="address" rel="address"><strong class="street" rel="street"></strong><strong class="area" rel="area"></strong></h2>
+                </div>
             </div>
             <div class="more-info">
                 <h5>Допълнителна информация</h5>

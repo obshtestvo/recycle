@@ -4,6 +4,7 @@
 body, html {
     height: 100%;
     width: 100%;
+    font-family: 'Open Sans', sans-serif;
 }
 #map-canvas {
     height: 100%;
@@ -36,6 +37,9 @@ input.address {
 }
 div.add-new .new-address {
     margin: 0;
+}
+#add-new, #show-location {
+    font-family: 'Open Sans', sans-serif!important;
 }
 #add-new {
     background: #fff;
@@ -81,6 +85,8 @@ div.add-new .new-address {
     text-decoration: none;
     z-index: 2;
 }
+
+#show-location a.close,
 #add-new a.close  {
     text-indent: -9999em;
     width:54px;
@@ -90,6 +96,8 @@ div.add-new .new-address {
     top:8px;
     right:-54px;
 }
+#show-location a.close:before,
+#show-location a.close:after,
 #add-new a.close:before,
 #add-new a.close:after{
     content:'';
@@ -101,6 +109,8 @@ div.add-new .new-address {
     top:16px;
 }
 
+#show-location a.close:hover:after,
+#show-location a.close:hover:before,
 #add-new a.close:hover:before,
 #add-new a.close:hover:after {
     background: #36cc34;
@@ -129,13 +139,16 @@ div.add-new .new-address {
     color:#36cc34;
 }
 
-#add-new a.close:before{
+
+#show-location a.close:before,
+#add-new a.close:before {
     -webkit-transform:rotate(45deg);
     -moz-transform:rotate(45deg);
     transform:rotate(45deg);
     left:4px;
 }
-#add-new a.close:after{
+#show-location a.close:after,
+#add-new a.close:after {
     -webkit-transform:rotate(-45deg);
     -moz-transform:rotate(-45deg);
     transform:rotate(-45deg);
@@ -226,10 +239,58 @@ div.add-new input {
     width:400px;
 }
 
+#show-location .streetview-thumb {
+    position: relative;
+}
+#show-location .streetview-thumb .overlay {
+    position: absolute;
+    color:#fff;
+    min-height: 116px;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: url("../img/show-location-overlay-bg.png") no-repeat left bottom;
+}
+#show-location .streetview-thumb .overlay h2 strong {
+    font-size: 30px;
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+/* Google maps styling*/
+.gm-style {
+    font-family: 'Open Sans', sans-serif;
+}
+
+/* Google maps cluster styling */
+.cluster {
+    /*overflow: hidden;*/
+    /*text-indent: -9999em;*/
+}
+.cluster > div {
+    background: rgba(111, 227, 109, 0.95);
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    left:50%!important;
+    margin-left: -15px;
+    height:30px!important;
+    line-height:30px!important;
+    width:30px!important;
+    top:-35px!important;
+    color:#fff!important;
+    /*overflow: hidden;*/
+    /*text-indent: -9999em;*/
+}
 
 /* Google maps infobox styling*/
 .infoBox {
-    pointer-events: none;
+    /*pointer-events: none;*/
 }
 .infoBox a,
 .infoBox label,
@@ -267,9 +328,6 @@ div.add-new input {
     -moz-box-shadow: 0 3px 5px rgba(0,0,0,0.16);
     box-shadow: 0 3px 5px rgba(0,0,0,0.16);
     font-size: 11px;
-}
-#show-location div {
-    font-family: Arial, sans-serif!important;
 }
 #show-location #page {
     width:400px;

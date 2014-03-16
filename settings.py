@@ -10,7 +10,7 @@ ADMINS = (
 )
 
 MANAGERS = ADMINS
-DATABASES['default']['ENGINE'] = 'django.db.backends.mysql'
+# DATABASES['default']['ENGINE'] = 'django.db.backends.mysql'
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 SESSION_ENGINE = "django.contrib.sessions.backends.file"
 

@@ -12,7 +12,12 @@ var LocationManager;
         this.locations = {}
         this.infoWindow = this._createInfoWindow({"content": infoContent})
         this.markerCluster = new MarkerClusterer(this.map, undefined, {
-            averageCenter: true
+            averageCenter: true,
+            styles: [{
+                url: '/static/img/pin-cluster.png',
+                height: 34,
+                width: 37,
+            }]
         });
     }
     LocationManager.prototype = {
@@ -187,7 +192,7 @@ var LocationManager;
                             var $infoWindow = $(_self.infoWindow.div_);
                             //$infoWindow.find('h2').html(data.name);
 
-                            $infoWindow.find('.address').html(data.address);
+                            $infoWindow.find('.street').html(data.address);
                             $infoWindow.find('.more-info p').html(data.description);
 
                             var streetview_params = data.streetview_params;

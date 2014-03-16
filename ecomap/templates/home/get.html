@@ -13,7 +13,7 @@
          data-address-ignore="[ &quot;България&quot;,  &quot;Bulgaria&quot;]"
     ></div>
     <div class="floater main">
-        <div id="search" data-spots="{{ spots }}">
+        <div id="search">
             <a class="add-new" href="" style="">+</a>
             <form action="{% url 'home' %}" data-action="{% url 'spots' %}">
                 <select name="filter" id="filter" multiple data-recyclables="{{ recyclables|jsonify }}" data-placeholder="вестници, бутилки, батерии, метал" data-no-matches="__material__ не се рециклира, пробвайте нещо друго">
@@ -123,6 +123,7 @@
 
     <script src="{% static 'libs/jquery/dist/jquery.js' %}"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places,geometry"></script>
+    <script src="{% static 'js/lib/clipper.js' %}"></script>
     <script src="{% static 'js/lib/pubsub.js' %}"></script>
     <script src="{% static 'libs/jquery-easing/jquery.easing.js' %}"></script>
     <script src="{% static 'libs/blockui/jquery.blockUI.js' %}"></script>
@@ -134,7 +135,7 @@
     <script src="{% static 'js/infoboxAnimated.js' %}"></script>
     <script src="{% static 'js/lib/googleMarkerAnimate.js' %}"></script>
     <script src="{% static 'libs/select2/select2.js' %}"></script>
-    <script src="{% static 'js/lib/markerclusterer_compiled.js' %}"></script>
+    <script src="{% static 'js/lib/markerclusterer.js' %}"></script>
     <script src="{% static 'js/map/geoServices.js' %}"></script>
     <script src="{% static 'js/map/popupNew.js' %}"></script>
     <script src="{% static 'js/map/streetViewPicker.js' %}"></script>

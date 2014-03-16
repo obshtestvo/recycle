@@ -14,16 +14,36 @@ var geoServices;
 
             /**
              * Get dimensions in coordinates difference
+             * @param mapOrBounds
              * @returns {{height: number, width: number}}
              */
-            getDimensions: function(map) {
-                var mapBounds = map.getBounds();
-                var latDiff = mapBounds.getNorthEast().lat() - mapBounds.getSouthWest().lat();
-                var lngDiff = mapBounds.getNorthEast().lng() - mapBounds.getSouthWest().lng();
+            getDimensions: function(mapOrBounds) {
+                var bounds = mapOrBounds instanceof gMap.Map ? mapOrBounds.getBounds() : mapOrBounds;
+                var latDiff = bounds.getNorthEast().lat() - bounds.getSouthWest().lat();
+                var lngDiff = bounds.getNorthEast().lng() - bounds.getSouthWest().lng();
                 return {
                     height: latDiff,
                     width: lngDiff
                 }
+            },
+
+            /**
+             * Scales the given google maps bounds several times
+             *
+             * @param bounds
+             * @param scale
+             * @returns {gMap.LatLngBounds}
+             */
+            scaleBounds: function(bounds, scale) {
+                var mapDim = geoServices.map.getDimensions(bounds)
+                scale--;
+                mapDim.height = mapDim.height*scale;
+                mapDim.width = mapDim.width*scale;
+                var ne = bounds.getNorthEast()
+                var sw = bounds.getSouthWest()
+                ne = new gMap.LatLng(ne.lat()+mapDim.height, ne.lng()+mapDim.width)
+                sw = new gMap.LatLng(sw.lat()-mapDim.height, sw.lng()-mapDim.width)
+                return new gMap.LatLngBounds(sw, ne)
             },
 
             /**
@@ -190,6 +210,12 @@ var geoServices;
                     cleanAddress.push(cityPart)
                 })
                 return cleanAddress.join(', ')
+            }
+        },
+
+        streetview: {
+            getStaticUrl: function(width, height, locAsUrl, fov, pov) {
+                return 'http://maps.googleapis.com/maps/api/streetview?size='+width+'x'+height+'&location='+locAsUrl+'&fov='+fov+'&heading='+pov.heading+'&pitch='+pov.pitch+'&sensor=false';
             }
         }
     }

@@ -1,5 +1,14 @@
 from django.db import models
-import logging 
+
+class RecycleSpotType(models.Model):
+    class Meta:
+        db_table = "spot_type"
+
+    name = models.CharField(max_length=255)
+
+    def __unicode__(self):
+        return self.name
+
 class RecycleSpotMaterial(models.Model):
     class Meta:
         db_table = 'spot_material'
@@ -17,6 +26,14 @@ class RecyclableItem(models.Model):
     def __unicode__(self):
         return self.alias + ' - ' + self.material.name
 
+
+class RecycleSpotMaterialLink(models.Model):
+    class Meta:
+        db_table = 'spot_material_link'
+
+    spot        = models.ForeignKey('RecycleSpot')
+    material    = models.ForeignKey('RecycleSpotMaterial', related_name='spots')
+
 class RecycleSpot(models.Model):
     class Meta:
         db_table = 'spot'
@@ -26,19 +43,20 @@ class RecycleSpot(models.Model):
     TYPE_YARD = 'yard'
     TYPE_STORE = 'store'
 
-    type = models.ForeignKey('RecycleSpotType', related_name = 'spot_types')
+    type = models.ForeignKey('RecycleSpotType', related_name = 'spots')
     name = models.CharField(max_length=255, blank=True)
     organisation = models.CharField(max_length=64, blank=True)
-    area = models.CharField(max_length=255, blank=True)
-    address = models.CharField(max_length=255)
+    contact = models.TextField()
+
+    added_at = models.DateTimeField(auto_now=True)
     lng = models.FloatField()
     lat = models.FloatField()
-    added_at = models.DateTimeField(auto_now=True)
+    area = models.CharField(max_length=255, blank=True)
+    address = models.CharField(max_length=255)
     description = models.TextField()
-    contact = models.TextField()
-    pointer = models.CharField(max_length=255, blank=True)
     streetview_params = models.CharField(max_length=255)
-    materials = models.ManyToManyField('RecycleSpotMaterial', through= 'RecycleSpotMaterialLink' )
+    pointer = models.CharField(max_length=255, blank=True)
+    materials = models.ManyToManyField('RecycleSpotMaterial', through='RecycleSpotMaterialLink')
 
     def __unicode__(self):
         return self.name
@@ -55,37 +73,20 @@ class RecycleSpot(models.Model):
     @classmethod
     def add_spot(cls, data):
         fields = { # This will be refactored
-            'type_id'     : data['object_type'][0],
-            'description' : data['object_description'][0] if 'object_description' in data else "",
-            'lat'         : data['lat'][0],
-            'lng'         : data['lng'][0],
-            'address'     : data['address'][0],
-            'streetview_params': data['streetview_params'][0]
+            'type_id'          : data.get('object_type'),
+            'description'      : data.get('object_description', ""),
+            'lat'              : data.get('lat'),
+            'lng'              : data.get('lng'),
+            'address'          : data.get('address'),
+            'streetview_params': data.get('streetview_params')
         }
 
         spot_id = cls.objects.create(**fields)
         
-        materials = RecycleSpotMaterial.objects.filter(name__in = data['object_services[]'])
+        materials = RecycleSpotMaterial.objects.filter(name__in = data.getlist('object_services[]'))
         for i in materials:
             spot_material_fields = {
                 'spot_id'    : spot_id.id,
                 'material_id': int(i.id)
             }
             RecycleSpotMaterialLink.objects.create(**spot_material_fields)
-        
-        
-class RecycleSpotMaterialLink(models.Model):
-    class Meta:
-        db_table = 'spot_material_link'
-
-    spot        = models.ForeignKey('RecycleSpot')
-    material    = models.ForeignKey('RecycleSpotMaterial', related_name = 'spot_materials')
-
-class RecycleSpotType(models.Model):
-    class Meta:
-        db_table = "spot_type"
-
-    name = models.CharField(max_length = 255)
-
-    def __unicode__(self):
-        return self.name

@@ -6,22 +6,23 @@ from ecomap.services import *
 @restful_view_templates('spots')
 class RecycleSpotsView(View):
     def get(self, request, **args):
-        if "spot_id" in args and args['spot_id'] > 0:
-            data = RecycleSpotService.get_by_id(args['spot_id'])
-        else:
-            data = RecycleSpotService.get_by_types(request.params.getlist('tags[]'))
-        
+        criteria = {
+            "types": request.params.getlist('tags[]')
+        }
+        bounds = BoundsForm(data=request.params, prefix='bounds')
+        if bounds.is_valid():
+            criteria["bounds"] = bounds.cleaned_data
+        data = RecycleSpotService.get_all_by_types_and_bounds(**criteria)
         return {
             'spots': data
         }
 
     def put(self, request):      
         try:
-            RecycleSpot.add_spot(request.PUT)
+            RecycleSpot.add_spot(request.params)
             status = 201
             message = 'OK'
         except Exception as e:
             status = 400
             message = str(e)
         return {'status': message}, status
-

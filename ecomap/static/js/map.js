@@ -34,10 +34,8 @@ var Map;
     Map.prototype = {
         map: null,
         addNewPopup: null,
-        markerCluster: null,
         locationManager: null,
         geo: null,
-        markers: [],
 
         /**
          * Creates a map
@@ -83,24 +81,6 @@ var Map;
             map.mapTypes.set("Recycle Style", mapType);
             map.setMapTypeId("Recycle Style");
             return map;
-        },
-
-        /**
-         * Check for visible markers on the map
-         * @returns {boolean}
-         */
-        hasVisibleMarkers: function() {
-            var _self = this;
-            var markers = _self.markers;
-            var bounds = _self.map.getBounds();
-            var contain = false;
-            $.each(markers, function(i, m) {
-                if (m.getVisible() && bounds.contains(m.getPosition())) {
-                    contain = true;
-                    return false;
-                }
-            })
-            return contain;
         }
     }
 

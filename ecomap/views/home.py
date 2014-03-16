@@ -7,9 +7,14 @@ from ecomap.services import *
 @restful_view_templates('home')
 class HomeView(View):
     def get(self, request):
+        criteria = {
+            "types": request.params.getlist('types[]')
+        }
+        bounds = BoundsForm(data=request.params, prefix='bounds')
+        if bounds.is_valid():
+            criteria["bounds"] = bounds.cleaned_data
         return {
             'recyclables': RecycleMaterialService.get_all(),
-            'spots': RecycleSpotService.get_by_types(request.POST.getlist('types')),
             'spot_types': RecycleSpotType.objects.all(),
         }
 

@@ -1,10 +1,15 @@
 from models import *
+from django import forms
 
-import logging
+class BoundsForm(forms.Form):
+    ne_lat = forms.FloatField(required=True)
+    ne_lng = forms.FloatField(required=True)
+    sw_lat = forms.FloatField(required=True)
+    sw_lng = forms.FloatField(required=True)
+
 class RecycleSpotService():
     FIELDS = [
         'id',
-        'name',
         'description',
         'address',
         'lat',
@@ -15,19 +20,29 @@ class RecycleSpotService():
     ]    
 
     @classmethod
-    def get_by_types(cls, types):
-        if not types or len(types)==0:
-            return RecycleSpot.objects.select_related("type").only(*cls.FIELDS)
-
+    def get_all_by_types_and_bounds(cls, types, bounds=None):
+        criteria = {}
         # check if the provided types are valid
-        if RecycleSpot.check_type(*types) > 0:
-            raise Exception("Invalid recycle spot type")
+        if types and len(types)>0:
+            if RecycleSpot.check_type(*types) > 0:
+                raise Exception("Invalid recycle spot type")
+            else:
+                criteria["materials__name__in"] = types
 
-        return RecycleSpot.objects.select_related("type").filter(materials__name__in=types).only(*cls.FIELDS).distinct()
+        #                **************** North East(ne)
+        # South West(sw) ****************
+        # @todo it only works for bulgaria right now
+        if bounds:
+            criteria["lat__lte"] = bounds["ne_lat"]
+            criteria["lat__gte"] = bounds["sw_lat"]
+            criteria["lng__gte"] = bounds["sw_lng"]
+            criteria["lng__lte"] = bounds["ne_lng"]
+
+        return RecycleSpot.objects.select_related("type").prefetch_related('materials').filter(**criteria)
 
     @classmethod
     def get_by_id(cls, id):
-        return RecycleSpot.objects.select_related("type").get(id=int(id)).values(*cls.FIELDS)
+        return RecycleSpot.objects.select_related("type").prefetch_related('materials').get(pk=id)
 
     @staticmethod
     def build_dict(data):

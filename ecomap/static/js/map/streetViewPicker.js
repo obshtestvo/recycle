@@ -102,7 +102,7 @@ var StreetViewPicker;
             var loc = this.streetview.getPosition()
             var values = [120, 90, 53.5, 28.3, 14.3, 10];
             var fov = values[Math.round(pov.zoom)];
-            return 'http://maps.googleapis.com/maps/api/streetview?size='+width+'x'+height+'&location='+loc.toUrlValue()+'&fov='+fov+'&heading='+pov.heading+'&pitch='+pov.pitch+'&sensor=false';
+            return this.geo.streetview.getStaticUrl(width, height, loc.toUrlValue(), fov, pov);
         },
 
         /**

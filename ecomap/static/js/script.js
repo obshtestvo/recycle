@@ -81,22 +81,15 @@ $.when(initialisingDOM).then(function() {
                 $search.removeClass('hide')
             })
             .on('found', function() {
-                if (!app.map.hasVisibleMarkers()) {
-                    app.map.locationManager.topUp(function(locations) {
-                        //@todo merge with markers registry in app.map.markers
-                    })
-                }
+                app.map.locationManager.fixLocations()
             })
     })
 
-    // Detect location if allowed and move map to new coordinates
+    // Detect user location if allowed and move map to new coordinates
     $.when(initialisingMap, retrievingGeoDetection, retrievingFirstMapAddress).then(function(map, loc) {
         map.setCenter(loc);
-        if (!app.map.hasVisibleMarkers()) {
-            app.map.locationManager.topUp(function(locations) {
-                //@todo merge with markers registry in app.map.markers
-            })
-        }
+        map.setZoom(17);  // Why 17? Because it looks good.
+        app.map.locationManager.fixLocations()
         geoServices.human.convertToAddress(loc, function(err, address) {
             if (!err) {
                 var city = address.city == null ? '': address.city;
@@ -108,14 +101,20 @@ $.when(initialisingDOM).then(function() {
 
     // When map is panned calcualte width and height
     $.when(initialisingMap).then(function(map) {
-        gMap.event.addListener(map, 'drag', function () {
-            var mapBounds = map.getBounds();
-            var diagonalDistance = gMap.geometry.spherical.computeDistanceBetween(
-                mapBounds.getNorthEast(),
-                mapBounds.getSouthWest()
-            )
-            var humanFriendly = Math.round(diagonalDistance)+'meters';
-            console.log(humanFriendly)
+        var timeout;
+        var i=0;
+        gMap.event.addListener(map, 'dragstart', function () {
+            var randomDelay = function() {
+                return Math.floor(Math.random() * (200 - 100 + 1)) + 100;
+            }
+            var check = function() {
+                timeout = setTimeout(check, randomDelay())
+                app.map.locationManager.fixLocations()
+            }
+            check();
+        })
+        gMap.event.addListener(map, 'dragend', function () {
+            clearTimeout(timeout)
         })
     })
 
@@ -128,19 +127,14 @@ $.when(initialisingDOM).then(function() {
 
         var recyclables = $filter.data('recyclables');
         var recycle = new RecycleServices($filterForm.data('action'), $filter, recyclables);
-        app.map.locationManager = new LocationManager(map, recycle, infoContent);
+        app.map.locationManager = new LocationManager(map, geoServices, recycle, infoContent);
 
         // Find all spots in radius of 20km from the center of the map
-        app.map.locationManager.loadLocations({
-            "coords": map.getCenter().toUrlValue()
-        }, function(locations) {
-            //@todo standartise this with the merge of markers after a topup
-            app.map.markers = locations.markers;
-        })
+        app.map.locationManager.fixLocations()
 
         // Filter spots down to selected tags
         $filter.change(function () {
-            app.map.locationManager.filterLocations()
+            app.map.locationManager.fixLocations(null, true)
         })
     })
 
@@ -152,11 +146,7 @@ $.when(initialisingDOM).then(function() {
         })
         app.locationWizard
             .on('move', function() {
-                if (!app.map.hasVisibleMarkers()) {
-                    app.map.locationManager.topUp(function(locations) {
-                        //@todo merge with markers registry in app.map.markers
-                    })
-                }
+                app.map.locationManager.fixLocations()
             })
             .on('show', function() {
                 $search.addClass('hide')

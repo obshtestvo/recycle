@@ -1,2 +1,2 @@
 {% load restful %}
-{{data|jsonify}}
+{{data|jsonify|safe}}

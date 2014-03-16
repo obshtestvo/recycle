@@ -379,7 +379,7 @@ div.add-new input {
 
 /* Google maps infobox styling*/
 .infoBox {
-    /*pointer-events: none;*/
+    pointer-events: none;
 }
 .infoBox a,
 .infoBox label,

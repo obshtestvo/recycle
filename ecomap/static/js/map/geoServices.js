@@ -156,6 +156,21 @@ var geoServices;
                 })
                 return city;
             },
+            /**
+             * Extract postal code from address components
+             * @param addressComponents
+             * @returns {*}
+             */
+            getPostalCode: function(addressComponents) {
+                var code = null;
+                $.each(addressComponents, function(i, component) {
+                    if ($.inArray("postal_code", component.types)>-1) {
+                        code = component.long_name;
+                        return false;
+                    }
+                })
+                return code;
+            },
 
             /**
              * Extract street or area

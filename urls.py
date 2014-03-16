@@ -9,7 +9,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^$', home.HomeView.as_view(), name='home'),
     url(r'^spots/$', spots.RecycleSpotsView.as_view(), name='spots'),
-    url(r'^spot/$', spot.RecycleSpotView.as_view(), name='spot'),
+    url(r'^spot/(?P<id>[0-9]+)$', spot.RecycleSpotView.as_view(), name='spot'),
 
     # url(r'^mysite/', include('mysite.foo.urls')),
 

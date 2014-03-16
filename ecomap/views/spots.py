@@ -17,12 +17,14 @@ class RecycleSpotsView(View):
             'spots': data
         }
 
-    def put(self, request):      
+    def put(self, request):
+        data = {}
         try:
-            RecycleSpot.add_spot(request.params)
+            id = RecycleSpot.add_spot(request.params)
             status = 201
-            message = 'OK'
+            data["message"] = 'OK'
+            data["id"] = id
         except Exception as e:
             status = 400
-            message = str(e)
-        return {'status': message}, status
+            data["message"] = str(e)
+        return { "data": data}, status

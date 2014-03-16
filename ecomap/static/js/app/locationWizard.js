@@ -135,21 +135,25 @@ var LocationWizard;
                         'object_type'       : _self.popup.$infoWindowContainer.find("#object_type").val(),
                         'object_services'   : objectServices,
                         'object_description': _self.popup.$infoWindowContainer.find("#object_description").val(),
-                        'lat'               : locationData['loc']['lat'],
-                        'lng'               : locationData['loc']['lng'],
-                        'address'           : locationData['address']['simple']['street'],
+                        'lat'               : locationData.loc.lat,
+                        'lng'               : locationData.loc.lng,
+                        'address'           : locationData.address.simple.street,
+                        'area'              : locationData.address.simple.city,
+                        'postCode'          : locationData.address.simple.postCode,
                         'streetview_params' : JSON.stringify(locationData['streetview'])
                     }
                     $.ajax({
-                      url: '/spots/',
-                      type: 'PUT',
-                      contentType: "application/json; charset=utf-8",
-                      dataType: "json",
-                      data: data,
-                      success: function() {
-                        step2.unblock();
-                        _self.popup.infowindow.switchContent(_self.popup.$infoWindowContainer, step2.$container, step3.$container, 100);
-                      }
+                        url: '/spots/',
+                        type: 'PUT',
+                        data: data,
+                        dataType: "json",
+                        success: function (data) {
+                            $.getJSON( "/spot/" + data.id, function( markerData ) {
+                                step2.unblock();
+                                _self.markerData = [markerData];
+                                _self.popup.infowindow.switchContent(_self.popup.$infoWindowContainer, step2.$container, step3.$container, 100);
+                            });
+                        }
                     });
                 })
 
@@ -185,6 +189,7 @@ var LocationWizard;
         geo: null,
         map: null,
         popup: null,
+        markerdata: null,
         streetviewPicker: null,
         search: null,
         ignoredAddressParts: null,
@@ -275,6 +280,7 @@ var LocationWizard;
                 address: {
                     simple: {
                         city: this.geo.human.getCity(addressInfo),
+                        postCode: this.geo.human.getPostalCode(addressInfo),
                         street: this.geo.human.getStreetOrArea(addressInfo),
                         number: this.geo.human.getStreetNumber(addressInfo)
                     }

@@ -7,6 +7,7 @@ gMap.visualRefresh = true;
 // App context
 var app = {
     map: null,
+    recycleServices: null,
     userAddress: null,
     locationWizard: null
 }
@@ -127,6 +128,7 @@ $.when(initialisingDOM).then(function() {
 
         var recyclables = $filter.data('recyclables');
         var recycle = new RecycleServices($filterForm.data('action'), $filter, recyclables);
+        app.recycleServices = recycle;
         app.map.locationManager = new LocationManager(map, geoServices, recycle, infoContent);
 
         // Find all spots in radius of 20km from the center of the map
@@ -156,6 +158,9 @@ $.when(initialisingDOM).then(function() {
             .on('hide', function() {
                 $search.removeClass('hide')
                 app.map.locationManager.resume()
+                app.map.locationManager.refreshLocaitons(app.locationWizard.markerData, {
+                    "tags": app.recycleServices.tags()
+                })
             })
     })
 });

@@ -1,0 +1,15 @@
+{
+    "id"         : {{spot.id}},
+    "description": "{{spot.description}}",
+    "address"    : "{{spot.address}}",
+    "lat"        : {{spot.lat}},
+    "lng"        : {{spot.lng}},
+    "type"        : "{{spot.type.name}}",
+    "streetview_params"    : {{spot.streetview_params|default:"{}"|safe}},
+    "tags": [
+        {% for m in spot.materials.all %}
+            "{{m.name}}"
+        {% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ]
+}

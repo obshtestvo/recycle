@@ -1,1 +1,2 @@
-{ "Status": "{{status}}" }
+{% load restful %}
+{{data|jsonify}}

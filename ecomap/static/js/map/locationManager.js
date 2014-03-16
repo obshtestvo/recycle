@@ -51,10 +51,7 @@ var LocationManager;
             }
             _self.recycle.find(criteria, function(markerData) {
                 console.log(markerData)
-                var locations = _self.populateMarkers(markerData, criteria);
-                _self._decorate(locations);
-                if ($.isFunction(callback))
-                    callback(locations)
+                _self.refreshLocaitons(markerData, criteria, callback)
             });
         },
 
@@ -76,19 +73,22 @@ var LocationManager;
             } else if (forceFilter) {
 
                 // If we have it but filtering is triggered then only filter
-                var locations = _self.populateMarkers(null, {
+                _self.refreshLocaitons(null, {
                     "tags": _self.recycle.tags()
-                });
-                _self._decorate(locations);
-                if ($.isFunction(callback))
-                    callback(locations)
-
+                }, callback)
 
             } else if ($.isFunction(callback)) {
 
                 // otherwise just execute callback
                 callback(_self.locations)
             }
+        },
+
+        refreshLocaitons: function(data, criteria, callback) {
+            var locations = this.populateMarkers(data, criteria);
+            this._decorate(locations);
+            if ($.isFunction(callback))
+                callback(locations)
         },
 
         /**

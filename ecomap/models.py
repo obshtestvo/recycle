@@ -81,12 +81,14 @@ class RecycleSpot(models.Model):
             'streetview_params': data.get('streetview_params')
         }
 
-        spot_id = cls.objects.create(**fields)
+        spot = cls.objects.create(**fields)
         
         materials = RecycleSpotMaterial.objects.filter(name__in = data.getlist('object_services[]'))
         for i in materials:
             spot_material_fields = {
-                'spot_id'    : spot_id.id,
+                'spot_id'    : spot.id,
                 'material_id': int(i.id)
             }
             RecycleSpotMaterialLink.objects.create(**spot_material_fields)
+
+        return spot.id

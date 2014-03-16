@@ -11,7 +11,10 @@ DATABASES = {
     }
 }
 
-DEBUG = True
+# Hosts/domain names that are valid for this site; required if DEBUG is False
+# See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
+ALLOWED_HOSTS = ['recycle.obshtestvo.bg']
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 # Absolute path to the directory static files should be collected to.

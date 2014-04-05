@@ -34,30 +34,62 @@ https://docs.google.com/document/d/1zinC_iEABr7-FLKzZWNhTXp3DxhgUaNKqynUTVxed7I/
  - django
  - virtualenvwrapper
  - mysql driver and its dependencies
+ - npm (node.js package manager)
 
 #### Инсталация на изискванията (на debian-базирана машина)
 
 ```sh
-sudo apt-get install nginx-full uwsgi uwsgi-plugin-python python-pip && sudo pip install django virtualenvwrapper
+sudo apt-get install nginx-full uwsgi uwsgi-plugin-python python-pip npm
+sudo pip install django virtualenvwrapper
 ```
 и за mysql:
 
 ```sh
-sudo apt-get install libmysqlclient-dev python-dev
+sudo apt-get install libmysqlclient-dev mysql-server python-dev
 ```
 
 ### Инсталация на проекта
 
+(всичко се прави от директорията на проекта, да речем ~/recycle)
+
+#### Пакети и пътища и т.н.
 ```sh
-django-admin.py startproject recycle
+source /usr/local/bin/virtualenvwrapper.sh # to have the mkvirtualenv commands, etc.
 mkvirtualenv recycle --no-site-packages #this will create a virtual environment at ~/.virtualenvs/recycle
 workon recycle
 pip install django # even if you have django, install it in the virtual env
 pip install mysql-python # mysql...
-sudo ln -s ~/.virtualenvs/recycle/lib/python2.7/site-packages/django/contrib/admin/static/admin ./static/
+pip install django-compressor
+sudo ln -s ~/.virtualenvs/recycle/lib/python2.7/site-packages/django/contrib/admin/static/admin static
+( cd bower && sudo npm -g install bower && bower install )
+```
+
+#### config
+
+Копирайте си server/settings_app.py.sample като server/settings_app.py и оправете в него настройките:
+
+Генерирайте нов SECRET_KEY (apg -m32 например);
+Сложете настройките на базата данни;
+Вероятно може да закоментирате STATICFILES_DIRS;
+
+За development няма проблем да си ползвате root потребителя на mysql и да не пипате SECRET_KEY.
+
+#### инсталация на базата данни
+
+Ако нямате създаден база и искате да я кръстите recycle:
+
+```sh
+mysql -uroot -p -e "CREATE DATABASE recycle"
+```
+
+След това инициализирате:
+
+```sh
+python manage.py syncdb
 ```
 
 ### Подкарване
+
 #### Когато още се разработва
 
 ```
@@ -65,7 +97,10 @@ django-admin.py runserver --settings=settings --pythonpath=/home/ubuntu/projects
 
 ```
 
-#### Когато вече сайта е готов и е пуснат / Production server
+#### Production server
+
+Убедете се, че знаете какво правите.
+
 Редактирайте домейна в `settings_nginx.optimised.conf` и `settings_nginx.basic.conf`.
 
 ##### Настройки за `nginx`

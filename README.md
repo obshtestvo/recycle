@@ -68,9 +68,11 @@ sudo ln -s ~/.virtualenvs/recycle/lib/python2.7/site-packages/django/contrib/adm
 
 Копирайте си server/settings_app.py.sample като server/settings_app.py и оправете в него настройките:
 
-Генерирайте нов SECRET_KEY (apg -m32 например);
-Сложете настройките на базата данни;
-Вероятно може да закоментирате STATICFILES_DIRS;
+- Генерирайте нов SECRET_KEY (apg -m32 например);
+- Сложете настройките на базата данни;
+- Вероятно може да закоментирате STATICFILES_DIRS;
+- Ако ще го разработвате, сложете DEBUG=True;
+
 
 За development няма проблем да си ползвате root потребителя на mysql и да не пипате SECRET_KEY.
 

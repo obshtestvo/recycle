@@ -1,6 +1,6 @@
 server/settings_app.py
 server/access.log
-static/libs
+ecomap/static/libs
 /static
 *.pyc
 *.DS_Store

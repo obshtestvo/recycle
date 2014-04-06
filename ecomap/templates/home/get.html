@@ -16,16 +16,23 @@
     ></div>
     <div class="floater main">
         <div id="search">
-            <a class="add-new" href="" style="">+</a>
-            <form action="{% url 'home' %}" data-action="{% url 'spots' %}">
-                <select name="filter" id="filter" multiple data-recyclables="{{ recyclables|jsonify }}" data-placeholder="вестници, бутилки, батерии, метал" data-no-matches="__material__ не се рециклира, пробвайте нещо друго">
-                    {% for recyclable, material in recyclables.items %}
-                    <option value="{{ material }}">{{ recyclable }}</option>
-                    {% endfor %}
-                </select>
-                <div class="address"><em></em> <a href="#" class="change">Смени</a></div>
-            </form>
-        </div>
+            <div class="floater-header">
+                <a class="add-new" href="" style="">+</a>
+            </div>
+            <div class="floater-body">
+                <form action="{% url 'home' %}" data-action="{% url 'spots' %}">
+                    <select name="filter" id="filter" multiple data-recyclables="{{ recyclables|jsonify }}" data-placeholder="вестници, бутилки, батерии, метал" data-no-matches="__material__ не се рециклира, пробвайте нещо друго">
+                        {% for recyclable, material in recyclables.items %}
+                        <option value="{{ material }}">{{ recyclable }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="address">
+                        <strong>Резултати в </strong>
+                        <em></em>
+                        <a href="#" class="change">въведи адрес</a>
+                    </div>
+                </form>
+            </div>
         <div class="change-address hide">
             <a class="close" href="" style="">x</a>
             <input class="address" type="text" name="address" id="addressSearch" width="400px" placeholder="Град или адрес"/>

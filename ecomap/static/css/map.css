@@ -48,22 +48,30 @@ ul.stripped {
 }
 .floater.main {
     top:30px;
-    width:800px;
+    width:700px;
     height:150px;
     left:50%;
     margin-left:-400px;
-    background: #fff;
 }
 .floater.main select {
     width:400px;
     height:30px;
 }
+.floater-body{
+    overflow: hidden;
+    background: #fff;
+}
+.floater-header {
+    height: 50px;
+    width: 700px;
+    background: rgba(111,227,109,0.9);
+}
 #search .select2-container,
 div.change-address .address,
 div.add-new .new-address,
 input.address {
-    margin:30px 200px 0 200px;
-    width:400px;
+    margin:45px 20px 10px 20px;
+    width:660px;
 }
 div.add-new .new-address {
     margin: 0;
@@ -228,30 +236,40 @@ div.add-new .new-address {
 #add-new #step2 a.back:hover  {
     background: #36cc34;
 }
-#search div.address {
-    width:398px;
-    margin:0 200px 0 200px;
-}
 div.address a.change {
     font-size: 0.7em;
-    vertical-align: middle;
+    text-decoration: none;
+    color: #36cc34;
+    padding: 0 20px 20px 0;
+    float: right;
+}
+div.address strong{
+    font-style: normal;
+    float: left;
+    padding: 0 0 20px 20px;
+    color: #215c20;
 }
 div.address em {
     font-style: normal;
+    float: left;
+    padding: 0 0 0 5px;
+    color: #215c20;
 }
 div.change-address a.close,
 div.add-new a.close,
 a.add-new {
-    border: 1px solid gray;
     text-decoration: none;
+    color: #fff;
     display : block;
     position: absolute;
-    top:10px;
-    left:10px;
+    top:15px;
+    left:20px;
     line-height: 30px;
     text-align: center;
+    font-size: 30px;
+    font-style: normal;
     width: 30px;
-    height: 30px
+    height: 30px;
 }
 a.add-new.active {
     background: yellow;
@@ -259,7 +277,7 @@ a.add-new.active {
 
 /** Styling google autocomplete **/
 .pac-container:after {
-    display: none   ;
+    display: none;
 }
 
 /* Add new info and address search */
@@ -392,6 +410,9 @@ div.add-new input {
 }
 .infoBox > img {
     display: none;
+}
+.select2-container-multi .select2-choices .select2-search-field input {
+    height: 60px!important; 
 }
 .infoBox:after {
     content: '';

@@ -20,6 +20,7 @@
                 <a class="add-new" href="" style="">+</a>
             </div>
             <div class="floater-body">
+                <h1>Искам да рециклирам</h1>
                 <form action="{% url 'home' %}" data-action="{% url 'spots' %}">
                     <select name="filter" id="filter" multiple data-recyclables="{{ recyclables|jsonify }}" data-placeholder="вестници, бутилки, батерии, метал" data-no-matches="__material__ не се рециклира, пробвайте нещо друго">
                         {% for recyclable, material in recyclables.items %}
@@ -27,7 +28,7 @@
                         {% endfor %}
                     </select>
                     <div class="address">
-                        <strong>Резултати в </strong>
+                        <strong>Резултати в</strong>
                         <em></em>
                         <a href="#" class="change">въведи адрес</a>
                     </div>

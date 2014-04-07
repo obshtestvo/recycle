@@ -61,16 +61,32 @@ ul.stripped {
     overflow: hidden;
     background: #fff;
 }
+.floater-body h1 {
+    font-size: 1.6em;
+    color: #215c20;
+    padding: 15px 0 0 0 0;
+    text-align: center; 
+}
 .floater-header {
     height: 50px;
     width: 700px;
     background: rgba(111,227,109,0.9);
 }
+.select2-container-multi .select2-choices .select2-search-field input {
+    padding: 0 0 0 20px!important;
+}
+.select2-container-multi .select2-choices .select2-search-choice {
+    color: #36cc34;
+    background: #cfffcf;
+    top: 20px;
+    left: 20px;
+    border: none;
+}
 #search .select2-container,
 div.change-address .address,
 div.add-new .new-address,
 input.address {
-    margin:45px 20px 10px 20px;
+    margin:0 20px 10px 20px;
     width:660px;
 }
 div.add-new .new-address {
@@ -237,14 +253,14 @@ div.add-new .new-address {
     background: #36cc34;
 }
 div.address a.change {
-    font-size: 0.7em;
+    font-size: 1.05em;
     text-decoration: none;
     color: #36cc34;
     padding: 0 20px 20px 0;
     float: right;
 }
 div.address strong{
-    font-style: normal;
+    font-size: 1.05em;
     float: left;
     padding: 0 0 20px 20px;
     color: #215c20;
@@ -413,6 +429,10 @@ div.add-new input {
 }
 .select2-container-multi .select2-choices .select2-search-field input {
     height: 60px!important; 
+}
+.select2-choices {
+    background-image: none!important;
+    border: 1px solid #b4f4b4!important;
 }
 .infoBox:after {
     content: '';

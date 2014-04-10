@@ -278,17 +278,43 @@ a.add-new {
     color: #fff;
     display : block;
     position: absolute;
-    top:15px;
-    left:20px;
+    top: 13px;
+    left: 20px;
     line-height: 30px;
     text-align: center;
     font-size: 30px;
     font-style: normal;
-    width: 30px;
-    height: 30px;
+    width: 20px;
+    height: 20px;
 }
 a.add-new.active {
     background: yellow;
+}
+.logo {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 11px 0 0 0;
+}
+.about-us {
+    color: #fff;
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    text-decoration: none;
+    border-bottom: 1px solid #fff;
+    display: inline;
+    padding-bottom: 1px;
+}
+.faq {
+    color: #fff;
+    position: absolute;
+    top: 15px;
+    right: 90px;
+    text-decoration: none;
+    border-bottom: 1px solid #fff;
+    display: inline;
+    padding-bottom: 1px;
 }
 
 /** Styling google autocomplete **/

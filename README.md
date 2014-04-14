@@ -16,82 +16,111 @@
 Прототипен дизайн, добавяне на пункт стъпка 2:
 ![add-location-2](https://f.cloud.github.com/assets/4492376/563904/24a22988-c524-11e2-89f3-9e787c60ce43.jpg)
 
-## Планирано в първата версия/издание
-https://docs.google.com/document/d/1zinC_iEABr7-FLKzZWNhTXp3DxhgUaNKqynUTVxed7I/edit?usp=sharing
+## Инсталация на проекта (за програмисти)
 
-## Следваща версия
- - От карта да стане търсачка. Да може да си въвеждат адреса посетителите.
- - Да има начин сайта да извежда идеини предложения тип [Какво мога да направя с моите ___ (30 празни бутилки,старо радио ...)___ ?](https://github.com/obshtestvo/what-should-i-do) с помощта на които хората могат да се справят с излищните вещи типа "направи си сам", да си "измайстрят" нещо от привидно непотребните вещи
- - още в горния документ описващ включеното във версия 1
+Проектът е написан на Python и Django, и използва MySQL.
 
-## Инсталация (за програмисти)
+### Development среда
+#### Автоматича настройка
 
-### Изисквания
- - nginx server
- - uwsgi server
- - uwsgi python plugin
- - pip (python package manager)
- - django
- - virtualenvwrapper
- - mysql driver and its dependencies
- - npm (node.js package manager)
+Нужни са ви единствено:
 
-#### Инсталация на изискванията (на debian-базирана машина)
+ - [Vagrant](http://www.vagrantup.com/), ако нямате - [сваляте и инсталирате](
+https://ww.vagrantup.com/downloads.html)
+ - [VirtualBox](https://www.virtualbox.org/), ако нямате - [сваляте и инсталирате](https://www.virtualbox.org/wiki/Downloads)
+
+В директория на проекта пускате 1 команда:
 
 ```sh
-sudo apt-get install nginx-full uwsgi uwsgi-plugin-python python-pip npm
-sudo pip install django virtualenvwrapper
-```
-и за mysql:
-
-```sh
-sudo apt-get install libmysqlclient-dev mysql-server python-dev
+vagrant up
 ```
 
-### Инсталация на проекта
+Това може да отнеме няколко минути, след което имате работещ сайта на адрес:  [http://localhost:8888/](http://localhost:8888/)
 
-(всичко се прави от директорията на проекта, да речем ~/recycle)
+Администратор на сайта е `admin` с парола `admin`, чрез който имате достъп до [административния панел](http://localhost:8888/admin/).
 
-#### Пакети и пътища и т.н.
+##### Детайли
+Автоматичната настройка създава виртуална машина s заемаща 370mb. Може да я спирате и пускате с команди от директорията на проекта:
+
 ```sh
-source /usr/local/bin/virtualenvwrapper.sh # to have the mkvirtualenv commands, etc.
+vagrant halt # изключва
+vagrant up # включва
+```
+
+За още дейтали [вижте какво се инсталира в нея](bootstrap.sh).
+
+#### Ръчна настройка
+
+1. Нужен ви е Python 2.7. Проектът не е тестван на други версии.
+1. Трябва да имате **MySQL 5.x**, плюс header файлове. Както и **Node.js**.
+1. Инсталирайте **pip**, ако нямате – `easy_install pip` или `sudo easy_install pip`
+1. Инсталирайте **bower**, ако нямате – `npm install -g bower` или `sudo npm install -g bower`.
+1. Инсталирайте **virtualenvwrapper** – `pip install virtualenvwrapper` или `sudo pip install virtualenvwrapper`.
+1. Заредете командите на **virtualenvwrapper**: `source /usr/local/bin/virtualenvwrapper.sh` – дава достъп до `mkvirtualenv` и други.
+1. `mkvirtualenv recycle --no-site-packages` – ще създаде виртуална среда за инсталиране на pip пакети в `~/.virtualenvs/obshtestvobg`.
+1. `workon recycle` за да превключите на това обкръжение.
+1. Клонирайте хранилището и влезте в директорията на проекта.
+1. Зависимостите за frontend (CSS и JS): `(cd ecomap && bower install)`
+1. Зависимостите на проекта: `pip install -r requirements.txt`
+
+    Ако компилацията на MySQL адаптера не мине, може да се наложи да се изпълни `export CFLAGS=-Qunused-arguments` ([реф.](http://stackoverflow.com/questions/22313407/clang-error-unknown-argument-mno-fused-madd-python-package-installation-fa)) и да се стартира отново командата.
+1. Създайте база данни в MySQL:
+
+    ```
+    mysql -uroot -p -e "CREATE DATABASE recycle CHARACTER SET utf8 COLLATE utf8_general_ci"
+    ```
+1. Създайте файл със специфичните за локалното ви копие настройки, като копирате `server/settings_app.py.sample` като `server/settings_app.py` и въведете там параметрите за достъп до MySQL базата данни.
+1. Подгответе базата за първото пускане на миграциите: `python manage.py syncdb  --noinput`
+1. Пуснете миграциите: `python manage.py migrate`
+1. Направете си админ потребител с `python manage.py createsuperuser`
+1. Пуснете си сървър с `python manage.py runserver`
+
+Би трябвало да може да достъпите приложението на [http://localhost:8000/](http://localhost:8000/).
+
+### Production среда
+
+Инсталирайте приложението, използвайки инструкциите в предишната секция за ръчни настройки, с тези разлики:
+
+1. В `server/settings_app.py`:
+
+	- Променете `DEBUG = True` на `DEBUG = False`.
+	- Генерирайте нова стойност на `SECRET_KEY` (с `apg -m32` например).
+
+2. Настройте уеб сървъра си да сервира статичните файлове, намиращи се в `STATIC_ROOT` (обикновено папката `static/` в корена на проекта) на URL `/static/`.
+3. Уверете се, че по време на deployment се изпълнява командата `python manage.py collectstatic -l`, за да се копират статичните файлове от приложението в `STATIC_ROOT`.
+4. Използвайте Nginx или Apache сървър, плюс uwsgi server и uwsgi python plugin. Могат да се използват съответните конфигурационни файлове в папка `server/`.
+
+##### Почистване на кеша на production системата
+
+```
+find /var/cache/nginx/ -type f | xargs rm
+```
+
+### Deployment
+
+След първоначалната инсталация, проектът се качва на сървъра с `fab deploy`. Копирайте `fabric_settings.py.sample` във `fabric_settings.py` и го редактирайте, за да отговаря на вашите настройки за deploy. След това, процедурата е следната:
+
+1. Правите промени.
+2. `git commit` и `git push` на промените.
+3. Изпълнявате `fab deploy` от корена на вашето локално копие.
+
+Скриптът за deploy върши доста от нещата, описани в предишните секции.
+
+### Примерна инсталация на Debian-базирана машина
+
+Вижте командите в [инсталационния файл](bootstrap.sh) за Vagrant.
+
+
+```sh
+django-admin.py startproject recycle
 mkvirtualenv recycle --no-site-packages #this will create a virtual environment at ~/.virtualenvs/recycle
 workon recycle
 pip install django # even if you have django, install it in the virtual env
 pip install mysql-python # mysql...
-pip install django-compressor
-sudo ln -s ~/.virtualenvs/recycle/lib/python2.7/site-packages/django/contrib/admin/static/admin static
-( cd bower && sudo npm -g install bower && bower install )
-```
-
-#### config
-
-Копирайте си server/settings_app.py.sample като server/settings_app.py и оправете в него настройките:
-
-- Генерирайте нов SECRET_KEY (apg -m32 например);
-- Сложете настройките на базата данни;
-- Вероятно може да закоментирате STATICFILES_DIRS;
-- Ако ще го разработвате, сложете DEBUG=True;
-
-
-За development няма проблем да си ползвате root потребителя на mysql и да не пипате SECRET_KEY.
-
-#### инсталация на базата данни
-
-Ако нямате създаден база и искате да я кръстите recycle:
-
-```sh
-mysql -uroot -p -e "CREATE DATABASE recycle"
-```
-
-След това инициализирате:
-
-```sh
-python manage.py syncdb
+sudo ln -s ~/.virtualenvs/recycle/lib/python2.7/site-packages/django/contrib/admin/static/admin ./static/
 ```
 
 ### Подкарване
-
 #### Когато още се разработва
 
 ```
@@ -99,10 +128,7 @@ django-admin.py runserver --settings=settings --pythonpath=/home/ubuntu/projects
 
 ```
 
-#### Production server
-
-Убедете се, че знаете какво правите.
-
+#### Когато вече сайта е готов и е пуснат / Production server
 Редактирайте домейна в `settings_nginx.optimised.conf` и `settings_nginx.basic.conf`.
 
 ##### Настройки за `nginx`

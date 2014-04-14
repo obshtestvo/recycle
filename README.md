@@ -26,7 +26,7 @@
 Нужни са ви единствено:
 
  - [Vagrant](http://www.vagrantup.com/), ако нямате - [сваляте и инсталирате](
-https://ww.vagrantup.com/downloads.html)
+https://www.vagrantup.com/downloads.html)
  - [VirtualBox](https://www.virtualbox.org/), ако нямате - [сваляте и инсталирате](https://www.virtualbox.org/wiki/Downloads)
 
 В директорията на проекта пускате 1 команда:

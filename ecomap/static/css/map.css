@@ -47,7 +47,7 @@ ul.stripped {
     position: absolute;
 }
 .floater.main {
-    top:30px;
+    top:20px;
     width:700px;
     height:150px;
     left:50%;
@@ -60,12 +60,14 @@ ul.stripped {
 .floater-body{
     overflow: hidden;
     background: #fff;
+    height: 150px;
 }
 .floater-body h1 {
-    font-size: 1.6em;
+    font-size: 1.250em;
     color: #215c20;
-    padding: 15px 0 0 0 0;
-    text-align: center; 
+    text-align: center;
+    margin-top: 8px;
+    margin-bottom: 9px;
 }
 .floater-header {
     height: 50px;
@@ -253,19 +255,20 @@ div.add-new .new-address {
     background: #36cc34;
 }
 div.address a.change {
-    font-size: 1.05em;
+    font-size: 0.813em;
     text-decoration: none;
     color: #36cc34;
     padding: 0 20px 20px 0;
     float: right;
 }
 div.address strong{
-    font-size: 1.05em;
+    font-size: 0.813em;
     float: left;
     padding: 0 0 20px 20px;
     color: #215c20;
 }
 div.address em {
+    font-size: 0.813em;
     font-style: normal;
     float: left;
     padding: 0 0 0 5px;
@@ -278,7 +281,7 @@ a.add-new {
     color: #fff;
     display : block;
     position: absolute;
-    top: 13px;
+    top: 11px;
     left: 20px;
     line-height: 30px;
     text-align: center;
@@ -299,22 +302,20 @@ a.add-new.active {
 .about-us {
     color: #fff;
     position: absolute;
-    top: 15px;
+    top: 13px;
     right: 20px;
     text-decoration: none;
     border-bottom: 1px solid #fff;
     display: inline;
-    padding-bottom: 1px;
 }
 .faq {
     color: #fff;
     position: absolute;
-    top: 15px;
-    right: 90px;
+    top: 13px;
+    right: 86px;
     text-decoration: none;
     border-bottom: 1px solid #fff;
     display: inline;
-    padding-bottom: 1px;
 }
 
 /** Styling google autocomplete **/
@@ -454,7 +455,7 @@ div.add-new input {
     display: none;
 }
 .select2-container-multi .select2-choices .select2-search-field input {
-    height: 60px!important; 
+    height: 57px!important; 
 }
 .select2-choices {
     background-image: none!important;

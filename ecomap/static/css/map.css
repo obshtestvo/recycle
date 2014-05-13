@@ -61,6 +61,9 @@ ul.stripped {
     overflow: hidden;
     background: #fff;
     height: 150px;
+    -webkit-box-shadow: 0px 3px 5px 0px rgba(0, 1, 1, 0.21);
+    -moz-box-shadow:    0px 3px 5px 0px rgba(0, 1, 1, 0.21);
+    box-shadow:         0px 3px 5px 0px rgba(0, 1, 1, 0.21);
 }
 .floater-body h1 {
     font-size: 1.250em;
@@ -74,16 +77,7 @@ ul.stripped {
     width: 700px;
     background: rgba(111,227,109,0.9);
 }
-.select2-container-multi .select2-choices .select2-search-field input {
-    padding: 0 0 0 20px!important;
-}
-.select2-container-multi .select2-choices .select2-search-choice {
-    color: #36cc34;
-    background: #cfffcf;
-    top: 20px;
-    left: 20px;
-    border: none;
-}
+
 #search .select2-container,
 div.change-address .address,
 div.add-new .new-address,
@@ -454,13 +448,6 @@ div.add-new input {
 .infoBox > img {
     display: none;
 }
-.select2-container-multi .select2-choices .select2-search-field input {
-    height: 57px!important; 
-}
-.select2-choices {
-    background-image: none!important;
-    border: 1px solid #b4f4b4!important;
-}
 .infoBox:after {
     content: '';
     position: absolute;
@@ -516,4 +503,67 @@ div.radio.focus span.checked,
 div.radio.hover span,
 div.radio.focus span {
     border: 1px solid #36cc34;
+}
+
+/* Remove the box-shadow from the drop-down menu */
+.select2-container-active .select2-choice, .select2-container-active .select2-choices {
+    box-shadow: none!important;
+}
+
+/* Style the drop-down menu */
+.select2-drop {
+    background: none repeat scroll 0 0 rgba(247, 255, 247, 0.95);
+    border-color: -moz-use-text-color #6fe36d #6fe36d;
+    border-radius: 0;
+    box-shadow: none;
+    color: #215C20;
+    margin-top: 0;
+}
+
+/* Change the color of the text in the search field */
+.select2-container-multi .select2-choices .select2-search-field input {
+    color: #215C20;
+}
+
+/* Don't highlight results in the drop-down menu */
+.select2-results .select2-highlighted {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+    color: #215C20;
+}
+
+
+/* Don't underline the results in the drop-down menu */
+.select2-result-selectable .select2-match, .select2-result-unselectable .select2-match {
+    text-decoration: none;
+}
+
+/* Style the tags */
+.select2-container-multi .select2-choices .select2-search-choice {
+    color: #36cc34;
+    background: #cfffcf;
+    top: 20px;
+    left: 20px;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+}
+
+/* Fix the height of the search field */
+.select2-container-multi .select2-choices .select2-search-field input {
+    height: 57px!important; 
+    padding: 0 0 0 20px!important;
+}
+
+/* Remove inner shadow from the form and add green border */
+.select2-choices {
+    background-image: none!important;
+    border: 1px solid #b4f4b4!important;
+}
+
+/* Add separator lines between the results of the drop-down menu */
+.select2-results li:first-child {
+    border-top: none;
+}
+.select2-results li {
+    border-top: 1px solid #CFFFCF;
 }

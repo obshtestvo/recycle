@@ -12,7 +12,7 @@ var UserAddress;
         options = $.extend({
             ignoredAddressParts: [],
             inputSelector: 'div.change-address input.address',
-            displaySelector: 'div.address em',
+            displaySelector: 'div.auto-location em',
             closeSelector: 'div.change-address a.close',
             triggerSelector: 'div.address a.change'
         }, options);

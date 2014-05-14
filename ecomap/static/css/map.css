@@ -255,13 +255,14 @@ div.address a.change {
     padding: 0 20px 20px 0;
     float: right;
 }
-div.address strong{
+div.address em {
     font-size: 0.813em;
+    font-style: normal;
     float: left;
     padding: 0 0 20px 20px;
     color: #215c20;
 }
-div.address em {
+div.auto-location em {
     font-size: 0.813em;
     font-style: normal;
     float: left;
@@ -546,18 +547,19 @@ div.radio.focus span {
     border: none;
     box-shadow: none;
     border-radius: 0;
+    margin: 0 5px 0 0;
 }
 
-/* Fix the height of the search field */
+/* Fix the height of the search field  */
 .select2-container-multi .select2-choices .select2-search-field input {
     height: 57px!important; 
     padding: 0 0 0 20px!important;
 }
 
-/* Remove inner shadow from the form and add green border */
+/* Remove inner shadow and the border from the form */
 .select2-choices {
     background-image: none!important;
-    border: 1px solid #b4f4b4!important;
+    border: medium none!important;
 }
 
 /* Add separator lines between the results of the drop-down menu */
@@ -567,3 +569,14 @@ div.radio.focus span {
 .select2-results li {
     border-top: 1px solid #CFFFCF;
 }
+
+/* Change the border color of the form when the drop-down menu is open */
+.select2-container.select2-container-multi {
+    border: 1px solid #B4F4B4;
+}
+
+.select2-container.select2-container-multi.select2-dropdown-open {
+    border: 1px solid #CFFFCF;
+}
+
+

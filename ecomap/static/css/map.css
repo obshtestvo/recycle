@@ -523,7 +523,7 @@ div.radio.focus span {
     border-radius: 0;
     box-shadow: none;
     color: #215C20;
-    margin-top: 0;
+    margin-top: 0px;
 }
 
 .select2-results .select2-result-label {
@@ -532,7 +532,7 @@ div.radio.focus span {
 
 .select2-results .select2-no-results, .select2-results .select2-searching, .select2-results .select2-selection-limit {
     background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
-    padding: 15px 0 10px 15px;
+    padding: 15px 0 10px 15px; 
 }
 
 /* Change the color of the text in the search field */
@@ -595,4 +595,35 @@ div.radio.focus span {
 
 .select2-container.select2-container-multi.select2-dropdown-open {
     border: 1px solid #CFFFCF;
+}
+
+/* Typing addresses */
+.select2-container .select2-choice {
+    display: none;
+}
+
+.select2-search {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.select2-search input {
+    border: 1px solid #CFFFCF;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 600;
+    font-size: 1em;
+    height: 57px !important;
+    min-height: 57px;
+    padding: 0 20px;
+    background: #fff;
+    border-left-width: 0;
+    border-right-width: 0;  
+}
+
+.select2-search input.select2-active {
+    background: #fff;
+}
+
+.select2-drop.select2-display-none.select2-with-searchbox.select2-drop-active {
+    margin-top: -10px;
 }

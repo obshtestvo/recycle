@@ -71,6 +71,7 @@ ul.stripped {
     text-align: center;
     margin-top: 8px;
     margin-bottom: 9px;
+    font-weight: 600;
 }
 .floater-header {
     height: 50px;
@@ -302,6 +303,8 @@ a.add-new.active {
     text-decoration: none;
     border-bottom: 1px solid #fff;
     display: inline;
+    font-weight: 600;
+    font-size: 0.938em;
 }
 .faq {
     color: #fff;
@@ -311,6 +314,8 @@ a.add-new.active {
     text-decoration: none;
     border-bottom: 1px solid #fff;
     display: inline;
+    font-weight: 600;
+    font-size: 0.938em;
 }
 
 /** Styling google autocomplete **/
@@ -521,9 +526,20 @@ div.radio.focus span {
     margin-top: 0;
 }
 
+.select2-results .select2-result-label {
+    padding: 15px 0 10px 15px;
+}
+
+.select2-results .select2-no-results, .select2-results .select2-searching, .select2-results .select2-selection-limit {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+    padding: 15px 0 10px 15px;
+}
+
 /* Change the color of the text in the search field */
 .select2-container-multi .select2-choices .select2-search-field input {
     color: #215C20;
+    font-weight: 600;
+    font-family: 'Open Sans', sans-serif;
 }
 
 /* Don't highlight results in the drop-down menu */
@@ -548,6 +564,7 @@ div.radio.focus span {
     box-shadow: none;
     border-radius: 0;
     margin: 0 5px 0 0;
+    font-size: 0.813em;
 }
 
 /* Fix the height of the search field  */
@@ -568,6 +585,7 @@ div.radio.focus span {
 }
 .select2-results li {
     border-top: 1px solid #CFFFCF;
+    font-weight: 600;
 }
 
 /* Change the border color of the form when the drop-down menu is open */
@@ -578,5 +596,3 @@ div.radio.focus span {
 .select2-container.select2-container-multi.select2-dropdown-open {
     border: 1px solid #CFFFCF;
 }
-
-

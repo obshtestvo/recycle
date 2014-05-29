@@ -612,12 +612,10 @@ div.radio.focus span {
     font-family: 'Open Sans', sans-serif;
     font-weight: 600;
     font-size: 1em;
-    height: 57px !important;
-    min-height: 57px;
+    height: 60px !important;
+    min-height: 60px;
     padding: 0 20px;
-    background: #fff;
-    border-left-width: 0;
-    border-right-width: 0;  
+    background: #fff; 
 }
 
 .select2-search input.select2-active {
@@ -626,4 +624,17 @@ div.radio.focus span {
 
 .select2-drop.select2-display-none.select2-with-searchbox.select2-drop-active {
     margin-top: -10px;
+}
+
+#select2-drop .select2-search {
+    position: absolute;
+}
+
+#select2-results-2 {
+    position: absolute;
+    background: none repeat scroll 0 0 rgba(247, 255, 247, 0.95);
+    width: 652px;
+    border: 1px solid #6fe36d;
+    border-top-width: 0;
+    margin-top: 60px;
 }

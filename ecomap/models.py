@@ -76,7 +76,7 @@ class RecycleSpot(models.Model):
 
     @classmethod
     def add_spot(cls, form, tags):
-        spot = form.save();
+        spot = form.save()
         materials = RecycleSpotMaterial.objects.filter(name__in = tags)
         for m in materials:
             RecycleSpotMaterialLink(spot=spot, material=m).save()

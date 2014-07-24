@@ -3,8 +3,8 @@ from django.views.generic.base import View
 
 from ecomap.services import *
 
-@restful_view_templates('spots')
-class RecycleSpotsView(View):
+@restful_view_templates
+class SpotsView(View):
     def get(self, request, **args):
         criteria = {
             "types": request.params.getlist('tags[]')

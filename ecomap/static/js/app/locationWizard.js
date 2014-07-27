@@ -126,10 +126,7 @@ var LocationWizard;
                         return;
                     }
                     step2.block();
-                    var objectServices = []
-                    $.each(step2.$materialsPicker.select2("data"), function (i, serviceObj) {
-                        objectServices.push(serviceObj.id);
-                    });
+                    var objectServices = step2.$materialsPicker[0].selectize.getValue();
                     var locationData = _self.getMapInput();
                     var data = {
                         'type'              : _self.popup.$infoWindowContainer.find("#object_type").val(),
@@ -214,6 +211,26 @@ var LocationWizard;
             _self.$addressDisplay.removeClass('hide')
             _self.trigger('hide');
             _self.streetviewPicker.streetview.unbind("position");;
+        },
+
+        /**
+         * Disable wizard and all known triggers that start it
+         */
+        disable: function() {
+            var _self = this;
+            console.log(_self.$trigger)
+            _self.$trigger.hide();
+            if (_self.$trigger.hasClass('active')) {
+                _self.cancel();
+            }
+        },
+
+        /**
+         * Enable wizard and all known triggers that start it
+         */
+        enable: function() {
+            var _self = this;
+            _self.$trigger.show();
         },
 
         /**
@@ -327,11 +344,7 @@ var LocationWizard;
             _self.trigger('done')
         });
 
-        _self.$materialsPicker.select2({
-            formatSelection: function(item) {
-                return item.id
-            }
-        })
+        _self.$materialsPicker.selectize()
 
     }
 

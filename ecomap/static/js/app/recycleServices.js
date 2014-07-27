@@ -20,8 +20,10 @@ var RecycleServices;
             var tags = []
             var _self = this;
             var services = []
-            $.each(this.$el.select2("data"), function (i, serviceObj) {
-                services.push(serviceObj.id);
+
+            $.each(this.$el.data('recyclables'), function (label, value) {
+                if (services.indexOf(value) > -1) return;
+                services.push(value);
             });
 
             if ($.isArray(services)) {

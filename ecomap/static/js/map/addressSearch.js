@@ -24,67 +24,69 @@ var AddressSearch;
         _self.geocoder = new gMap.Geocoder();
         _self.placesService = new google.maps.places.PlacesService(_self.map);
         var lastResults = {}
-        var GoogleMapAjaxTransport = function(options) {
-            var cancelled = false;
-            var googleXhr = {
-                abort: function() {
-                    cancelled = true;
-                }
-            }
-            _self.autocompleteService.getPlacePredictions($.extend({}, googleOptions, {
-                'input': options.data.q
-            }), function (list, status) {
-                    if (cancelled) {
-                        return;
+        $el.selectize({
+            searchConjunction: 'or',
+            create: false,
+            options: [],
+            plugins: ['restore_on_backspace'],
+            score: function(search) {
+                return function(item) {
+                    var score = 0;
+                    if (item.source && item.source.pos) {
+                        score = 1+item.source.pos
                     }
+                    return score;
+                };
+            },
+            load: function (query, callback) {
+                if (!query.length) return callback();
+                this.clearOptions()
+                this.refreshOptions()
+                _self.autocompleteService.getPlacePredictions($.extend({}, googleOptions, {
+                    'input': query
+                }), function (list, status) {
                     if (list == null || list.length == 0) {
                         _self.geocoder.geocode({
-                            address: options.data.q,
+                            address: query,
                             componentRestrictions: googleOptions.componentRestrictions
                         }, function (list, status) {
                             lastResults = {};
                             var results = [];
+                            var length = list.length;
                             $.each(list, function (i, loc) {
-                                results.push({id: loc.geometry.location.toUrlValue(), text: loc.formatted_address})
+                                var value = loc.geometry.location.toUrlValue();
+                                var text = loc.formatted_address;
+                                if (!_self.pickerAPI.getOption(value).length) {
+                                    results.push({value: value, text: text, source: {term: query, pos: length-i}})
+                                }
                                 lastResults[loc.formatted_address] = loc
                             })
-                            options.success(results)
+                            callback(results)
                         })
                     } else {
                         var results = []
                         $.each(list, function (i, loc) {
-                            results.push({id: loc.reference, text: loc.description})
+                            var value = loc.place_id;
+                            var text = loc.description;
+                            var length = list.length;
+                            if (!_self.pickerAPI.getOption(value).length) {
+                                results.push({value: value, text: text, source: {term: query, pos: length-i}})
+                            }
                         })
-                        options.success(results)
+                        callback(results)
                     }
-                }
-            );
-
-
-            return googleXhr;
-        }
-        $el.select2({
-            minimumInputLength: 1,
-            ajax: {
-                transport: GoogleMapAjaxTransport,
-                results: function (data) {
-                    return {
-                        more: false,
-                        results: data
-                    }
-                },
-                data: function(term) {
-                    return {q: term}
-                },
-                quietMillis: 600
+                });
             }
-        })
+        });
+        _self.pickerAPI = $el[0].selectize;
+        customSelectizeScrollbars($el)
 
-        $el.change(function(changes) {
-            var text = $el.select2('data').text;
-            var val = changes.val;
+        _self.pickerAPI.on('change', function(val) {
+            if (!val.length) return;
+            var text = _self.pickerAPI.getOption(val).text()
             var loc = null;
             var finish = function(place) {
+                if (typeof place != 'object') return;
                 if (place.geometry.viewport) {
                     loc = place.geometry.viewport.getCenter();
                     _self.map.fitBounds(place.geometry.viewport);
@@ -101,7 +103,7 @@ var AddressSearch;
             }
             if (val.indexOf(',')<0) {
                 _self.placesService.getDetails({
-                    reference: val
+                    placeId: val
                 }, function(result, status) {
                     finish(result);
                 })
@@ -113,15 +115,18 @@ var AddressSearch;
 
     AddressSearch.prototype = {
         $el: null,
+        pickerAPI: null,
         map: null,
         autocomplete: null,
 
         focus: function() {
-            this.$el.select2('open')
+            this.$el[0].selectize.open()
         },
 
         update: function(id, text) {
-            this.$el.select2("data", {"id": id , "text": text });
+            var pickerAPI = this.pickerAPI;
+            pickerAPI.addOption({"value": id , "text": text })
+            pickerAPI.setValue(id)
         },
 
         destroy: function() {

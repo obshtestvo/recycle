@@ -8,15 +8,18 @@ var LocationManager;
         this.map = map;
         this.geo = geoServices;
         this.recycle = recycleService;
-        this.coverage = new Coverage();
-        this.locations = {}
+        this.coverage = new Coverage({
+            boundTransformation: googleBoundsTransformation,
+            multiplier: 1000
+        });
+        this.locations = {};
         this.infoWindow = this._createInfoWindow({"content": infoContent})
         this.markerCluster = new MarkerClusterer(this.map, undefined, {
             averageCenter: true,
             styles: [{
                 url: '/static/img/pin-cluster.png',
                 height: 34,
-                width: 37,
+                width: 37
             }]
         });
     }
@@ -50,7 +53,6 @@ var LocationManager;
                 delete criteria["bounds"];
             }
             _self.recycle.find(criteria, function(markerData) {
-                console.log(markerData)
                 _self.refreshLocaitons(markerData, criteria, callback)
             });
         },
@@ -196,7 +198,11 @@ var LocationManager;
                             $infoWindow.find('.street').html(data.address + ' '+data.number);
                             $infoWindow.find('.area').html(data.area + ' '+data.post_code);
                             $infoWindow.find('.type').html(data.type);
-                            $infoWindow.find('.more-info p').html(data.description);
+                            if (data.description) {
+                                $infoWindow.find('.more-info p').html(data.description);
+                            } else {
+                                $infoWindow.find('.more-info').remove()
+                            }
                             for (var i = 0; i < data.tags.length; i++) {
                                 $('<li>').append(data.tags[i]).appendTo($tagContainer)
                             }
@@ -276,120 +282,6 @@ var LocationManager;
             $content.remove();
             var infoWindow = new InfoBoxAnimated(options);
             return infoWindow;
-        }
-    }
-
-
-
-
-    //http://jsfiddle.net/ZpN6L/13/
-    //http://jsfiddle.net/ZpN6L/17/
-    var Coverage = function() {}
-    Coverage.prototype = {
-        coveragePaths: null,
-        scale: 100,
-        lib: ClipperLib,
-        fillType: ClipperLib.PolyFillType.pftNonZero,
-
-        /**
-         * Set google bounds as coverage
-         * @param bounds
-         */
-        set: function(bounds){
-            this.coveragePaths = this.toPaths(bounds)
-        },
-
-        /**
-         * Add google bounds to coverage
-         * @param bounds
-         */
-        add: function(bounds){
-            this._add(this.toPaths(bounds))
-        },
-
-        /**
-         * Check if bounds are in our coverage
-         *
-         * @param bounds
-         * @returns {boolean}
-         */
-        contains: function(bounds) {
-            if (!this.coveragePaths) return false;
-            var paths = this.toPaths(bounds);
-            return this._getArea(this._intersect(paths)) == this._getArea(paths)
-        },
-
-        /**
-         * Convert Google Bounds object to Clipper paths
-         * @param bounds
-         * @returns {*[]}
-         */
-        toPaths: function(bounds) {
-            var ne = bounds.getNorthEast()
-            var sw = bounds.getSouthWest()
-            var points = [
-                new gMap.LatLng(ne.lat(), sw.lng()),
-                ne,
-                new gMap.LatLng(sw.lat(), ne.lng()),
-                sw
-            ]
-            var path = []
-            for (var i = 0; i < points.length; i++) {
-                path.push({X: points[i].lat()*10000, Y: points[i].lng()*10000})
-            }
-            var paths = [path]
-            this.lib.JS.ScaleUpPaths(paths, this.scale);
-            return paths
-        },
-
-        /**
-         * Calculate Area
-         * @param paths
-         */
-        _getArea: function(paths) {
-            return this.lib.JS.AreaOfPolygons(paths, this.scale)
-        },
-
-        /**
-         * Add paths to coverage
-         * @param paths
-         * @private
-         */
-        _add: function(paths){
-            if (!this.coveragePaths) {
-                this.coveragePaths = paths;
-            }
-            var cpr = this._getClipper();
-            cpr.AddPaths(paths, this.lib.PolyType.ptClip, true);
-
-            var union = new this.lib.Paths();
-            cpr.Execute(this.lib.ClipType.ctUnion, union, this.fillType, this.fillType);
-            this.coveragePaths = union
-        },
-
-        /**
-         * Get intersection
-         * @param paths
-         * @private
-         */
-        _intersect: function(paths){
-            var cpr = this._getClipper();
-            cpr.AddPaths(paths, this.lib.PolyType.ptClip, true);
-
-            var intersection = new this.lib.Paths();
-            cpr.Execute(this.lib.ClipType.ctIntersection, intersection, this.fillType, this.fillType);
-            return intersection;
-        },
-
-        /**
-         * Init Clipper and add coverage as subject
-         * @returns {ClipperLib.Clipper}
-         * @private
-         */
-        _getClipper: function(){
-            var cpr = new ClipperLib.Clipper()
-            cpr.AddPaths(this.coveragePaths, this.lib.PolyType.ptSubject, true);
-            return cpr;
         }
     }
 })(google.maps)

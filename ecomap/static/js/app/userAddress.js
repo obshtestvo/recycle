@@ -11,7 +11,7 @@ var UserAddress;
 
         options = $.extend({
             ignoredAddressParts: [],
-            inputSelector: 'div.change-address input.address',
+            inputSelector: 'div.change-address select.address',
             displaySelector: 'div.auto-location em',
             closeSelector: 'div.change-address a.close',
             triggerSelector: 'div.address a.change'
@@ -36,6 +36,8 @@ var UserAddress;
             e.preventDefault();
             _self.trigger('show')
             _self.$container.removeClass('hide')
+            _self.$close.css('width')
+            _self.$close.addClass('active')
             _self.search.focus()
         })
 

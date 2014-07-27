@@ -31,8 +31,6 @@ var initialisingMap = $.Deferred();
 
 // Wait for initial human friendly address of the center of the map
 var retrievingFirstMapAddress = $.Deferred();
-
-
 // When DOM is ready
 $.when(initialisingDOM).then(function() {
 
@@ -40,13 +38,19 @@ $.when(initialisingDOM).then(function() {
     var $search = $('#search');
     var $filter = $search.find('select');
     var $filterForm = $filter.closest('form');
-    $filter.select2({
-        formatNoMatches: function(searchTerm) {
-            return $filter.data('noMatches').replace('__material__', "'"+searchTerm+"'")
-        },
-        formatSelection: function(item) {
-            return item.id
-        }
+    $filter.each(function() {
+        var $el = $(this)// fetch the instance
+
+        $el.selectize({
+            plugins: {
+                'remove_button': {},
+                'no_results':{
+                    'message': "Nada"
+                }
+            },
+            sortField: 'text'
+        });
+        customSelectizeScrollbars($el)
     })
 
     // Map
@@ -76,9 +80,11 @@ $.when(initialisingDOM).then(function() {
         })
         app.userAddress
             .on('show', function() {
+                app.locationWizard.disable()
                 $search.addClass('hide')
             })
             .on('hide', function() {
+                app.locationWizard.enable()
                 $search.removeClass('hide')
             })
             .on('found', function() {

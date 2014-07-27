@@ -7,13 +7,15 @@
     "**/*.txt"
   ],
   "dependencies": {
-    "select2": "*",
+    "selectize": "*",
     "jquery": "*",
     "jquery.uniform": "*",
     "jquery.validation": "*",
     "spin.js": "*",
     "blockui": "*",
     "jquery-easing": "*",
+    "malihu-custom-scrollbar-plugin": "*",
+    "area-coverage": "https://github.com/obshtestvo-utilities/area-coverage.git",
     "normalize.css": "*"
   }
 }

@@ -7,7 +7,6 @@ DB_NAME=$PROJECT_NAME
 sudo apt-get update -y
 
 # usability (can be omitted)
-sudo apt-get update -y
 touch $HOME/.hushlogin
 sudo apt-get install expect curl zsh fortune cowsay htop git build-essential -y
 wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh

@@ -1,0 +1,145 @@
+
+#add-new {
+  @extend %popup;
+  overflow: hidden;
+
+  textarea {
+    @include box-sizing(border-box);
+    width: 100%;
+    border: 1px solid $greenWeakLight;
+
+    &:focus, &:hover {
+      border-color: $greenStrongLight;
+      outline: none;
+    }
+  }
+  a.close {
+    @extend %popup-close-button;
+  }
+
+  #step1 {
+    .streetview {
+      width: 560px;
+      height: 336px;
+    }
+    .cancelled-streetview {
+      svg {
+        height: 336px;
+        width: 560px;
+        position: absolute;
+        bottom: 5px;
+        z-index: 9999;
+      }
+      width: 540px;
+      padding: 80px 10px 0 10px;
+      height: 235px;
+      display: none;
+      background: gray;
+      text-align: center;
+    }
+    .missing-streetview {
+      width: 540px;
+      padding: 80px 10px 0 10px;
+      height: 235px;
+      display: none;
+      background: gray;
+      text-align: center;
+      position: relative;
+      z-index: 4;
+    }
+    a {
+      &.accept {
+        @extend %popup-accept-button;
+      }
+      &.reactivate,
+      &.cancel-streetview {
+        position: absolute;
+        top: 260px;
+        height: 29px;
+        line-height: 29px;
+        padding: 0 9px;
+        background: rgba($greenWeakDark, 0.9);
+        left: 0;
+        font-size: 13px;
+        display: inline-block;
+        color: $white;
+        text-decoration: none;
+        z-index: 2;
+        &:hover {
+          background: $greenStrongLight;
+        }
+      }
+    }
+  }
+
+  #step2 {
+    padding: 0;
+    fieldset {
+      padding: 20px;
+      border: 0;
+      margin: 0;
+    }
+    .select2-container {
+      width: 300px;
+    }
+    label {
+      display: inline-block;
+      color: $greenStrongDark;
+      font-size: 15px;
+    }
+    .controls label {
+      display: inline-block;
+      color: $greenStrongLight;
+    }
+    a.accept {
+      @extend %popup-accept-button;
+    }
+    a.back {
+      position: absolute;
+      top: 37px;
+      display: inline-block;
+      height: 29px;
+      line-height: 29px;
+      padding: 0 9px;
+      font-size: 13px;
+      background: rgba($greenWeakDark, 0.9);
+      color: $white;
+      text-decoration: none;
+      &:hover {
+        background: $greenStrongLight;
+      }
+    }
+  }
+}
+
+
+// Uniform custom styling
+div.radio {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  span, input {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+  }
+  span {
+    background: #fff;
+    border: 1px solid $greenWeakLight;
+  }
+  &.hover span.checked,
+  &.focus span.checked,
+  span.checked {
+    background: $greenWeakLight url("../img/radio-check.png") no-repeat center center;
+  }
+  &:hover span.checked,
+  &.focus span.checked,
+  &.hover span,
+  &.focus span {
+    border: 1px solid #36cc34;
+  }
+}
+
+label:hover div.radio span {
+  border: 1px solid #36cc34;
+}

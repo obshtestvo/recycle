@@ -1,0 +1,23 @@
+.mCSB_container {
+  .mCSB_inside > & {
+    margin-right: 0;
+  }
+}
+.mCSB_scrollTools .mCSB_draggerContainer {
+  top:5px;
+  bottom:5px;
+}
+.mCSB_draggerRail {
+  display: none;
+}
+.mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar {
+  @include border-radius(0);
+  background: $greenWeakDark;
+  width:5px;
+}
+.mCSB_scrollTools .mCSB_dragger:hover .mCSB_dragger_bar {
+  background: $greenStrongLight;
+}
+.mCSB_scrollTools .mCSB_dragger.mCSB_dragger_onDrag .mCSB_dragger_bar {
+  background: $greenStrongDark;
+}

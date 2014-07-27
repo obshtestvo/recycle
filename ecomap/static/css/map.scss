@@ -1,0 +1,108 @@
+@import "compass";
+
+//colors
+$color_0: #fff;
+$white: #fff;
+$greenStrongDark: #215c20;
+$greenStrongLight: #36cc34;
+$greenWeakDark: #6fe36d;
+$greenWeakLight: #cfffcf;
+$almostWhite: #f7fff7;
+$almostBlack: #000101;
+
+body, html {
+    height: 100%;
+    width: 100%;
+    font-family: 'Open Sans', sans-serif;
+}
+
+ul.stripped {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+.hide {
+    display: none!important;
+}
+
+.clearfix {
+  &:before {
+    content: " ";
+    display: table;
+  }
+  &:after {
+    content: " ";
+    display: table;
+    clear: both;
+  }
+}
+
+#map-canvas {
+    height: 100%;
+    width: 100%;
+}
+
+%anim-fast {
+  @include transition(all 150ms ease-in-out)
+}
+%anim-mid {
+  @include transition(all 300ms ease-in-out)
+}
+%popup {
+  font-family: 'Open Sans', sans-serif!important;
+  background: $white;
+  overflow: hidden;
+  margin-bottom: 28px;
+  @include box-shadow(0 3px 5px rgba(0,1,1,.21));
+}
+
+%popup-close-button {
+  text-indent: -9999em;
+  width: 54px;
+  height: 54px;
+  display: block;
+  position: absolute;
+  top: 8px;
+  right: -54px;
+  &:before, &:after {
+    content: '';
+    position: absolute;
+    width: 46px;
+    height: 8px;
+    background: $greenWeakDark;
+    border-radius: 4px;
+    top: 16px;
+  }
+  &:before {
+    @include transform(rotate(45deg));
+    left:4px;
+  }
+  &:after {
+    @include transform(rotate(-45deg));
+    right:4px;
+  }
+  &:hover:before, &:hover:after {
+    background: $greenStrongLight;
+  }
+}
+
+%popup-accept-button {
+  display: block;
+  background: $greenWeakDark;
+  color: #fff;
+  height: 40px;
+  font-size: 18px;
+  border: 20px solid #fff;
+  text-decoration: none;
+  text-align: center;
+  line-height: 40px;
+  &:hover {
+    background: $greenStrongLight;
+  }
+}
+@import "header";
+@import "addWizard";
+@import "view";
+@import "googlemap";
+@import "selectizeOverride";
+@import "malihuCustomScrollbarOverride";

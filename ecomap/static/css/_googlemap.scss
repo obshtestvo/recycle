@@ -1,0 +1,52 @@
+//.pac-container:after {
+//    display: none;
+//}
+// Google maps styling
+.gm-style {
+    font-family: 'Open Sans', sans-serif;
+}
+// Google maps cluster styling
+.cluster {
+//  overflow: hidden;
+//  text-indent: -9999em;
+  > div {
+    background: rgba(111, 227, 109, 0.95);
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    left:50%!important;
+    margin-left: -15px;
+    height:30px!important;
+    line-height:30px!important;
+    width:30px!important;
+    top:-35px!important;
+    color:#fff!important;
+    /*overflow: hidden;*/
+    /*text-indent: -9999em;*/
+  }
+}
+
+// Google maps infobox styling
+.infoBox {
+  //    pointer-events: none;
+  a, label, input, .blockUI, textarea, .select2-container, .streetview {
+    pointer-events: auto;
+  }
+  > img {
+    display: none;
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    /*background: transparent;*/
+    /*border: 21px solid transparent;*/
+    /*border-top-color: #fff;*/
+    width: 40px;
+    height: 28px;
+    z-index: 1000001;
+    @include transform(translateX(-50%));
+    left: 50%;
+    bottom: 0;
+    background: url("../img/info-arrow.png") no-repeat bottom center;
+  }
+}

@@ -1,0 +1,108 @@
+#show-location {
+  @extend %popup;
+  background: $white;
+  margin-top: 10px;
+  font-size: 11px;
+  @include box-shadow(0 3px 5px rgba(0,0,0,0.16));
+
+  #page {
+    width:400px;
+    padding: 10px;
+  }
+
+  a {
+    font-size: 11px;
+    &.close {
+      @extend %popup-close-button;
+    }
+  }
+
+  h3 {
+    margin: 0;
+    color: #114e11;
+    padding: 0;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .streetview-thumb {
+    position: relative;
+    .overlay {
+      position: absolute;
+      color: #fff;
+      min-height: 116px;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: url("../img/show-location-overlay-bg.png") no-repeat left bottom;
+      h2.address {
+        font-size: 30px;
+        font-weight: normal;
+        margin: 0;
+        padding: 0;
+        position: absolute;
+        bottom: 20px;
+        line-height: 35px;
+        left: 20px;
+        width: 100%;
+        strong {
+          font-weight: normal;
+          line-height: 32px;
+          display: block;
+          text-shadow: 0 1px 2px rgba(0, 1, 1, 0.75);
+          &.area {
+            display: block;
+            top: -25px;
+            height: 20px;
+            position: absolute;
+            font-weight: 300;
+            left: 0;
+            width: 100%;
+            font-size: 15px;
+          }
+        }
+      }
+    }
+  }
+
+  .specs {
+    background: #f4fcf5;
+    color: #36cc34;
+    padding-bottom: 14px;
+    .tags {
+      padding-top: 4px;
+      li {
+        display: inline-block;
+        background: $greenWeakLight;
+        font-size: 13px;
+        padding: 0 4px 1px 4px;
+        margin-right: 5px;
+        text-transform: lowercase;
+      }
+    }
+    .column {
+      width: 50%;
+      float: left;
+      &:first-child > * {
+        margin-left: 19px;
+      }
+    }
+    strong.type {
+      font-size: 15px;
+      font-weight: normal;
+    }
+    h3 {
+      padding: 14px 0 2px 0;
+    }
+  }
+
+  .specs
+  .more-info {
+    padding: 13px 0 8px 20px;
+    font-size: 13px;
+    color: #114e11;
+    p {
+      margin-top: 5px;
+    }
+  }
+}

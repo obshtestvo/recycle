@@ -1,0 +1,150 @@
+.floater {
+  position: absolute;
+  &.main {
+    top: 20px;
+    width: 700px;
+    left: 50%;
+    margin-left: -400px;
+    select {
+      width: 400px;
+      height: 30px;
+    }
+  }
+  .floater-body {
+    background: $white;
+    //Instead of the line below you could use @include box-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+    box-shadow: 0 3px 5px 0 rgba($almostBlack, 0.21);
+    h1 {
+      font-size: 1.250em;
+      color: $greenStrongDark;
+      text-align: center;
+      padding: 10px 0 9px 0;
+      margin:0;
+      font-weight: 600;
+    }
+  }
+  .floater-header {
+    height: 50px;
+    width: 700px;
+    background: rgba($greenWeakDark, 0.9);
+  }
+}
+
+div.change-address .address-picker,
+div.add-new .new-address,
+input.address {
+    margin:0 20px 10px 20px;
+}
+
+/* Add new info and address search */
+div.add-new {
+  input {
+    width:400px;
+  }
+  p {
+    text-align: center;
+    margin: 0 auto;
+    max-width: 500px;
+    padding: 15px 20px 10px 20px;
+    color: $greenStrongDark;
+  }
+  .address {
+    .new-address {
+      margin: 0;
+    }
+    .selectize-control  {
+      margin: 0 20px;
+    }
+  }
+}
+#search div.address {
+  padding: 1px 20px 15px 20px;
+  font-size: 0.813em;
+  a.change {
+    text-decoration: none;
+    color: $greenStrongLight;
+    float: right;
+  }
+
+  .auto-location {
+    float: left;
+    font-style: normal;
+    color: $greenStrongDark;
+    em {
+      font-style: normal;
+    }
+  }
+}
+div.change-address a.close,
+div.add-new a.close,
+a.add-new {
+  @extend %anim-fast;
+  text-decoration: none;
+  color: $white;
+  display : block;
+  position: absolute;
+  top: 14px;
+  left: 20px;
+  line-height: 30px;
+  text-align: center;
+  font-size: 30px;
+  font-style: normal;
+  width: 23px;
+  height: 23px;
+  &:before, &:after {
+    content: '';
+    position: absolute;
+    width: 23px;
+    height: 5px;
+    background: $white;
+    border-radius: 4px;
+    top: 9px;
+    left:0;
+  }
+  &:after {
+    left:0;
+    right:4px;
+    @include transform(rotate(90deg));
+  }
+  &.active {
+    @include transform(rotate(45deg));
+    &:hover {
+      @include transform(rotate(45deg));
+    }
+  }
+  &:hover {
+    @include transform(rotate(90deg));
+  }
+}
+.logo {
+    display: block;
+    margin-left: auto;
+  margin-right: auto;
+    padding: 11px 0 0 0;
+}
+.menu {
+  position: absolute;
+  top:0;
+  right:0;
+  font-weight: 600;
+  font-size: 0.938em;
+  line-height: 50px;
+  height:50px;
+  li {
+    vertical-align: middle;
+    padding-right: 20px;
+    display: inline-block;
+    line-height: 1em;
+    a {
+      @extend %anim-fast;
+      color: $white;
+      padding-bottom: 0.15em;
+      text-decoration: none;
+      border-bottom: 1px solid rgba($white, 0.5);
+      display: inline-block;
+      &:hover {
+        border-bottom-color: $white;
+      }
+    }
+  }
+}

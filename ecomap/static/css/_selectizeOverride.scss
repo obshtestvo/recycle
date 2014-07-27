@@ -1,0 +1,138 @@
+// Some scroller-related changes
+.selectize-dropdown-content {
+  max-height:none!important;
+}
+.results-scroller {
+  position: relative;
+  max-height: 155px;
+}
+
+// Search placeholder
+@mixin placeholder {
+  font-size: 16px;
+  line-height: 1em;
+  font-weight: 600;
+  color: rgba($greenStrongDark, 0.5);
+  position: relative;
+  top: 4px;
+}
+
+.selectize-input ::-webkit-input-placeholder {@include placeholder}
+.selectize-input :-moz-placeholder {@include placeholder}
+.selectize-input ::-moz-placeholder {@include placeholder}
+.selectize-input :-ms-input-placeholder {@include placeholder}
+
+// Styling
+.selectize-control {
+  margin: 0 20px;
+}
+
+%selectize {
+  font-size: 16px;
+  line-height: 1em;
+  font-weight: 600;
+  color: $greenStrongDark;
+}
+
+%selectize-row {
+  @extend %selectize;
+  background: rgba($almostWhite, 0.95);
+  padding: 0.68em 0.68em 0.68em 1.18em;
+  border-bottom: 1px solid $greenWeakLight;
+  &:last-child {
+    border-bottom: 0;
+  }
+}
+
+.selectize-dropdown.single,
+.selectize-dropdown{
+  @include border-radius(0);
+  background: none;
+  border: 1px solid $greenWeakDark;
+  border-top: 0;
+  [data-selectable] {
+    @extend %selectize-row;
+    &.active {
+      background: $greenWeakLight;
+    }
+    .highlight {
+      background: rgba($greenStrongLight, 0.2);
+    }
+  }
+  .dropdown-empty-message {
+    @extend %selectize-row;
+  }
+}
+$selectizeInputPadding: 21px 10px 15px 19px;
+
+@mixin selectize-input {
+  @include border-radius(0);
+  @include box-shadow(none);
+  background: none;
+  border-color: $greenWeakLight;
+  padding: $selectizeInputPadding;
+}
+.selectize-input {
+  @include selectize-input;
+  > input {
+    @extend %selectize;
+    height: 22px;
+    line-height: 17px;
+    top:-3px;
+    position: relative;
+  }
+  &.focus {
+    @include box-shadow(none);
+  }
+  .selectize-control.single &,
+  .selectize-control.plugin-remove_button &,
+  .selectize-control.multi & {
+    @include selectize-input;
+    &.has-items {
+      padding: $selectizeInputPadding;
+      @include selectize-input;
+    }
+    [data-value].item {
+      @include box-shadow(none);
+      @include border-radius(0);
+      vertical-align: top;
+      color:$greenStrongLight ;
+      line-height: 17px;
+      padding:0 5px 0 5px!important;
+      background: $greenWeakLight;
+      text-shadow: none;
+      margin: 0 5px 5px  0;
+      border:0;
+      &:hover {
+        background: $greenWeakDark;
+        color:$almostWhite;
+      }
+      &:hover.active,
+      &.active {
+        background: $greenStrongLight;
+        color:#fff
+      }
+      .remove {
+        border:0;
+        font-weight: 700;
+        font-size: 15px;
+        padding: 0;
+        height: 17px;
+        line-height: 17px;
+      }
+    }
+  }
+  .selectize-control.multi &.input-active,
+  .selectize-control.single &.input-active,
+  .selectize-control.multi &.dropdown-active,
+  .selectize-control.single &.dropdown-active {
+    &:before {
+      background: $greenWeakLight;
+    }
+    @include selectize-input;
+    border-color: $greenWeakDark;
+  }
+  .selectize-control.plugin-remove_button & [data-value].item {
+      padding:0 20px 0 5px!important;
+  }
+}

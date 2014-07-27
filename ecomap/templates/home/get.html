@@ -4,8 +4,9 @@
 {% load restful %}
 {% block headTag %}
     <link rel="stylesheet" type="text/css" href="{% static 'libs/normalize.css/normalize.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'libs/select2/select2.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'libs/selectize/dist/css/selectize.default.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'libs/jquery.uniform/themes/default/css/uniform.default.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'libs/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css' %}">
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,600,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="{% static 'css/map.css' %}">
 {% endblock %}
@@ -16,28 +17,40 @@
     ></div>
     <div class="floater main">
         <div class="floater-header">
-            <a class="add-new" href="" style=""><img src="/static/img/add-location.png"></a>
-            <img class="logo" src="/static/img/logo.png">
-            <a class="faq" href="" style="">ЧЗВ</a>
-            <a class="about-us" href="" style="">За нас</a>
+            <a class="add-new" href=""></a>
+            <img class="logo" src="{% static 'img/logo.png' %}">
+            {% spaceless %}
+            <ul class="menu stripped">
+                <li class="faq"><a href="" style="">ЧЗВ</a></li>
+                <li class="about-us"><a href="" style="">За нас</a></li>
+            </ul>
+            {% endspaceless %}
         </div>
         <div class="floater-body">
-            <h1>Искам да рециклирам</h1>
             <div id="search">
+                <h1>Искам да рециклирам</h1>
                 <form action="{% url 'home' %}" data-action="{% url 'spots' %}">
-                    <select name="filter" id="filter" multiple data-recyclables="{{ recyclables|jsonify }}" data-placeholder="вестници, бутилки, батерии, метал" data-no-matches="__material__ не се рециклира, пробвайте нещо друго">
+                    <select name="filter" id="filter" class="filter" multiple data-recyclables="{{ recyclables|jsonify }}" placeholder="вестници, бутилки, батерии, метал" data-no-matches="__material__ не се рециклира, пробвайте нещо друго">
                         {% for recyclable, material in recyclables.items %}
                         <option value="{{ material }}">{{ recyclable }}</option>
                         {% endfor %}
                     </select>
                 </form>
+                <div class="address clearfix">
+                    <div class="auto-location">
+                        Резултати в
+                        <em></em>
+                    </div>
+                    <a href="#" class="change">въведи адрес</a>
+                </div>
             </div>
             <div class="change-address hide">
-                <a class="close" href="" style="">x</a>
-                <input class="address" type="text" name="address" id="addressSearch" width="400px" placeholder="Град или адрес"/>
+                <h1>Премести ме към</h1>
+                <a class="close" href="" style=""></a>
+{#                <input class="address" type="text" name="address" id="addressSearch" width="400px" placeholder="Град или адрес"/>#}
+                <select name="address" class="address" id="addressSearch" placeholder="Град или адрес" width="400px"></select>
             </div>
             <div class="add-new hide">
-                <a class="close" href="" style="">x</a>
                 <div class="address">
                     <p>Можете да преместите маркера като го привлачете на желания адрес или потърсите адреса в полето по-долу:</p>
                     <input class="new-address" type="text" name="address-new" id="addressNewSearch" placeholder="Адрес на новия пункт"/>
@@ -45,13 +58,6 @@
                 <div class="details hide">
                     <p>И малко информация за това какво се рециклира тук, какво представлява мястото. Можете и накратко да опишете как да го намерят хората по-лесно</p>
                 </div>
-            </div>
-            <div class="address">
-                <em>Резултати в</em>
-                <div class="auto-location">
-                    <em></em>
-                </div>
-                <a href="#" class="change">въведи адрес</a>
             </div>
         </div>
     </div>
@@ -62,12 +68,17 @@
                 <div id="step1" class="step">
                     <a class="btn cancel-streetview" href="#">не се вижда мястото</a>
                     <a class="btn reactivate hide" href="#">назад към камерата</a>
-                    <div class="streetview">
-                    </div>
+                    <div class="streetview"></div>
                     <div class="missing-streetview">
                         На това място няма streetview
                     </div>
                     <div class="cancelled-streetview">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                            <clipPath id="arrow">
+                                <polygon points="0 315,261 315,281 336,301 315,560 315,560 0,0 0"> </polygon>
+                            </clipPath>
+                            <image width="560" height="336" clip-path="url(#arrow)" xlink:href="http://cl.ly/VkYQ/noise.gif"/>
+                        </svg>
                         Е, айде сега, голяма работа, не се виждало. <a href="#" class="address-focus">Адрес има, нали?</a>
                     </div>
                     <a class="btn accept" href="#">Готов съм</a>
@@ -136,11 +147,6 @@
                 <h3>Допълнителна информация</h3>
                 <p rel="description"></p>
             </div>
-            <img src="" />
-            <div class="company-info">
-                <img src="" class="logo" rel="logo"/>
-                <p></p>
-            </div>
         </div>
         {% comment %}
         <div id="show-location">
@@ -160,10 +166,14 @@
     <script src="{% static 'libs/jquery.validation/jquery.validate.js' %}"></script>
     <script src="{% static 'libs/spin.js/spin.js' %}"></script>
     <script src="{% static 'libs/jquery.uniform/jquery.uniform.js' %}"></script>
-    <script src="{% static 'libs/select2/select2.js' %}"></script>
+    <script src="{% static 'libs/selectize/dist/js/standalone/selectize.js' %}"></script>
+    <script src="{% static 'libs/clipper/clipper.js' %}"></script>
+    <script src="{% static 'libs/area-coverage/coverage.js' %}"></script>
+    <script src="{% static 'libs/area-coverage/coverage.google.js' %}"></script>
+    <script src="{% static 'libs/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.js' %}"></script>
     {% endcompress %}
     {% compress js file locallibs %}
-    <script src="{% static 'js/lib/clipper.js' %}"></script>
+    <script src="{% static 'js/no_results.selectize.js' %}"></script>
     <script src="{% static 'js/lib/pubsub.js' %}"></script>
     <script src="{% static 'js/lib/infobox.js' %}"></script>
     <script src="{% static 'js/lib/googleMarkerAnimate.js' %}"></script>
@@ -172,6 +182,7 @@
     <script src="{% static 'js/infoboxAnimated.js' %}"></script>
     {% endcompress %}
     {% compress js file local %}
+    <script src="{% static 'js/customScrollbar.selectize.select2.js' %}"></script>
     <script src="{% static 'js/map/geoServices.js' %}"></script>
     <script src="{% static 'js/map/popupNew.js' %}"></script>
     <script src="{% static 'js/map/streetViewPicker.js' %}"></script>
